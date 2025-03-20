@@ -1,3 +1,47 @@
-
+#gitignore do back
 back/target/
 back/bd-giftcard-firebase-adminsdk-fbsvc-f2121d61fd.json
+
+
+
+#gitignore do front
+
+front/dist
+front/tmp
+front/out-tsc
+front/bazel-out
+
+# Node
+front/node_modules
+front/npm-debug.log
+front/yarn-error.log
+
+# IDEs and editors
+front/.idea/
+front/.project
+front/.classpath
+front/.c9/
+front/*.launch
+front/.settings/
+front/*.sublime-workspace
+
+# Visual Studio Code
+front/.vscode/*
+front/!.vscode/settings.json
+front/!.vscode/tasks.json
+front/!.vscode/launch.json
+front/!.vscode/extensions.json
+front/.history/*
+
+# Miscellaneous
+front/.angular/cache
+front/.sass-cache/
+front/connect.lock
+front/coverage
+front/libpeerconnection.log
+front/testem.log
+front/typings
+
+# System files
+front/.DS_Store
+front/Thumbs.db
