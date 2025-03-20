@@ -1,17 +1,31 @@
-body {
-
-}
-
 .lembre-me {
     display: flex;
     flex-direction: row;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative; /* Para que o title fique posicionado em relação a este container */
+    padding: 0 1vh; /* Pequeno espaçamento nas laterais */
+}
+
+.home {
+    position: absolute;
+    left: 1vh; /* Mantém o botão à esquerda */
+}
+
+.home a{
+    text-decoration: none;
+    color: #F6F0E8;
 }
 
 .content {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     width: 80vh;
     height: 50vh;
@@ -19,12 +33,15 @@ body {
     border-radius: 30px;
 }
 
-.content h2 {
-    margin-top: 10px;
+.title {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza horizontalmente */
     font-weight: 600;
 }
 
 .botões {
+    width: 100%;
     margin-top: 20px;
     display: flex;
     flex-direction: row;
@@ -81,9 +98,9 @@ body {
 }
 
 .confirmar {
-    width: 30%;
+    width: 100%;
     height: 100%;
-    padding: 20px;
+    padding: 2vh 7vh 2vh 7vh;
     background: #E68210;
     border: none;
     border-radius: 30px;

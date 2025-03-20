@@ -18,7 +18,8 @@ body {
 .container {
     background-color: #5B4B3F;
     width: 600px;
-    height: 500px;
+    height: auto;
+    padding: 1vh;
     text-align: center;
     border-radius: 30px;
     transition: 0.5s ease;
