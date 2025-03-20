@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #1D1302;
+    color: #F6F0E8;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 2vh;
+    align-items: center;
+    top: 0;
+    left: 0;
+    background: #5B4B3F;
+    width: 100vw;
+    height: 6vh;
+ 
+}
+
+.navbar a {
+    font-size: 14pt;
+    color: #EFE8E0;
+    text-decoration: none;
+}
+
+.busca {
+    color: #1D1302;
+    width: 25%;
+}
+
+#busca {
+    background-color: white;
+    background-image: url('https://www.w3schools.com/Css/searchicon.png');
+    background-position: 95% 10px;
+    background-repeat: no-repeat;
+    color: #1D1302;
+    border-radius: 20px;
+    width: 100%;
+    padding: 1vh;
+}
+
+#busca:focus {
+    outline: none;
+    box-shadow: 0px 0px 0px 2px #EFE8E0;
+}
+
+.container {
+    margin-top: 8%;
+    display: flex;
+    padding: 2%;
+    width: 90vw;
+    height: 90vh;
+    background-color: #5B4B3F;
+    border-radius: 30px;
+    margin-bottom: 5%;
+} .container h1{
+    text-align: center;
+    margin-bottom: 2%;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.cards{
+    background: none;
+    width: 100%;
+    height: 100%;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.cards h5 {
+    font-size: 16pt;
+}
+
+.cards button{
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+}
+
+.card{
+    margin-top: 2vh;
+    margin-bottom: 3vh;
+    color: #EFE8E0;
+    background: none;
+    border: none;
+    width: 6%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card img{
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 0px 1vh 0.5vh black;
+}

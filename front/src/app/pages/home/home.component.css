@@ -1,0 +1,80 @@
+svg{
+    fill: #EFE8E0;
+}
+
+.banner img{
+    width: 100%;
+    height: 100%;
+}
+
+.vendidos,
+.categorias {
+    padding: 1vh;
+    margin-top: 7vh;
+    width: 100%;
+    height: auto;
+    background: #5B4B3F;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.cards{
+    background: none;
+    width: 100%;
+    height: 100%;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.cards button{
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+}
+
+.card{
+    margin-top: 2vh;
+    margin-bottom: 3vh;
+    color: #EFE8E0;
+    background: none;
+    border: none;
+    width: 6%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card img{
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 0px 1vh 0.5vh black;
+}
+
+.empresa {
+    display: flex;
+    justify-content: center;
+}
+
+.texto {
+    background: #C9720E;
+    text-decoration: none;
+    font-size: 2.5vh;
+    text-shadow: #0C0801 0px 0px 1vh;
+    box-shadow: 0px 0px 1vh 0.5vh #1D1302;
+    font-weight: 10vh;
+    width: 20%;
+    border-radius: 20px;
+    margin: 10vh;
+    padding: 3.5vh;
+}
+
+.texto a{
+    text-decoration: none;
+    color: #EFE8E0;
+}
