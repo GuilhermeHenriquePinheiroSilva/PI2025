@@ -1,23 +1,38 @@
+<app-nav-bar></app-nav-bar>
 <div class="container">
     <div class="content">
-        <div class="row">
-            <div class="leftColumn">
-                <img src="gift-cards/GooglePlay.png" alt="GooglePlay">
-            </div>
-            <div class="rightColumn">
-                <h2>Vale-Presentes Netflix</h2>
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quae harum reprehenderit obcaecati culpa autem dolor dolorem, recusandae deserunt ducimus mollitia tenetur, sequi, similique sit molestias fugiat eos quidem esse! Laudantium.</p>
-            </div>
+        <div class="leftColumn">
+            <img src="gift-cards/GooglePlay.png" alt="GooglePlay">
+        </div>
+        <div class="rightColumn">
+            <h2>Vale-Presentes Netflix</h2>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quae harum reprehenderit obcaecati culpa
+                autem dolor dolorem, recusandae deserunt ducimus mollitia tenetur, sequi, similique sit molestias
+                fugiat eos quidem esse! Laudantium.</p>
             <div class="options">
                 <h6>Selecione a opção com o valor desejado:</h6>
-                <form>
-                    <input type="radio" name="opcao" id="opcao1">
-                    <input type="radio" name="" id="">
-                    <input type="radio" name="" id="">
-                    <input type="radio" name="" id="">
+                <form class="form">
+                    <div class="opcao">
+                        <input type="radio" name="opcao" id="opcao1" checked="checked">
+                        <label for="opcao1">R$35</label>
+                    </div>
+                    <div class="opcao">
+                        <input type="radio" name="opcao" id="opcao2">
+                        <label for="opcao2">R$50</label>
+                    </div>
+                    <div class="opcao">
+                        <input type="radio" name="opcao" id="opcao3">
+                        <label for="opcao3">R$70</label>
+                    </div>
+                    <div class="opcao">
+                        <input type="radio" name="opcao" id="opcao4">
+                        <label for="opcao4">R$100</label>
+                    </div>
                 </form>
-                
-                <p>Quantidade:</p><input type="number" name="" id="">
+
+                <div class="qntd">
+                    <p>Quantidade:</p><input type="number" name="" id="">
+                </div>
             </div>
             <div class="buttons">
                 <button>Comprar Agora</button>

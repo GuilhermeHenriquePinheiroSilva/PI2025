@@ -1,6 +1,107 @@
-.container{
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    margin-top: 10vh;
+    padding: 10vh;
+    background: #5B4B3F;
+    width: 100%;
+    height: 100%;
+    border-radius: 5vh;
+    text-align: center;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+}
+
+.rightColumn {
+    width: 50%;
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
+}
+
+.rightColumn p{
+    text-align:justify;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-self: center;
+    color: #1D1302;
+    width: 100%;
+    height: 15vh;
+    border-radius: 1vh;
+    text-align: left;
+    background: #DDD3CA;
+    padding: 1vh;
+}
+
+.form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.opcao {
+    margin-top: 1vh;
+    transition: 0.1s ease;
+    background: #5B4B3F;
+    padding: 0.2vh 1vh 0.2vh 1vh;
+    border-radius: 5vh;
+}
+
+.opcao input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.opcao:has(input[type="radio"]:checked){
+    transition: 0.1s ease;
+    background: #E68210;
+}
+
+.opcao label:hover{
+    cursor:pointer;
+}
+
+.checked {
+    background: #E68210;
+}
+
+.qntd {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.qntd p {
+    color: #1D1302;
+    margin: 0;
+}
+
+.qntd input {
+    border-radius: 5vh;
+    border: none;
+    text-align: center;
+    color: #1D1302;
+    height: 2.5vh;
+    width: 8%;
+}
+
+.qntd input[type=number]::-webkit-inner-spin-button {
+    opacity: 1;
+}
+
+img {
     width: 80%;
-    height: auto;
+    border-radius: 15px;
 }
