@@ -1,0 +1,120 @@
+:host{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.lembre-me {
+    display: flex;
+    flex-direction: row;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative; /* Para que o title fique posicionado em relação a este container */
+    padding: 0 1vh; /* Pequeno espaçamento nas laterais */
+}
+
+.home {
+    position: absolute;
+    left: 1vh; /* Mantém o botão à esquerda */
+}
+
+.home a{
+    text-decoration: none;
+    color: #F6F0E8;
+}
+
+.content {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 80vh;
+    height: 50vh;
+    background-color: #5B4B3F;
+    border-radius: 30px;
+}
+
+.title {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza horizontalmente */
+    font-weight: 600;
+}
+
+.botões {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.botões a {
+    color: #C9720E;
+}
+
+.inputs-container {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    background: #DDD3CA;
+    width: 90%;
+    border-radius: 30px;
+}
+
+.inputs-container input {
+    font-size: 14pt;
+    width: 90%;
+    background: none;
+    border: none;
+    margin-left: 5px;
+    border-left: 2px solid #5B4B3F;
+    color: #5B4B3F;
+    padding-left: 10px;
+    transition: 0.2s ease;
+}
+
+.inputs-container:has(input:focus) {
+    transition: 0.2s ease;
+    box-shadow: 0px 0px 0px 5px #EFE8E0;
+}
+
+.inputs-container input:focus {
+    outline: none;
+}
+
+.inputs-container input::placeholder {
+    color: #5B4B3F;
+}
+
+.lembre-me {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.cadastrar {
+    display: flex;
+    flex-direction: column;
+}
+
+.confirmar {
+    width: 100%;
+    height: 100%;
+    padding: 2vh 7vh 2vh 7vh;
+    background: #E68210;
+    border: none;
+    border-radius: 30px;
+    transition: 0.5s ease;
+}
+
+.confirmar:hover {
+    background-color: #AC6310;
+    transform: scale(1.05);
+}
