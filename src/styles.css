@@ -20,3 +20,12 @@ body {
     background-image: linear-gradient(to bottom right, #0C0801, #1D1302);
     background-repeat: no-repeat;
 }
+
+.gift-cards{
+    transition: 0.5 ease;
+}
+
+.gift-cards:hover{
+    transform: scale(1.1);
+    transition: 0.5s ease;
+}
