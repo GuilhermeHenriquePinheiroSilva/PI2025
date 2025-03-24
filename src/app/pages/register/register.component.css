@@ -4,6 +4,22 @@
     align-items: center;
     min-height: 100vh;
 }
+.header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative; /* Para que o title fique posicionado em relação a este container */
+    padding: 0 1vh; /* Pequeno espaçamento nas laterais */
+}
+
+.title {
+    position: relative;
+    left: 50%;
+    transform: translateX(-80%); /* Centraliza horizontalmente */
+    font-weight: 600;
+}
+
+
 
 .container {
     background-color: #5B4B3F;
