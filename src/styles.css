@@ -24,6 +24,9 @@ body {
 .gift-cards{
     transition: 0.5 ease;
 }
+.gift-cards img{
+    border-radius: 1vh;
+}
 
 .gift-cards:hover{
     transform: scale(1.1);

@@ -6,11 +6,15 @@
 }
 
 .container {
-    margin-top: 10vh;
-    padding: 10vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 12vh;
     background: #5B4B3F;
     width: 100%;
-    height: 100%;
+    height: auto;
+    padding: 6vh 0 6vh 0;
     border-radius: 5vh;
     text-align: center;
 }
@@ -18,10 +22,17 @@
 .content {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    height: 80%;
+}
+
+.leftColumn img{
+    width: 70%;
+    box-shadow: 0 0 1vh 0.5vh black;
 }
 
 .rightColumn {
-    width: 50%;
+    width: 35%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -38,7 +49,7 @@
     align-self: center;
     color: #1D1302;
     width: 100%;
-    height: 15vh;
+    height: auto;
     border-radius: 1vh;
     text-align: left;
     background: #DDD3CA;
@@ -46,6 +57,7 @@
 }
 
 .form {
+    margin-bottom: 5vh;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -78,30 +90,52 @@
 }
 
 .qntd {
+    justify-self: flex-end;
+    height: 1vh;
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-bottom: 1vh;
 }
 
 .qntd p {
     color: #1D1302;
     margin: 0;
+    margin-right: 2vh;
 }
 
 .qntd input {
-    border-radius: 5vh;
     border: none;
+    background: none;
     text-align: center;
     color: #1D1302;
     height: 2.5vh;
-    width: 8%;
+    width: 10%;
 }
 
-.qntd input[type=number]::-webkit-inner-spin-button {
-    opacity: 1;
+.qntd button{
+    background: #5B4B3F;
+    border: none;
+    color: #DDD3CA;
+    width: 4vh;
+    height: 4vh;
+    text-align: center;
+    border-radius: 5vh;
 }
 
 img {
     width: 80%;
     border-radius: 15px;
+}
+
+.buttons{
+    margin-top: 1.5vh;
+}
+
+.buttons button{
+    background: #E68210;
+    padding: 2vh;
+    border-radius: 5vh;
+    border: none;
+    margin: 1vh;
 }

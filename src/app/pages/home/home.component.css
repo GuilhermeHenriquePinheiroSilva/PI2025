@@ -63,19 +63,42 @@ svg{
 .empresa {
     display: flex;
     justify-content: center;
+    align-items: center;
+    height: 30vh;
+}
+
+@property --angle{
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
 }
 
 .texto {
+    position: relative;
     background: #C9720E;
     text-decoration: none;
     font-size: 2.5vh;
-    text-shadow: #0C0801 0px 0px 1vh;
-    box-shadow: 0px 0px 1vh 0.5vh #1D1302;
+    text-shadow: #0C0801 0px 0px 0.2vh;
     font-weight: 10vh;
     width: 20%;
     border-radius: 20px;
-    margin: 10vh;
-    padding: 3.5vh;
+}
+
+.texto::after, .texto::before{
+    content: '';
+    position: absolute;
+    height: 107%;
+    width: 101%;
+    background-image: conic-gradient(white);
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: -1;
+    border-radius: 20px;
+}
+
+.texto::before{
+    filter: blur(1.5rem);
 }
 
 .texto a{

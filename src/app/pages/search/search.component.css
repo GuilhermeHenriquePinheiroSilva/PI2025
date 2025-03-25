@@ -3,7 +3,7 @@
     display: flex;
     padding: 2%;
     width: 90vw;
-    height: 90vh;
+    height: auto;
     background-color: #5B4B3F;
     border-radius: 30px;
     margin-bottom: 5%;
