@@ -74,28 +74,34 @@ svg{
 }
 
 .texto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
-    background: #C9720E;
+    background: #5B4B3F;
     text-decoration: none;
-    font-size: 2.5vh;
-    text-shadow: #0C0801 0px 0px 0.2vh;
-    font-weight: 10vh;
+    font-size: 3vh;
+    text-shadow: 0 0 1vh #1D1302;
+    font-weight: bolder;
     width: 20%;
-    border-radius: 20px;
+    height: 60%;
+}
+
+.texto span{
+    color: #E68210;
 }
 
 .texto::after, .texto::before{
     content: '';
     position: absolute;
-    height: 107%;
-    width: 101%;
-    background-image: conic-gradient(from var(--angle), transparent 70%, white);
+    height: 105%;
+    width: 102%;
+    background-image: conic-gradient(from var(--angle), transparent 70%, #c9720E);
     top: 50%;
     left: 50%;
     translate: -50% -50%;
     z-index: -1;
-    border-radius: 20px;
-    animation: 5s spin linear infinite;
+    animation: 3s spin linear infinite;
 }
 
 .texto::before{

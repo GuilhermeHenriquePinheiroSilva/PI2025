@@ -35,7 +35,7 @@
     justify-content: space-around;
     align-items: center;
     width: 80vh;
-    height: 50vh;
+    height: auto;
     background-color: #5B4B3F;
     border-radius: 30px;
 }
@@ -60,6 +60,7 @@
 }
 
 .inputs-container {
+    margin-top: 2vh;
     padding: 10px;
     display: flex;
     flex-direction: row;
@@ -77,11 +78,11 @@
     border-left: 2px solid #5B4B3F;
     color: #5B4B3F;
     padding-left: 10px;
-    transition: 0.2s ease;
+    transition: 0.5s ease;
 }
 
 .inputs-container:has(input:focus) {
-    transition: 0.2s ease;
+    transition: 0.5s ease;
     box-shadow: 0px 0px 0px 5px #EFE8E0;
 }
 

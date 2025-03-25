@@ -23,7 +23,7 @@
 
 .container {
     background-color: #5B4B3F;
-    width: 600px;
+    width: 45%;
     height: auto;
     padding: 1vh;
     text-align: center;
@@ -43,6 +43,7 @@
 }
 
 .form-line {
+    margin-top: 1vh;
     display: flex;
     flex-direction: row;
     background-color: #ddd3ca;
@@ -71,8 +72,9 @@
     align-items: center;
     display: flex;
     flex-direction: column;
-    padding-top: 5%;
-    height: 45vh;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    height: auto;
     justify-content: space-between;
 } #register-form button {
     background-color: #E68210;

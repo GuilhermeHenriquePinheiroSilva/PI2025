@@ -68,3 +68,11 @@
     font-weight: 20vh;
     color: #E68210;
 }
+
+#logo::after{
+    background: #E68210;
+}
+
+#logo:hover::after{
+    background: #E68210;
+}
