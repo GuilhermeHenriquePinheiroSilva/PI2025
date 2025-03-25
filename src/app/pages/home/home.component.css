@@ -89,16 +89,27 @@ svg{
     position: absolute;
     height: 107%;
     width: 101%;
-    background-image: conic-gradient(white);
+    background-image: conic-gradient(from var(--angle), transparent 70%, white);
     top: 50%;
     left: 50%;
     translate: -50% -50%;
     z-index: -1;
     border-radius: 20px;
+    animation: 5s spin linear infinite;
 }
 
 .texto::before{
     filter: blur(1.5rem);
+    opacity: 0.5;
+}
+
+@keyframes spin{
+    from{
+        --angle: 0deg;
+    }
+    to{
+        --angle: 360deg;    
+    }
 }
 
 .texto a{
