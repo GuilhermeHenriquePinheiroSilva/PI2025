@@ -1,4 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+:root{
+    --smoke-white: #ddd3ca; 
+    --white: #efe8e0;
+    --dark-orange: #c9720e;
+    --orange: #e68210;
+    --brown: #5b4b3f;
+    --dark-brown: #1d1302;
+}
+
 * {
     font-family: "Poppins", "sans-serif";
     font-weight: 400;

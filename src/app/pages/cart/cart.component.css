@@ -1,0 +1,155 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--dark-brown);
+}
+
+
+.container {
+    padding: 0 5vh 0 5vh;
+    overflow-y: hidden;
+    background: var(--brown);
+    margin-top: 15vh;
+    border-radius: 5vh;
+    height: 80vh;
+}
+
+.finalizar {
+    background: var(--orange);
+    border: none;
+    border-radius: 2.5vh;
+    padding: 2vh;
+}
+
+.header {
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.header h1 {
+    font-weight: bolder;
+}
+
+.header p {
+    height: auto;
+    vertical-align: middle;
+}
+
+.body{
+    overflow-y: scroll;
+    height: 70%;
+}
+
+.body::-webkit-scrollbar {
+    width: 1.5vh;
+}
+
+.body::-webkit-scrollbar-track {
+    border-radius: 5vh;
+}
+
+.body::-webkit-scrollbar-track {
+    background: var(--dark-brown);
+}
+
+.body::-webkit-scrollbar-thumb {
+    background: var(--white);
+    border-radius: 5vh;
+}
+
+.body::-webkit-scrollbar-button {
+    display: none;
+}
+
+.table {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+table {
+    width: 90%;
+    border: none;   
+}
+
+.delete{
+    margin-top: 280%;
+    border: none;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+.delete svg{
+    fill: var(--orange);
+    width: 5vh;
+    height: 5vh;
+}
+
+td,
+th {
+    color: var(--white);
+    background: none;
+    border-bottom: 0.3vh solid var(--white);
+    padding: 5vh;
+}
+
+th {
+    font-weight: bold;
+}
+
+td {
+    text-align: center;
+}
+
+td:has(img) {
+    width: 20%;
+}
+
+.qntd{
+    justify-self: center;   
+    width: 40%;
+    text-align: center;
+    border: 0.5vh solid var(--white);
+    border-radius: 5vh;
+}
+
+.qntd button{
+    height: 1vh;
+    margin-bottom: 1vh;
+}
+
+.qntd p {
+    color: #1D1302;
+    margin: 0;
+    margin-right: 2vh;
+}
+
+.qntd input {
+    border: none;
+    background: none;
+    text-align: center;
+    height: 2.5vh;
+    width: 10%;
+}
+
+td button{
+    background: #5B4B3F;
+    border: none;
+    color: #DDD3CA;
+    width: 4vh;
+    height: 4vh;
+    text-align: center;
+    border-radius: 5vh;
+}
+
+td img {
+    width: 100%;
+    border-radius: 1vh;
+    box-shadow: 0 0 1vh 0.5vh black;
+}

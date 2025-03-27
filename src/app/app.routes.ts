@@ -5,6 +5,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ForgotPassComponent } from './pages/forgot-pass/forgot-pass.component';
 import { ProductPageComponent } from './pages/product-page/product-page.component';
+import { CartComponent } from './pages/cart/cart.component';
+import { EmptyCartComponent } from './pages/empty-cart/empty-cart.component';
 
 export const routes: Routes = [
     {
@@ -21,6 +23,12 @@ export const routes: Routes = [
     },
     {
         path: 'product-page', component: ProductPageComponent
+    },
+    {
+        path: 'empty-cart', component: EmptyCartComponent
+    },
+    {
+        path: 'cart', component : CartComponent
     },
     {
         path: '', component: HomeComponent

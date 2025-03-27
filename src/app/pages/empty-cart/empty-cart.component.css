@@ -1,8 +1,38 @@
-.container{
-    margin-top: 10%;
+:host{
+    display: flex;
     justify-content: center;
+    align-items: center;
+}
+
+.container{
+    margin-top: 20vh;
+    background: var(--brown);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 30px;
     width: 100vw;
-    height: 70.3vh;
-} .container img{
-    width: 200px;
+    height: 70vh;
+} .container svg{
+    width: 20vh;
+    height: 20vh;
+} .container h2{
+    margin-top: 2vh;
+}
+
+.body{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.body a{
+    text-decoration: none;
+    border-radius: 5vh;
+    color: var(--white);
+    background: var(--orange);
+    padding: 2vh 5vh 2vh 5vh;
 }
