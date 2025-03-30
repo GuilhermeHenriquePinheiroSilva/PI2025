@@ -41,3 +41,5 @@ body {
     transform: scale(1.1);
     transition: 0.5s ease;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
