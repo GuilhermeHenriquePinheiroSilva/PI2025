@@ -64,9 +64,9 @@
 
 #logo {
     justify-self: self-start;
-    font-size: 3vh;
-    font-weight: 20vh;
+    font-size: 4vh;
     color: #E68210;
+    font-weight: 600;
 }
 
 #logo::after{

@@ -2,3 +2,23 @@
     padding: 3.5vh;
     background: #1D1302;
 }
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.formas-pgmt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: 150px;
+    border-radius: 30px;
+    /* background-color: #ffffff73; */
+} .formas-pgmt h3 {
+    color: var(--dark-brown);
+} .formas-pgmt img {
+    width: 350px;
+}
