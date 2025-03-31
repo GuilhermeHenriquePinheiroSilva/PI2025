@@ -53,3 +53,7 @@ body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.card h5{
+    margin-top: 20%;
+}

@@ -70,9 +70,9 @@
 }
 
 #logo::after{
-    background: #E68210;
+    background: linear-gradient(to right, #E68210 0%, #E68210 50%, var(--white) 0%, var(--white) 50%);
 }
 
 #logo:hover::after{
-    background: #E68210;
+    background: linear-gradient(to right, #E68210 0%, #E68210 50%, var(--white) 0%, var(--white) 50%);
 }
