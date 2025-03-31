@@ -27,7 +27,6 @@ body {
     padding: 0;
     overflow-x: hidden;
     background-image: linear-gradient(to bottom right, #0C0801, #1D1302);
-    background-repeat: no-repeat;
 }
 
 .gift-cards{

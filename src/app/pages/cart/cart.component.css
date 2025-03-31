@@ -39,7 +39,7 @@
     vertical-align: middle;
 }
 
-.body{
+.body {
     overflow-y: scroll;
     height: 70%;
 }
@@ -74,21 +74,20 @@
 
 table {
     width: 90%;
-    border: none;   
+    border: none;
 }
 
-.delete{
-    margin-top: 280%;
+.delete {
     border: none;
     background: none;
     padding: 0;
     border-radius: 0;
 }
 
-.delete svg{
+.delete svg {
     fill: var(--orange);
-    width: 5vh;
-    height: 5vh;
+    width: 3vh;
+    height: 3vh;
 }
 
 td,
@@ -111,15 +110,15 @@ td:has(img) {
     width: 20%;
 }
 
-.qntd{
-    justify-self: center;   
-    width: 40%;
+.qntd {
+    width: 30%;
+    justify-self: center;
     text-align: center;
     border: 0.5vh solid var(--white);
     border-radius: 5vh;
 }
 
-.qntd button{
+.qntd button {
     height: 1vh;
     margin-bottom: 1vh;
 }
@@ -135,11 +134,11 @@ td:has(img) {
     background: none;
     text-align: center;
     height: 2.5vh;
-    width: 10%;
+    width: 30%;
 }
 
-td button{
-    background: #5B4B3F;
+td button {
+    background: transparent;
     border: none;
     color: #DDD3CA;
     width: 4vh;
