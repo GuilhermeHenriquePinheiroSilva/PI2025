@@ -51,6 +51,7 @@
     border-radius: 30px;
     padding: 10px;
 } .form-line input {
+    color: var(--brown);
     background: transparent;
     border: none;
     width: 80%;

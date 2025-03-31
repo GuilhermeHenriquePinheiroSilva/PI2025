@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-:root{
-    --smoke-white: #ddd3ca; 
+:root {
+    --smoke-white: #ddd3ca;
     --white: #efe8e0;
     --dark-orange: #c9720e;
     --orange: #e68210;
@@ -29,16 +29,27 @@ body {
     background-image: linear-gradient(to bottom right, #0C0801, #1D1302);
 }
 
-.gift-cards{
+.gift-cards {
+    display: inline-block;
     transition: 0.5 ease;
+    transition: transform 0.3s ease-in-out;
 }
-.gift-cards img{
+
+.gift-cards img {
     border-radius: 1vh;
 }
 
-.gift-cards:hover{
+.gift-cards:hover {
     transform: scale(1.1);
     transition: 0.5s ease;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
