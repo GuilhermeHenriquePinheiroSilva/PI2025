@@ -29,7 +29,12 @@
     justify-content: center;
 }
 
+.header h1{
+    margin-top: 3vh;
+}
+
 .body a{
+    margin-top: 1vh;
     text-decoration: none;
     border-radius: 5vh;
     color: var(--white);
