@@ -6,6 +6,12 @@ svg{
     margin-top: 12vh;
 }
 
+.bannerNF{
+    background: var(--orange);
+    width: 100%;
+    height: 100%;
+}
+
 .banner img{
     width: 100%;
     height: 100%;
