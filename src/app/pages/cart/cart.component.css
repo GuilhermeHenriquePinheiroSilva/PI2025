@@ -73,8 +73,17 @@
 }
 
 table {
+    border-collapse: separate;
+    border-spacing: 0;
     width: 90%;
     border: none;
+}
+
+thead{
+    background: var(--brown);
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .delete {
@@ -90,11 +99,15 @@ table {
     height: 3vh;
 }
 
+tr{
+    background: none;
+}
+
 td,
 th {
+    border-bottom: 0.3vh solid var(--white);
     color: var(--white);
     background: none;
-    border-bottom: 0.3vh solid var(--white);
     padding: 5vh;
 }
 
