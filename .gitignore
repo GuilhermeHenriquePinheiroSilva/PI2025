@@ -1,0 +1,33 @@
+# Node (Angular)
+node_modules/
+dist/
+.angular/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+*.env
+
+# Firebase key (NUNCA suba isso)
+firebase_key.json
+firebase_config.py
+
+# IDEs e editores
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+*.log
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
