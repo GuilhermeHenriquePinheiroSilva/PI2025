@@ -28,7 +28,7 @@
     color: #F6F0E8;
 }
 
-.content {
+form {
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -59,8 +59,16 @@
     color: #C9720E;
 }
 
+.inputs{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .inputs-container {
-    margin-top: 2vh;
+    margin: 1vh 0 1vh 0;
     padding: 10px;
     display: flex;
     flex-direction: row;
@@ -79,6 +87,14 @@
     color: #5B4B3F;
     padding-left: 10px;
     transition: 0.5s ease;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px var(--smoke-white) inset;
+}
+
+input:-webkit-autofill {
+    -webkit-text-fill-color: var(--brown) !important;
 }
 
 .inputs-container:has(input:focus) {
