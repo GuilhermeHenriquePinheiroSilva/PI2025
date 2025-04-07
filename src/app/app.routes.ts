@@ -7,6 +7,7 @@ import { ForgotPassComponent } from './pages/forgot-pass/forgot-pass.component';
 import { ProductPageComponent } from './pages/product-page/product-page.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { EmptyCartComponent } from './pages/empty-cart/empty-cart.component';
+import { authGuard } from './guard/auth.guard';
 
 export const routes: Routes = [
     {
@@ -25,7 +26,9 @@ export const routes: Routes = [
         path: 'product-page', component: ProductPageComponent
     },
     {
-        path: 'empty-cart', component: EmptyCartComponent
+        path: 'empty-cart',
+        component: EmptyCartComponent,
+        canActivate: [authGuard]
     },
     {
         path: 'cart', component : CartComponent
