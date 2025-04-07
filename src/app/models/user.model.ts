@@ -1,6 +1,6 @@
 export interface User {
-    email: string;
-    username: string;
-    password: string;
-  }
-  
+  username: string;
+  email: string;
+  password: string;
+  role?: string; // opcional, pode ser adicionado ao formulário depois se quiser
+}
