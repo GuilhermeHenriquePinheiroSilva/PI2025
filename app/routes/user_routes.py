@@ -32,11 +32,14 @@ async def register_user(user: User, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email já registrado")
 
     hashed_password = bcrypt.hash(user.password)
+
+    role = user.role or Role.CUSTOMER
+
     new_user = UserORM(
         username=user.username,
         email=user.email,
         password=hashed_password,
-        role=user.role
+        role=role
     )
     db.add(new_user)
     db.commit()
