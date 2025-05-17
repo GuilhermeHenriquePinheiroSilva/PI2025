@@ -1,5 +1,4 @@
-app/__pycache__
-app/aut/__pycache__
-app/database/__pycache__
-app/models/__pycache__
-app/routes/__pycache__
+__pycache__/
+build/
+dist/
+*.so
