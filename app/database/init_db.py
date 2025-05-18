@@ -1,5 +1,6 @@
 from app.database.db_config import engine
 from app.models.user_orm import Base
+from app.models.register_giftcard_orm import Base
 
 def init_db():
     Base.metadata.create_all(bind=engine)

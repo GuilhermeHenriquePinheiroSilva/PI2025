@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import user_routes
+from app.routes import register_giftcard_routes
 
 app = FastAPI()
 
 app.include_router(user_routes.router)
+app.include_router(register_giftcard_routes.router) 
 
 app.add_middleware(
     CORSMiddleware,

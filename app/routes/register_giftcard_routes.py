@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends, Header
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List, Optional
+from app.models.register_giftcard_models import RegisterGiftCard
+from app.models.register_giftcard_orm import RegisterGiftCardORM
 from app.database.db_config import SessionLocal
 from app.auth.jwt_handler import verify_token
 
