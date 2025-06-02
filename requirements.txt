@@ -6,3 +6,5 @@ passlib[bcrypt]
 pydantic[email]
 sqlalchemy
 pymysql
+python-multipart
+werkzeug

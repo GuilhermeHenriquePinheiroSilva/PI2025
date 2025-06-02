@@ -1,8 +1,10 @@
-from app.database.db_config import engine
-from app.models.user_orm import Base
-from app.models.register_giftcard_orm import Base
+from app.database.db_config import engine, Base
+from app.models import user_orm
+from app.models import giftcard_orm
+
 
 def init_db():
+    print("Criando tabelas no banco de dados...")
     Base.metadata.create_all(bind=engine)
     print("Banco de dados inicializado com sucesso.")
 

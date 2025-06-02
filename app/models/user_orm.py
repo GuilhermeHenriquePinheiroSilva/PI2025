@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Enum as SqlEnum
 from app.database.db_config import Base
+from sqlalchemy.orm import relationship
 from app.enums.roles import Role
 
 class UserORM(Base):
@@ -10,3 +11,10 @@ class UserORM(Base):
     email = Column(String(100), unique=True, index=True, nullable=False)
     password = Column(String(255), nullable=False)
     role = Column(SqlEnum(Role), nullable=False)
+
+
+    giftcards = relationship(
+        "RegisterGiftCardORM",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
