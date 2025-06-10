@@ -1,5 +1,3 @@
-# app/models/giftcard_models.py
-
 from pydantic import BaseModel, Field
 from typing import Optional
 from uuid import UUID
@@ -7,7 +5,8 @@ from decimal import Decimal
 
 class RegisterGiftCard(BaseModel):
     id: Optional[UUID] = None
-    user_id: int
+    user_id: Optional[int] = None
+    empresa_id: Optional[int] = None
     title: str
     
     valor: Decimal

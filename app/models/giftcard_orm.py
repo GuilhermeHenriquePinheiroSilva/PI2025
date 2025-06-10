@@ -27,7 +27,8 @@ class RegisterGiftCardORM(Base):
     __tablename__ = "register_giftcards"
 
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    enterprise_id = Column(Integer, ForeignKey("enterprises.id"), nullable=True)
     title = Column(String(100), nullable=False)
     
     # --- CAMPO NOVO ADICIONADO ---
@@ -41,3 +42,4 @@ class RegisterGiftCardORM(Base):
     imageUrl = Column(String(255), nullable=True)
 
     user = relationship("UserORM", back_populates="giftcards")
+    enterprise = relationship("EnterpriseORM", back_populates="giftcards")
