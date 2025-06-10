@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app.models import enterprise_models, enterprise_orm, user_orm
+from app.models import EnterpriseRegister, EnterpriseRead, EnterpriseLogin, EnterpriseORM, UserORM
 
 from app.auth.jwt_handler import create_access_token
 from app.database.db_config import get_db 
@@ -19,7 +19,7 @@ router = APIRouter(
     response_model=enterprise_models.EnterpriseRead, 
     status_code=status.HTTP_201_CREATED
 )
-def register_enterprise(enterprise: enterprise_models.EnterpriseCreate, db: Session = Depends(get_db)):
+def register_enterprise(enterprise: enterprise_models.EnterpriseRegister, db: Session = Depends(get_db)):
     """
     Cadastra uma nova enterprise no sistema.
     - Verifica se o e-mail ou CNPJ já existem.

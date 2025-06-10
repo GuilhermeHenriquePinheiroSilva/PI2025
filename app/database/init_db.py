@@ -1,7 +1,5 @@
 from app.database.db_config import engine, Base
-from app.models import user_orm
-from app.models import giftcard_orm
-from app.models import enterprise_orm 
+import app.models
 
 def init_db():
     print("Criando tabelas no banco de dados...")

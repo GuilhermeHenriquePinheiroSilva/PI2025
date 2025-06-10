@@ -6,6 +6,9 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, CHAR, TypeD
 from sqlalchemy.orm import relationship
 from app.database.db_config import Base
 
+from .user_orm import UserORM
+from .enterprise_orm import EnterpriseORM
+
 class GUID(TypeDecorator):
     impl = CHAR(36)
     cache_ok = True
