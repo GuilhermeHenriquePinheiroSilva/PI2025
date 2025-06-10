@@ -17,7 +17,8 @@ class UserORM(Base):
 
     # A sintaxe para relacionamentos também usa Mapped
     # O type hint em string "list[...]" previne erros de importação circular
-    giftcards: Mapped["list[RegisterGiftCardORM]"] = relationship(
-        back_populates="user",
-        cascade="all, delete-orphan"
-    )
+    giftcards: Mapped[list["RegisterGiftCardORM"]] = relationship(
+    "RegisterGiftCardORM", # <--- APENAS O NOME DA CLASSE
+    back_populates="user",
+    cascade="all, delete-orphan"
+)

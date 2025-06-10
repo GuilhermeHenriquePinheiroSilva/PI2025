@@ -17,7 +17,8 @@ class EnterpriseORM(Base):
     cnpj: Mapped[str] = mapped_column(String(18), unique=True, index=True, nullable=False)
 
     # A sintaxe para relacionamentos também usa Mapped
-    giftcards: Mapped["list[RegisterGiftCardORM]"] = relationship(
-        back_populates="enterprise",
-        cascade="all, delete-orphan"
-    )
+    giftcards: Mapped[list["RegisterGiftCardORM"]] = relationship(
+    "RegisterGiftCardORM", # <--- APENAS O NOME DA CLASSE
+    back_populates="enterprise",
+    cascade="all, delete-orphan"
+)
