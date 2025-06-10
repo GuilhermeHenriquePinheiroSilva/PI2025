@@ -5,12 +5,12 @@ import os
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from pathlib import Path
 # 1. Importar Decimal para o campo valor
 from decimal import Decimal
 
 from app.database.db_config import get_db
-from app.models.giftcard_orm import RegisterGiftCardORM
-from app.models.giftcard_models import RegisterGiftCard
+from app.models import RegisterGiftCard, RegisterGiftCardORM
 
 router = APIRouter(
     prefix="/giftcards",
@@ -18,7 +18,10 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-UPLOAD_DIRECTORY = r"C:\Users\0221432411009\Desktop\img-gc"
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+UPLOAD_DIRECTORY = BASE_DIR / "static/uploads"
+
+os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
 
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
@@ -44,12 +47,12 @@ async def create_giftcard(
 
         with open(file_path, "wb") as buffer:
             buffer.write(await image.read())
-        image_url = image_name
+        image_url = f"/static/uploads/{image_name}"
 
     db_giftcard = RegisterGiftCardORM(
         user_id=user_id,
         title=title,
-        valor=valor,  # <-- 3. Passando o valor para o objeto ORM
+        valor=valor,
         description=description,
         quantityavailable=quantityavailable,
         generaterandomly=generaterandomly,

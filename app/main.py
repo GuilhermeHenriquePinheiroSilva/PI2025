@@ -3,13 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.routes import user_routes
 from app.routes import giftcard_routes
+from pathlib import Path
+import os
 
 app = FastAPI()
 
-IMAGE_UPLOAD_DIRECTORY = r"C:\Users\0221432411009\Desktop\img-gc"
-
-
-app.mount("/uploads", StaticFiles(directory=IMAGE_UPLOAD_DIRECTORY), name="static_images")
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_FILES_DIR = BASE_DIR / "static/uploads"
+os.makedirs(STATIC_FILES_DIR, exist_ok=True)
+app.mount("/static/uploads", StaticFiles(directory=STATIC_FILES_DIR), name="static_uploads")
 
 app.include_router(user_routes.router)
 app.include_router(giftcard_routes.router)
