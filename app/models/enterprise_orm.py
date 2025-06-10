@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, Enum as SqlEnum
 from sqlalchemy.orm import relationship
 from app.database.db_config import Base
-from app.enums.roles import Role  # Supondo que seu Enum 'Role' está neste caminho
+from app.enums.roles import Role  
 
 class EnterpriseORM(Base):
-    __tablename__ = "empresas"
+    __tablename__ = "enterprise"
 
    
     id = Column(Integer, primary_key=True, index=True)
@@ -16,6 +16,6 @@ class EnterpriseORM(Base):
 
     giftcards = relationship(
         "RegisterGiftCardORM",
-        back_populates="empresa",  # O back_populates será 'empresa'
+        back_populates="enterprise",  
         cascade="all, delete-orphan"
     )
