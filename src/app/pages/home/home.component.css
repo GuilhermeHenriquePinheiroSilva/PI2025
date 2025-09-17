@@ -1,0 +1,206 @@
+svg {
+    fill: #EFE8E0;
+}
+
+.banner {
+    margin-top: 12vh;
+}
+
+.banner img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.bannerNF {
+    background: var(--orange);
+    width: 100%;
+    height: 100%;
+}
+
+.banner img {
+    height: 100%;
+}
+
+.vendidos,
+.maisamados,
+.categorias {
+    padding: 1vh;
+    margin-top: 7vh;
+    width: 100%;
+    height: auto;
+    min-height: 45vh;
+    background: var(--brown);
+}
+
+.notFound p {
+    margin: 2vh 0 4vh;
+    font-size: 2.5vh;
+}
+
+.svgBug {
+    width: 20vh;
+    height: 20vw;
+}
+
+#maisVendidosTitulo,
+#maisAmadosTitulo,
+#categoriasTitulo {
+    margin: 2.5vh 0;
+    font-size: clamp(1.2rem, 4vw, 2rem);
+    font-weight: bold;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100vw;
+    max-width: none;
+}
+
+.row button {
+    top: 50%;
+    position: relative;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    width: auto;
+    padding: 1vh;
+}
+
+#buttonBefore {
+    left: 0;
+}
+
+#buttonAfter {
+    right: 0;
+}
+
+.row button svg {
+    width: clamp(24px, 4vh, 48px);
+    height: clamp(24px, 4vh, 48px);
+}
+
+
+.empresa {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30vh;
+}
+
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.texto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: #5B4B3F;
+    text-decoration: none;
+    text-shadow: 0 0 1vh #1D1302;
+    font-weight: bolder;
+    width: clamp(250px, 30%, 400px);
+    height: auto;
+    font-size: 2.5vh;
+    padding: 2vh;
+    text-align: center;
+}
+
+.texto span {
+    color: #E68210;
+}
+
+.texto::after,
+.texto::before {
+    content: '';
+    position: absolute;
+    height: 105%;
+    width: 102%;
+    background-image: conic-gradient(from var(--angle), transparent 70%, #c9720E);
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: -1;
+    animation: 3s spin linear infinite;
+}
+
+.texto::before {
+    filter: blur(1.5rem);
+    opacity: 0.5;
+}
+
+@keyframes spin {
+    from {
+        --angle: 0deg;
+    }
+
+    to {
+        --angle: 360deg;
+    }
+}
+
+.texto a {
+    text-decoration: none;
+    color: #EFE8E0;
+}
+
+@media (max-width: 768px) {
+    .row {
+        width: 101vw;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 2vh;
+        padding: 1vh;
+    }
+
+    .row::-webkit-scrollbar {
+        height: 1vh;
+    }
+
+    .row::-webkit-scrollbar-track {
+        background: var(--dark-brown);
+    }
+
+    .row::-webkit-scrollbar-thumb {
+        background: var(--white);
+    }
+
+    .row::-webkit-scrollbar-button {
+        display: none;
+    }
+
+    .texto {
+        width: 80%;
+        height: auto;
+        font-size: 2.5vh;
+        text-align: center;
+        padding: 2vh;
+    }
+
+    .texto a {
+        font-size: 2.5vh;
+    }
+
+    .row button svg {
+        width: 4vh;
+        height: 4vh;
+    }
+
+    .empresa {
+        height: auto;
+        padding: 5vh 0;
+    }
+    .gift-card-link{
+        margin: 0 2vw;
+    }
+}

@@ -1,0 +1,184 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+    --smoke-white: #ddd3ca;
+    --white: #efe8e0;
+    --dark-orange: #c9720e;
+    --orange: #e68210;
+    --brown: #5b4b3f;
+    --dark-brown: #1d1302;
+}
+
+* {
+    font-family: "Poppins", "sans-serif";
+    font-weight: 400;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #EFE8E0;
+}
+
+html{
+    overflow-x: hidden;
+}
+
+body {
+    text-align: center;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: var(--dark-brown);
+}
+
+a{
+    text-decoration: none;
+}
+
+p{
+    margin: 0;
+}
+
+app-gift-card-template {
+    width: 100%;
+    height: 100%;
+    flex: 0.1 0.1 0;
+}
+
+.cards {
+    padding: 0;
+    margin: 0;
+    background: none;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+
+
+.cards button {
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+}
+
+.card {
+    color: #EFE8E0;
+    background: none;
+    border: none;
+    width: 10vw;
+    height: 20vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gift-card .title {
+    font-size: 2vh;
+    margin-top: 2vh;
+}
+
+.gift-cards p {
+    margin: 0;
+    font-size: 2vh;
+}
+
+.card img {
+    object-fit: cover;
+    max-width: 80%;
+    width: auto;
+    margin-top: 1vh;
+    height: 80%;
+}
+
+app-gift-card-template{
+    margin: 2vh 2vw;
+}
+
+.gift-cards {
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.5 ease;
+    transition: transform 0.3s ease-in-out;
+}
+
+.gift-cards img {
+    border-radius: 1vh;
+}
+
+.gift-cards:hover {
+    transform: scale(1.08);
+    transition: transform 0.5s ease;
+    cursor: pointer;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+app-root {
+    display: block;
+    height: 100%;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 2vh;
+}
+
+.checkbox-container:hover {
+    filter: brightness(1.1);
+}
+
+.checkbox-container input[type="checkbox"] {
+    display: none;
+}
+
+.custom-checkbox {
+    width: 2vh;
+    height: 2vh;
+    background-color: var(--smoke-white);
+    margin-right: 1vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    position: relative;
+    font-size: 1.5vh;
+    color: white;
+}
+
+.custom-checkbox::after {
+    content: "";
+}
+
+.checkbox-container input[type="checkbox"]:checked+.custom-checkbox {
+    background-color: var(--orange);
+    border-color: var(--orange);
+}
+
+.checkbox-container input[type="checkbox"]:checked+.custom-checkbox::after {
+    content: "✔";
+}
+
+@media (max-width: 768px) {    
+    .cards{
+        justify-content: space-around;
+        width: 105vw;
+    }
+
+    .card{
+        width: 20vw;
+        height: 15vh;
+    }
+}

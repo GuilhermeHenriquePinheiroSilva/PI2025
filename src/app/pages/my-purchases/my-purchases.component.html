@@ -1,0 +1,42 @@
+<div class="container">
+    <h1>Minhas Compras</h1>
+    <p>Aqui estão todos os códigos de gift cards que você já comprou.</p>
+  
+    <div *ngIf="isLoading">Carregando...</div>
+  
+    <div *ngIf="!isLoading && purchasedCards.length === 0" class="empty-message">
+      <p>Você ainda não fez nenhuma compra.</p>
+    </div>
+  
+    <table *ngIf="!isLoading && purchasedCards.length > 0">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Valor</th>
+          <th class="cod">Código</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let card of purchasedCards">
+          <td>{{ card.original_giftcard.title }}</td>
+          <td>{{ card.original_giftcard.valor | currency:'BRL' }}</td>
+          
+          <td class="code-cell" (click)="revealAndCopyCode(card)" title="Clique para revelar e copiar">
+            <div *ngIf="revealedCodeId === card.id; else placeholder">
+              <span class="revealed-code">{{ card.code }}</span>
+            </div>
+            <ng-template #placeholder>
+              <span class="placeholder-text">Clique para revelar</span>
+            </ng-template>
+          </td>
+  
+          <td>
+            <span class="status" [ngClass]="card.status.toLowerCase()">
+              {{ card.status }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

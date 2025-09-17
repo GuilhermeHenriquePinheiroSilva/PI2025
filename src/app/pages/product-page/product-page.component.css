@@ -1,0 +1,241 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: var(--brown);
+}
+
+.svgStar{
+    height: 100%;
+}
+
+.svgStar svg{
+    width: 2vh;
+    height: 2vh;
+    margin-bottom: 0.5vh;
+}
+
+.svgStar use {
+    color: var(--orange);
+}
+
+.container {
+    margin-top: 12vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* background-color: var(--brown); */
+    width: 100vw;
+    height: 80vh;
+    border-radius: 5vh;
+    text-align: center;
+}
+
+.container header{
+    margin-top: 2vh;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 80%;
+    width: 100%;
+}
+
+.rating-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  color: #ffc107; /* Cor de estrela amarela */
+}   
+
+.leftColumn{
+    height: 100%;
+    margin-right: 10vh;
+}
+
+.leftColumn img{
+    border-radius: 1vh;
+    object-fit: cover;
+    width: auto;
+    max-width: 30vw;
+    height: 65vh;
+    box-shadow: 0 0 1vh 0.5vh black;
+}
+
+.rightColumn {
+    width: 50%; 
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rightColumn p{
+    text-align: justify;
+}
+
+.valorRS{
+    color: var(--orange);
+}
+
+.valor-principal{
+    font-size: 3vh;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 0 2vh;
+    align-self: center;
+    color: #1D1302;
+    width: 100%;
+    height: 40%;
+    border-radius: 1vh;
+    text-align: left;
+}
+
+.descTitle{
+    margin-bottom: 1vh;
+    border-bottom: 0.1vh solid var(--white);
+    width: 100%;
+    text-align: center !important;
+}
+
+.descContent{
+    font-size: .8rem;
+    padding: 0 1vw;
+    overflow-wrap: break-word;
+    margin: 0 0 5vh;
+    width: 100%;
+    height: auto;
+    min-height: 10vh;
+}
+
+.optionTitle{
+    height: 20%;
+}
+
+.optionTitle p{
+    color: var(--dark-brown);
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.opcao {
+    transition: 0.1s ease;
+    background: #5B4B3F;
+    padding: .5vh 1.5vh;
+    border-radius: 5vh;
+    transition: all 0.2s ease;
+}
+
+.opcao:hover {
+    filter: brightness(1.1);
+}
+
+.opcao input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.opcao:has(input[type="radio"]:checked){
+    transition: 0.1s ease;
+    background: #E68210;
+}
+
+.opcao label:hover{
+    cursor:pointer;
+}
+
+.checked {
+    background: #E68210;
+}
+
+.qntd {
+    justify-self: flex-end;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.qntd p {
+    margin: 0;
+    margin-right: 2vh;
+}
+
+.qntd input {
+    border: none;
+    background: none;
+    text-align: center;
+    height: 2.5vh;
+    width: 10%;
+}
+
+.qntd button{
+    background: var(--orange);
+    border: none;
+    color: #DDD3CA;
+    width: 4vh;
+    height: 4vh;
+    text-align: center;
+    border-radius: 5vh;
+}
+
+.qntd button:active{
+    background-color: var(--orange);
+}
+
+button:hover{
+    filter: brightness(1.1);
+}
+
+button:active{    
+    transform: scale(1.1);
+    filter: brightness(0.9);
+}
+
+.buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.buttons button{
+    margin-top: 2vh;
+    background: #E68210;
+    padding: 2% 0;
+    border-radius: 5vh;
+    border: none;
+    width: 40%;
+    height: 100%;
+    transition: all 0.2s ease;
+}
+
+.buttons button:hover{
+    filter: brightness(1.1);
+}

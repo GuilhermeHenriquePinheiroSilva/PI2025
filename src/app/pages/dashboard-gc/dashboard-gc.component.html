@@ -1,0 +1,182 @@
+<div class="dashboard-container">
+    <div class="DBbuttons" #navBar>
+        <button #btn1 (click)="showComponent('componente1', btn1)" [class.active]="activeComponent === 'componente1'">
+            Estatísticas
+        </button>
+
+        <button #btn2 (click)="showComponent('componente2', btn2)" [class.active]="activeComponent === 'componente2'">
+            Verificar Compra
+        </button>
+    </div>
+
+    <div *ngIf="activeComponent === 'componente1'" class="DB content dashboard">
+        <div class="container">
+            <!-- Header -->
+            <header class="header">
+                <p class="title">Estatísticas dos Gift Cards</p>
+                <p>Verifique e Gerencie seus Gift Cards </p>
+            </header>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card primary">
+                    <div class="stat-value">247</div>
+                    <div class="stat-label">Total de Gift Cards</div>
+                </div>
+                <div class="stat-card accent">
+                    <div class="stat-value">R$ 45.680</div>
+                    <div class="stat-label">Valor Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">89%</div>
+                    <div class="stat-label">Taxa de Sucesso</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Em Estoque</div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Table Section -->
+                <div class="table-section">
+                    <div class="table-header">
+                        <p class="title">Meus Gift Cards</p>
+                        <a href="/adicionar-gc">Criar GiftCard</a>
+                    </div>
+
+                    <div class="table-container">
+                        <div *ngIf="isLoading" class="loading">
+                            <p>Carregando seus Gift Cards...</p>
+                        </div>
+
+                        <div *ngIf="!isLoading && myGiftCards.length === 0" class="no-data">
+                            <p>Você ainda não cadastrou nenhum Gift Card.</p>
+                            <a routerLink="/adicionar-gc" class="add-button">Cadastrar meu primeiro Gift Card</a>
+                        </div>
+                        <div *ngIf="!isLoading && myGiftCards.length > 0" class="table-container">
+                            <table>
+                                <thead>
+                                    <th class="img">Imagem</th>
+                                    <th>Nome</th>
+                                    <th>Valor</th>
+                                    <th>Qtd.</th>
+                                    <th>Status</th>
+                                    <th>Validade</th>
+                                    <th>Nota</th>
+                                    <th>Ações</th>
+                                </thead>
+                                <tbody>
+                                    <tr class="tr-gcs" *ngFor="let gc of myGiftCards">
+                                        <td class="td-image">
+                                            <img [src]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl" [alt]="gc.title"
+                                                class="table-img" (error)="$any($event.target).style.display='none'" />
+                                        </td>
+                                        <td class="gc-title">{{ gc.title }}</td>
+                                        <td>R${{ gc.valor | number:'1.2-2' }}</td>
+                                        <td>{{ gc.quantityavailable }}</td>
+                                        <!-- NOVAS CÉLULAS DE DADOS -->
+                                        <td>
+                                            <span class="status" [ngClass]="gc.ativo ? 'ativo' : 'inativo'">
+                                                {{ gc.ativo ? 'Ativo' : 'Inativo' }}
+                                            </span>
+                                        </td>
+                                        <td class="validade">
+                                            {{ gc.validade ? (gc.validade | date:'dd/MM/yyyy') : 'N/A' }}
+                                        </td>
+                                        <td>
+                                            <span class="nota" *ngIf="gc.nota">
+                                                <p>
+                                                    {{ gc.nota | number:'1.1-1' }}
+                                                </p>
+                                                <div class="svgStar">
+                                                    <svg>
+                                                        <use width="100%" height="100%" fill="var(--orange)"
+                                                            xlink:href="svgs/star-fill.svg">
+                                                        </use>
+                                                    </svg>
+                                                </div>
+                                            </span>
+                                            <span class="nota" *ngIf="!gc.nota">
+                                                <p>N/A</p>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="actions">
+                                                <a [routerLink]="['/editar-gc', gc.id]" class="edit-btn">
+                                                    <div class="button">
+                                                        <svg class="svgBug">
+                                                            <use width="100%" height="100%" fill="var(--dark-brown)"
+                                                                xlink:href="svgs/pencil-fill.svg"></use>
+                                                        </svg>
+                                                        <p>Editar</p>
+                                                    </div>
+                                                </a>
+                                                <button class="delete-btn" (click)="deleteGiftCard(gc.id, gc.title)">
+                                                    <div class="button">
+                                                        <svg>
+                                                            <use width="100%" height="100%" fill="var(--dark-brown)"
+                                                                xlink:href="svgs/trash.svg"></use>
+                                                        </svg>
+                                                        <p>Excluir</p>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="activeComponent === 'componente2'" class="DB content dashboard component2">
+        <div class="container">
+            <header class="header">
+                <p class="title">Verificar Compra</p>
+                <p>Valide o código de um produto comprado.</p>
+            </header>
+            <div class="form">
+                <div class="cod">
+                    <p>Código Guid:</p><input type="text" placeholder="Ex:4d23589c-8322-4e45-aff4-d00799e61cee" name=""
+                        id="">
+                </div>
+                <p class="space">ou</p>
+                <div class="qr-code">
+                    <p>Código QR:</p>
+                    <div class="optionsRow">
+                        <div class="options">
+                            <label for="camera">
+                                <p>Capturar com Câmera</p>
+                                <input type="file" accept="image/*" capture="environment" name="camera" id="camera">
+                                <div class="svg">
+                                    <svg class="">
+                                        <use width="100%" height="100%" xlink:href="svgs/camera-fill.svg">
+                                        </use>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="options">
+                            <label for="file">
+                                <p>Enviar da Galeria</p>
+                                <input type="file" accept="image/*" name="file" id="file">
+                                <div class="svg">
+                                    <svg class="">
+                                        <use width="100%" height="100%" xlink:href="svgs/uploadImage.svg">
+                                        </use>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button class="validate">Validar Código</button>
+            </div>
+        </div>
+    </div>
+</div>

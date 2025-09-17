@@ -1,0 +1,243 @@
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../../services/auth.service';
+import { User } from '../../../models/user.model';
+import { NotificationService } from '../../../../services/notification.service';
+import { CartService } from '../../../../services/cart.service';
+import { ChatbotService } from '../../../../services/chatbot.service';
+import { Enterprise } from '../../../models/enterprise.model';
+
+@Component({
+  selector: 'app-nav-bar',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule
+  ],
+  templateUrl: './nav-bar.component.html',
+  styleUrls: ['./nav-bar.component.css']
+})
+export class NavBarComponent implements OnInit, AfterViewChecked {
+  userType: String = "user";
+
+  user: User | null = null;
+  searchTerm: string = '';
+  cartItemCount: number = 0;
+  sidebar: boolean = false;
+
+  // Lógica dos formulários
+  formAtual: 'login' | 'register' | 'forgot' | null = null;
+  formTransicao: string = '';
+
+  entFormLayer: number = 0;
+
+  // Dados dos formulários
+  email: string = '';
+  password: string = '';
+  userRegister: User = { username: '', email: '', password: '', role: 'CUSTOMER' };
+  enterpriseRegister: Enterprise = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: '', email: '', senha: '' };
+  confirmPassword: string = '';
+
+  // Variáveis do Chatbot
+  chat: boolean = false;
+  chatStyle: string = 'hidden';
+  userMessage: string = '';
+  chatMessages: { role: string, parts: { text: string }[] }[] = [];
+  isTyping: boolean = false; // <-- Adicionado para controlar a animação
+
+  @ViewChild('chatContent') private chatContent!: ElementRef;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private notificationService: NotificationService,
+    private cartService: CartService,
+    private chatbotService: ChatbotService,
+    private cdr: ChangeDetectorRef // <-- Adicionado para forçar detecção de mudanças
+  ) { }
+
+  ngOnInit(): void {
+    this.authService.user$.subscribe(user => this.user = user);
+    this.cartService.cart$.subscribe(items => {
+      this.cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  toggleSidebar(): void {
+    this.sidebar = !this.sidebar;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
+    this.notificationService.show('Você saiu da sua conta. Volte sempre!', 'info');
+  }
+
+  mostrarForm(): boolean {
+    return this.formAtual !== null;
+  }
+
+  fecharFormulario(): void {
+    this.formTransicao = 'saindo-direita';
+    setTimeout(() => {
+      this.formAtual = null;
+    }, 300);
+  }
+
+  mudarFormulario(destino: 'login' | 'register' | 'forgot'): void {
+    if (this.formAtual === destino) return;
+
+    const isOpening = !this.formAtual;
+
+    if (!isOpening) {
+      this.formTransicao = destino === 'login' ? 'saindo-direita' : 'saindo-esquerda';
+    }
+
+    setTimeout(() => {
+      this.formAtual = destino;
+      this.email = '';
+      this.password = '';
+      this.userRegister = { username: '', email: '', password: '', role: 'CUSTOMER' };
+      this.enterpriseRegister = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: '', email: '', senha: '' };
+      this.confirmPassword = '';
+      this.formTransicao = destino === 'login' ? 'entrando-esquerda' : 'entrando-direita';
+    }, isOpening ? 0 : 300);
+  }
+
+  onSearch(): void {
+    if (this.searchTerm.trim()) {
+      this.router.navigate(['/search'], { queryParams: { q: this.searchTerm } });
+    } else {
+      this.router.navigate(['/search']);
+    }
+  }
+
+  changeEntFormLayer(qntity: number): void {
+    if (this.entFormLayer + qntity != -1 && this.entFormLayer + qntity != 3) {
+      this.entFormLayer += qntity;
+    }
+  }
+
+onSubmitLogin(): void {
+    if (!this.email || !this.password) {
+      this.notificationService.show("Por favor, preencha seu e-mail e senha para entrar.", "warning");
+      return;
+    }
+
+    // Determina qual método de login chamar com base no userType selecionado no formulário de registro/login
+    const loginObservable = this.userType === 'user'
+      ? this.authService.login(this.email, this.password)
+      : this.authService.loginEnterprise(this.email, this.password);
+
+    loginObservable.subscribe({
+      next: () => {
+        this.notificationService.show('Login realizado com sucesso!', "success");
+        this.fecharFormulario();
+      },
+      error: (err) => {
+        const errorMessage = err.error?.detail || 'E-mail ou senha inválidos.';
+        this.notificationService.show(errorMessage, 'error');
+      }
+    });
+  }
+
+onSubmitRegister(): void {
+    if (this.userType === 'user') {
+      if (!this.userRegister.username || !this.userRegister.email || !this.userRegister.password) {
+        this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
+        return;
+      }
+      if (this.userRegister.password !== this.confirmPassword) {
+        this.notificationService.show('As senhas não coincidem.', 'error');
+        return;
+      }
+      this.authService.register(this.userRegister).subscribe({
+        next: () => {
+          this.notificationService.show('Cadastro realizado com sucesso!', 'success');
+          this.mudarFormulario('login');
+        },
+        error: (err) => {
+          this.notificationService.show('Erro ao cadastrar. Tente novamente.', 'error');
+        }
+      });
+    } else { // Lógica para empresa
+      const { nome_fantasia, cnpj, nome_admin_empresa, cpf_adm, telefone, email, senha } = this.enterpriseRegister;
+      if (!nome_fantasia || !cnpj || !telefone || !nome_admin_empresa || !cpf_adm || !email || !senha) {
+        this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
+        return;
+      }
+      if (this.enterpriseRegister.senha !== this.confirmPassword) {
+        this.notificationService.show('As senhas não coincidem.', 'error');
+        return;
+      }
+      this.authService.registerEnterprise(this.enterpriseRegister).subscribe({
+        next: () => {
+          this.notificationService.show('Empresa cadastrada com sucesso!', 'success');
+          this.mudarFormulario('login');
+        },
+        error: (err) => {
+          this.notificationService.show(err.error.detail || 'Erro ao cadastrar. Tente novamente.', 'error');
+        }
+      });
+    }
+  }
+
+  onSubmitForgot(): void {
+    if (!this.email) {
+      this.notificationService.show("Por favor, insira seu e-mail.", "warning");
+      return;
+    }
+    this.notificationService.show('Instruções enviadas para seu e-mail.', 'info');
+    this.fecharFormulario();
+  }
+
+  toggleChat(): void {
+    this.chat = !this.chat;
+    if (this.chat)
+      this.chatStyle = 'visible'
+    else
+      this.chatStyle = 'hidden'
+  }
+
+  sendMessage(): void {
+    const messageText = this.userMessage.trim();
+    if (messageText) {
+      this.chatMessages.push({ role: 'user', parts: [{ text: messageText }] });
+      this.userMessage = ''; // <-- Limpa o input
+      this.isTyping = true; // <-- Ativa a animação
+      
+      // Força a atualização da view para a barra de rolagem funcionar
+      this.cdr.detectChanges(); 
+      this.scrollToBottom();
+
+      this.chatbotService.sendMessage(messageText, this.chatMessages).subscribe({
+        next: (response) => {
+          this.chatMessages.push({ role: 'model', parts: [{ text: response.reply }] });
+          this.isTyping = false; // <-- Desativa a animação
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.notificationService.show('Erro ao se comunicar com o chatbot.', 'error');
+          this.chatMessages.push({ role: 'model', parts: [{ text: 'Desculpe, ocorreu um erro.' }] });
+          this.isTyping = false; // <-- Desativa a animação em caso de erro
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
+
+  private scrollToBottom(): void {
+    if (this.chatContent) {
+      try {
+        this.chatContent.nativeElement.scrollTop = this.chatContent.nativeElement.scrollHeight;
+      } catch (err) { }
+    }
+  }
+}

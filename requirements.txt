@@ -1,0 +1,5 @@
+# Instalar
+
+npm i
+
+npm i vanilla-tilt

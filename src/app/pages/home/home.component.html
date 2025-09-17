@@ -1,0 +1,78 @@
+<head>
+  <title>GoGift - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<section class="banner" role="region" aria-label="Banner promocional">
+  <img src="banner.gif" alt="">
+</section>
+
+<!-- Seção Mais Vendidos -->
+<section class="vendidos" role="region" aria-labelledby="maisVendidosTitulo">
+  <p id="maisVendidosTitulo">Mais Vendidos</p>
+  <div *ngIf="!isLoading && maisVendidos.length > 0" class="row">
+    <div class="cards">
+      <!-- Loop usando a lista 'maisVendidos' e pegando os 6 primeiros -->
+      <a *ngFor="let gc of maisVendidos.slice(0, 6);" [routerLink]="['/product-page', gc.id]" class="gift-card-link">
+        <app-gift-card-template [gcName]="gc.title" [gcText]="'R$ ' + (gc.valor | number:'1.2-2')"
+          [gcImg]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl" [gcImgAlt]="gc.title">
+        </app-gift-card-template>
+      </a>
+    </div>
+  </div>
+  <div *ngIf="!isLoading && maisVendidos.length == 0" class="notFound">
+    <svg class="svgBug">
+      <use width="100%" height="100%" fill="var(--dark-brown)" xlink:href="svgs/empty-cart.svg"></use>
+    </svg>
+    <p>Nenhum Gift-Card Encontrado.</p>
+  </div>
+</section>
+
+<!-- Seção Mais Amados -->
+<section class="maisamados" role="region" aria-labelledby="maisAmadosTitulo">
+  <p id="maisAmadosTitulo">Mais Amados</p>
+  <div *ngIf="!isLoading && maisAmados.length > 0" class="row">
+    <div class="cards">
+      <!-- Loop usando a nova lista 'maisAmados', não precisa de .slice() -->
+      <a *ngFor="let gc of maisAmados;" [routerLink]="['/product-page', gc.id]" class="gift-card-link">
+        <app-gift-card-template [gcName]="gc.title" [gcText]="'R$ ' + (gc.valor | number:'1.2-2')"
+          [gcImg]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl" [gcImgAlt]="gc.title">
+        </app-gift-card-template>
+      </a>
+    </div>
+  </div>
+  <div *ngIf="!isLoading && maisAmados.length == 0" class="notFound">
+    <svg class="svgBug">
+      <use width="100%" height="100%" fill="var(--dark-brown)" xlink:href="svgs/empty-cart.svg"></use>
+    </svg>
+    <p>Nenhum Gift-Card com nota encontrado.</p>
+  </div>
+</section>
+
+<section class="categorias" role="region" aria-labelledby="categoriasTitulo">
+  <p id="categoriasTitulo" class="sr-only">Categorias</p>
+  <section class="row">
+    <section class="cards" role="group" aria-label="Lista de categorias de gift cards">
+      <app-gift-card-template [gcName]="'Games'" [gcImg]="'cards/Card_Games.jfif'"
+        [gcImgAlt]="'Categoria Games'"></app-gift-card-template>
+      <app-gift-card-template [gcName]="'Filmes'" [gcImg]="'cards/Card_Films.jfif'"
+        [gcImgAlt]="'Categoria Filmes'"></app-gift-card-template>
+      <app-gift-card-template [gcName]="'Música'" [gcImg]="'cards/Card_Music.jfif'"
+        [gcImgAlt]="'Categoria Música'"></app-gift-card-template>
+      <app-gift-card-template [gcName]="'Mercado'" [gcImg]="'cards/Card_Market.jfif'"
+        [gcImgAlt]="'Categoria Mercado'"></app-gift-card-template>
+      <app-gift-card-template [gcName]="'GiftCards'" [gcImg]="'cards/GiftCard_Mercado.jfif'"
+        [gcImgAlt]="'Categoria GiftCards'"></app-gift-card-template>
+    </section>
+  </section>
+</section>
+
+<section class="empresa" role="contentinfo" aria-label="Criação de gift cards para empresas">
+  <div class="texto">
+    <a href="/adicionar-gc">Você tem uma empresa?<br>
+      <span>CRIE AQUI SEU GIFT CARD!</span>
+    </a>
+  </div>
+</section>
+
+<app-footer></app-footer>

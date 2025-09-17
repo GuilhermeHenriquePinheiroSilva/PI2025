@@ -1,0 +1,6 @@
+<div class="notification-container">
+    <div *ngFor="let notification of notifications" class="notification-item"
+        [ngClass]="getNotificationClass(notification.type)" role="alert" aria-live="assertive">
+        <span>{{ notification.message }}</span>
+    </div>
+</div>

@@ -1,0 +1,121 @@
+<head>
+    <title>GoGift - Carrinho</title>
+</head>
+
+<div class="containerPc">
+    <div class="header">
+        <p *ngIf="cartItems.length > 0">Total do pedido: <br> <span>R$ {{ totalPedido | number:'1.2-2' }}</span></p>
+        <p class="title">Carrinho de Compras</p>
+        <button *ngIf="cartItems.length > 0" class="finalizar" (click)="finalizarCompra()">Finalizar Compra</button>
+    </div>
+    <div class="body">
+        <div class="table" *ngIf="cartItems.length > 0; else emptyCart">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Itens</th>
+                        <th>Nome</th>
+                        <th>Preço Unit.</th>
+                        <th>Quantidade</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of cartItems">
+                        <td>
+                            <a class="itemImg" [routerLink]="['/product-page/', item.product.id]">
+                                <img [src]="'http://127.0.0.1:8000/uploads/' + item.product.imageUrl"
+                                    [alt]="item.product.title">
+                            </a>
+                        </td>
+                        <td>
+                            <p>{{ item.product.title }}</p>
+                        </td>
+                        <td>R$ {{ item.product.valor | number:'1.2-2' }}</td>
+                        <td>
+                            <div class="quantity-controls">
+                                <button (click)="decreaseQuantity(item)">-</button>
+                                <span>{{ item.quantity }}</span>
+                                <button (click)="increaseQuantity(item)"
+                                    [disabled]="item.quantity >= item.product.quantityavailable">+</button>
+                            </div>
+                        </td>
+                        <td>R$ {{ (item.product.valor * item.quantity) | number:'1.2-2' }}</td>
+                        <td>
+                            <button class="remove-btn" (click)="removeItem(item)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m3.5-.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m3.5.029l-.5 8.5a.5.5 0 1 0 .998.06l.5-8.5a.5.5 0 1 0-.998-.06" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ng-template class="empty-cart" #emptyCart>
+            <app-empty-cart></app-empty-cart>
+        </ng-template>
+    </div>
+</div>
+
+<div class="containerMobile">
+    <header class="header">
+        <!-- <p>Total do pedido: <br> R$ {{ totalPedido | number:'1.2-2' }}</p> -->
+        <p>Carrinho de Compras</p>
+    </header>
+    <div class="body">
+        <div class="table" *ngIf="cartItems.length > 0; else emptyCart">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Itens</th>
+                        <th>Nome</th>
+                        <th>Preço Unit.</th>
+                        <th>Quantidade</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of cartItems">
+                        <td>
+                            <a class="itemImg" [routerLink]="['/product-page/', item.product.id]">
+                                <img [src]="'http://127.0.0.1:8000/uploads/' + item.product.imageUrl"
+                                    [alt]="item.product.title">
+                            </a>
+                        </td>
+                        <td>
+                            <p>{{ item.product.title }}</p>
+                        </td>
+                        <td>R$ {{ item.product.valor | number:'1.2-2' }}</td>
+                        <td>
+                            <div class="quantity-controls">
+                                <button (click)="decreaseQuantity(item)">-</button>
+                                <span>{{ item.quantity }}</span>
+                                <button (click)="increaseQuantity(item)"
+                                    [disabled]="item.quantity >= item.product.quantityavailable">+</button>
+                            </div>
+                        </td>
+                        <td>R$ {{ (item.product.valor * item.quantity) | number:'1.2-2' }}</td>
+                        <td>
+                            <button class="remove-btn" (click)="removeItem(item)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m3.5-.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m3.5.029l-.5 8.5a.5.5 0 1 0 .998.06l.5-8.5a.5.5 0 1 0-.998-.06" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="finalizar" (click)="finalizarCompra()">Finalizar Compra</button>
+        <ng-template #emptyCart>
+            <app-empty-cart></app-empty-cart>
+        </ng-template>
+    </div>
+</div>

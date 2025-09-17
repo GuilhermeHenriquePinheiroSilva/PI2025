@@ -1,0 +1,313 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--dark-brown);
+}
+
+
+.containerPc,
+.containerMobile {
+    padding: 0 2vh 0 2vh;
+    overflow-y: hidden;
+    background: var(--brown);
+    min-height: 80vh;
+    height: 100%;
+    width: 90vw;
+    margin-top: 16vh;
+}
+
+.containerPc {
+    border-radius: 5vh;
+}
+
+.containerMobile {
+    display: none;
+    height: 100vh;
+}
+
+.containerMobile .header {
+    padding-top: 16vh;
+}
+
+.table{
+    position: relative;
+}
+
+.containerMobile .table table {
+    position: relative;
+    left: 0;
+    top: 1vh;
+    width: 10%;
+    font-size: 2vh;
+    border-collapse: collapse;
+}
+
+.containerMobile .table table td, .containerMobile .table table tr{
+    padding: 6vh 1vh;
+}
+
+.finalizar {
+    background: var(--orange);
+    border: none;
+    border-radius: 2.5vh;
+    padding: 2vh;
+}
+
+.header {
+    margin: 5vh 0;
+    padding: 0 2vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    font-weight: bolder;
+}
+
+.header p {
+    margin: 0;
+    font-size: 0.8rem;
+    height: auto;
+    vertical-align: middle;
+}
+
+.header p span{
+    color: var(--orange);
+}
+
+.header .title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.body {
+    height: 75%;
+}
+
+.body:has(table){
+    overflow-y: auto;
+}
+
+.body::-webkit-scrollbar {
+    width: 1.5vh;
+}
+
+.body::-webkit-scrollbar-track {
+    border-radius: 5vh;
+}
+
+.body::-webkit-scrollbar-track {
+    background: var(--dark-brown);
+}
+
+.body::-webkit-scrollbar-thumb {
+    background: var(--white);
+    border-radius: 5vh;
+}
+
+.body::-webkit-scrollbar-button {
+    display: none;
+}
+
+.table {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+table {
+    width: 90%;
+    border: none;
+}
+
+.delete {
+    border: none;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+.delete svg {
+    fill: var(--orange);
+    width: 3vh;
+    height: 3vh;
+}
+
+thead,
+tbody,
+td,
+tr {
+    background: none;
+}
+
+thead {
+    border-bottom: 0.5vh solid white;
+}
+
+td,
+th {
+    color: var(--white);
+    border-bottom: 0.3vh solid var(--white);
+    padding: 5vh;
+}
+
+th {
+    font-weight: bold;
+}
+
+td {
+    text-align: center;
+}
+
+td p {
+    margin: 0;
+}
+
+td:has(img) {
+    width: 20%;
+}
+
+.qntd {
+    width: 30%;
+    justify-self: center;
+    text-align: center;
+    border: 0.5vh solid var(--white);
+    border-radius: 5vh;
+}
+
+.qntd button {
+    height: 1vh;
+    margin-bottom: 1vh;
+}
+
+.qntd p {
+    color: #1D1302;
+    margin: 0;
+    margin-right: 2vh;
+}
+
+.qntd input {
+    border: none;
+    background: none;
+    text-align: center;
+    height: 2.5vh;
+    width: 30%;
+}
+
+.itemImg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    justify-content: space-between;
+}
+
+.quantity-controls {
+    border: 1px solid var(--white);
+    border-radius: 5vh;
+}
+
+.quantity-controls button:hover {
+    transform: scale(1.1);
+}
+
+.quantity-controls button:active {
+    transform: scale(1.2);
+}
+
+.itemImg span {
+    margin-top: 1vh;
+    font-size: 1vw;
+}
+
+td button {
+    background: transparent;
+    border: none;
+    color: #DDD3CA;
+    width: 4vh;
+    height: 4vh;
+    text-align: center;
+    border-radius: 5vh;
+}
+
+td button svg {
+    vertical-align: top;
+}
+
+td img {
+    width: 50%;
+    border-radius: 1vh;
+    box-shadow: 0 0 1vh 0.5vh black;
+}
+
+/* Estilos para os controles de quantidade e botão de remover */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-controls button {
+    background-color: var(--light-gray);
+    border: 1px solid var(--gray);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.quantity-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.quantity-controls span {
+    margin: 0 1rem;
+    min-width: 20px;
+    text-align: center;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--cta);
+}
+
+.remove-btn:hover {
+    color: #c82333;
+}   
+
+.containerPc:has(app-empty-cart){
+    padding-top: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.containerPc:has(app-empty-cart) .header{
+    position: absolute;
+    top: 20%;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .containerPc {
+        display: none;
+    }
+
+    .containerMobile {
+        display: block;
+        padding: 0;
+        width: 100%;
+    }
+}

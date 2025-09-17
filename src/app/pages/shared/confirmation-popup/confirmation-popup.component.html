@@ -1,0 +1,10 @@
+<div class="overlay" *ngIf="isVisible">
+    <div class="confirmation-popup" role="dialog" aria-modal="true" [attr.aria-labelledby]="currentConfig?.title ? 'confirmation-title' : null" aria-describedby="confirmation-message">
+      <h3 id="confirmation-title" *ngIf="currentConfig?.title">{{ currentConfig?.title }}</h3>
+      <p id="confirmation-message">{{ currentConfig?.message }}</p>
+      <div class="actions">
+        <button class="cancel-button" (click)="onCancel()" aria-label="Cancelar">{{ currentConfig?.cancelText || 'Cancelar' }}</button>
+        <button class="confirm-button" (click)="onConfirm()" aria-label="Confirmar">{{ currentConfig?.confirmText || 'Confirmar' }}</button>
+      </div>
+    </div>
+  </div>

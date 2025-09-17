@@ -1,0 +1,57 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="body">
+    <!-- Adicionado um estado de carregamento para melhor experiência do usuário -->
+    <div *ngIf="isLoading" class="loading-indicator">
+        <p>Carregando...</p>
+    </div>
+
+    <div *ngIf="!isLoading && giftCard" class="container">
+        <header>
+            <!-- O header pode ser removido se não for usado -->
+        </header>
+        <div class="content">
+            <div class="leftColumn">
+                <img [src]="'http://127.0.0.1:8000/uploads/' + giftCard.imageUrl" [alt]="giftCard.title">
+            </div>
+            <div class="rightColumn">
+                <h2>{{ giftCard.title }}</h2>
+
+
+                <div class="valor-principal">
+                    <p>Valor: <span class="valorRS"> R${{ giftCard.valor | number:'1.2-2' }}</span></p>
+                </div>
+                <p class="descTitle">Descrição</p>
+                <p class="descContent">{{ giftCard.description }}</p>
+
+                <div *ngIf="giftCard.nota" class="rating-section">
+                    <!-- O pipe 'number' formata a nota para ter uma casa decimal, ex: 4.5 -->
+                    <div class="svgStar">
+                        <svg>
+                            <use width="100%" height="100%" xlink:href="svgs/star-fill.svg">
+                            </use>
+                        </svg>
+                    </div>
+                    <span class="nota-valor">{{ giftCard.nota | number:'1.1-1' }}</span>
+                    <!-- Você pode adicionar mais lógica aqui, como o número de avaliações, se tiver -->
+                </div>
+
+                <div class="options">
+                    <div class="qntd">
+                        <p>Quantidade:</p>
+                        <button (click)="decrementarQuantidade()">-</button>
+                        <input readonly type="text" name="quantidade" id="quantidadeInput" [value]="quantidade">
+                        <button (click)="incrementarQuantidade()">+</button>
+                    </div>
+                    <div class="buttons">
+                        <button (click)="comprarAgora()">Comprar</button>
+                        <button (click)="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- O footer foi movido para o app.component.html para ser global -->
+<!-- <app-footer></app-footer> -->

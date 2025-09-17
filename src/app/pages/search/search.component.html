@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="filters">
+        <!-- Espaço para filtros futuros -->
+    </div>
+    <div class="content">
+        <!-- Título dinâmico: mostra o termo buscado ou uma mensagem padrão -->
+        <p class="info-search" *ngIf="searchTerm">Resultados para: "{{ searchTerm }}"</p>
+        <p class="info-search" *ngIf="!searchTerm">Todos os Gift Cards</p>
+
+        <div class="info-search" *ngIf="isLoading" class="loading-indicator">Carregando...</div>
+
+        <!-- Mensagem se a busca não retornar resultados -->
+        <div class="info-search" *ngIf="!isLoading && giftCards.length === 0" class="no-results">
+            <p>Nenhum resultado encontrado<span *ngIf="searchTerm"> para "{{ searchTerm }}"</span>.</p>
+        </div>
+
+        <!-- Apenas mostra a lista se não estiver carregando e houver resultados -->
+        <div *ngIf="!isLoading && giftCards.length > 0" class="row">
+            <div class="cards">
+                <a *ngFor="let gc of giftCards" [routerLink]="['/product-page', gc.id]" class="gift-card-link">
+                    <app-gift-card-template 
+                        [gcName]="gc.title"
+                        [gcText]="'R$ ' + (gc.valor | number:'1.2-2')" 
+                        [gcImg]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl"
+                        [gcImgAlt]="gc.title">
+                    </app-gift-card-template>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

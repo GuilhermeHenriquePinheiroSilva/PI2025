@@ -1,0 +1,30 @@
+.rodape {
+    background: var(--brown);
+    height: auto;
+    width: 100%;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2vh 0 2vh 0;
+}
+
+.formas-pgmt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
+    border-radius: 30px;
+    /* background-color: #ffffff73; */
+} .formas-pgmt h3 {
+    color: var(--dark-brown);
+} .formas-pgmt img {
+    width: 350px;
+}
+
+.formas-pgmt img{
+    width: 100%;
+}

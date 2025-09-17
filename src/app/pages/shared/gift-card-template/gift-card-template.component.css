@@ -1,0 +1,14 @@
+.gift-cards{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.gift-cards p{
+    font-size: 12pt ;
+}
+
+.title {
+    font-weight: 600;
+}

@@ -1,0 +1,62 @@
+/* src/app/shared/notification-popup/notification-popup.component.css */
+.notification-container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px; /* Ajuste conforme a largura desejada */
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .notification-item {
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.5s forwards, fadeOut 0.5s 2.5s forwards; /* Adiciona animação */
+  }
+  
+  .notification-success {
+    background-color: #4CAF50; /* Verde */
+  }
+  
+  .notification-error {
+    background-color: #f44336; /* Vermelho */
+  }
+  
+  .notification-warning {
+    background-color: #ff9800; /* Laranja */
+  }
+  
+  .notification-info {
+    background-color: #2196F3; /* Azul */
+  }
+  
+  /* Animações */
+  @keyframes slideIn {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }

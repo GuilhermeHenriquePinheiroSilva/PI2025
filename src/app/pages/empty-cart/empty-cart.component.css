@@ -1,0 +1,17 @@
+svg {
+    width: 20vh;
+    height: 20vh;
+}
+
+p {
+    font-size: 1rem;
+    margin: 3vh 0 6vh;
+}
+
+a {
+    text-decoration: none;
+    border-radius: 5vh;
+    color: var(--white);
+    background: var(--orange);
+    padding: 2vh 5vh 2vh 5vh;
+}

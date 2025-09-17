@@ -1,0 +1,9 @@
+<a class="gift-cards" [routerLink]="['/product-page', gcImg, gcName, gcDesc]">
+    <div class="card">
+        <img #tiltElement src={{gcImg}} alt={{gcImgAlt}}>
+    </div>
+    <div>
+        <p class="title">{{gcName}}</p>
+        <p>{{gcText}}</p>
+    </div>
+</a>

@@ -1,0 +1,150 @@
+<div *ngIf="isLoading" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Carregando dados...</span>
+  </div>
+</div>
+
+<div *ngIf="!isLoading">
+  <form class="form" (ngSubmit)="onSubmit()" aria-labelledby="formTitle" role="form">
+    <section class="container">
+      <p id="formTitle" class="sr-only">Editar Gift Card</p>
+      <p>Altere as informações do seu Gift Card aqui</p>
+      <section class="linha">
+        <section class="coluna">
+          <label for="titulo">Título do produto:</label>
+          <input placeholder="Título Gift Card" type="text" id="titulo" name="titulo" [(ngModel)]="titulo" required>
+        </section>
+
+        <section class="coluna">
+          <label for="quantidade">Quantidade Disponível:</label>
+          <input type="number" min="1" id="quantidade" name="quantidade" [(ngModel)]="quantidade"
+            [readonly]="!gerarCodigo" required>
+        </section>
+      </section>
+
+      <section class="linha desc">
+        <section class="coluna">
+          <label for="descricao">Descrição do produto:</label>
+          <textarea placeholder="Descreva seu produto" id="descricao" name="descricao" [(ngModel)]="descricao"
+            aria-required="true"></textarea>
+        </section>
+
+        <section class="coluna">
+          <span id="valoresLabel">Selecione o Valor do Gift Card:</span>
+          <table role="table" aria-labelledby="valoresLabel">
+            <tbody>
+              <tr *ngFor="let valorOpt of valoresDisponiveis">
+                <td>
+                  <label class="radio-button-container">
+                    <input type="radio" name="valorGiftCard" [value]="valorOpt" [(ngModel)]="valorSelecionado"
+                      [id]="'valor-' + valorOpt" [attr.aria-label]="'Selecionar valor R$ ' + valorOpt" required>
+                    <span class="checkmark"></span> 
+                  </label>
+                </td>
+                <td>
+                  <label [attr.for]="'valor-' + valorOpt">R$ {{ valorOpt }}</label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+
+      <!-- === NOVA SEÇÃO ADICIONADA PARA OS NOVOS CAMPOS === -->
+      <section class="linha">
+        <section class="coluna validade">
+          <label for="validade">Data de Validade (Opcional):</label>
+          <input type="date" id="validade" name="validade" [(ngModel)]="validade">
+        </section>
+
+        <section class="coluna nota">
+          <label for="nota">Nota (0 a 5, opcional):</label>
+          <input type="number" id="nota" name="nota" step="0.5" min="0" max="5" [(ngModel)]="nota"
+            placeholder="Ex: 4.5">
+        </section>
+
+        <section class="coluna switch-container">
+          <label for="ativo">Ativo</label>
+          <div class="inputCheck" role="switch" [attr.aria-checked]="ativo">
+            <label class="switch">
+              <input type="checkbox" id="ativo" name="ativo" [(ngModel)]="ativo">
+              <span class="slider round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check"
+                  viewBox="0 0 16 16" aria-hidden="true">
+                  <path
+                    d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x"
+                  viewBox="0 0 16 16" aria-hidden="true">
+                  <path
+                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+              </span>
+            </label>
+          </div>
+        </section>
+      </section>
+      <!-- === FIM DA NOVA SEÇÃO === -->
+
+
+      <section class="linha">
+        <section class="coluna">
+          <p id="gerarTexto">Gerar códigos aleatoriamente?</p>
+          <div class="inputCheck" role="switch" [attr.aria-checked]="gerarCodigo" aria-labelledby="gerarTexto">
+            <label class="switch">
+              <input type="checkbox" [checked]="gerarCodigo" (change)="toggleGerarCodigo()"
+                aria-label="Alternar geração automática dos códigos">
+              <span class="slider round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check"
+                  viewBox="0 0 16 16" aria-hidden="true">
+                  <path
+                    d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x"
+                  viewBox="0 0 16 16" aria-hidden="true">
+                  <path
+                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+              </span>
+            </label>
+          </div>
+
+          <section class="gerarCodigo" [ngStyle]="{
+                  'visibility': gerarCodigo ? 'hidden' : 'visible',
+                  'opacity': gerarCodigo ? '0' : '1'
+                }">
+            <label for="codigosManuais">Informe os códigos manualmente (separados por ";"):</label>
+            <textarea id="codigosManuais" name="codigosManuais" [(ngModel)]="codigosManuais"
+              (input)="atualizarQuantidadePelosCodigos()" aria-describedby="gerarTexto"></textarea>
+          </section>
+        </section>
+
+        <section class="coluna">
+          <label class="file-label" for="fileInput">
+            Imagem do Gift-Card
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16" aria-hidden="true">
+              <path
+                d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0z" />
+            </svg>
+          </label>
+
+          <input type="file" id="fileInput" class="file-upload" (change)="onFileSelected($event)" accept="image/*">
+
+          <div class="imagePreviewer" role="region" aria-label="Pré-visualização da imagem">
+            <svg *ngIf="!imageSrc" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16" aria-hidden="true">
+              <path
+                d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0z" />
+            </svg>
+            <img *ngIf="imageSrc" [src]="imageSrc" alt="Pré-visualização da imagem selecionada">
+          </div>
+        </section>
+      </section>
+
+      <button type="submit" aria-label="Cadastrar gift-card">Salvar Alterações</button>
+    </section>
+  </form>
+
+  <app-footer></app-footer>
+</div>
