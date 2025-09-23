@@ -1,30 +1,122 @@
 .rodape {
     background: var(--brown);
-    height: auto;
+    height: 40vh;
     width: 100%;
 }
 
 .container{
+    position: relative;
+    height: 100%;
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 1vh 1vw;
     align-items: center;
-    padding: 2vh 0 2vh 0;
 }
 
-.formas-pgmt {
+.contato{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.info{
+    display: flex;
+    flex-direction: row;
     align-items: center;
+    gap: 2vh;
+}
+
+.info a{
+    color: var(--orange);
+}
+
+.info a:hover{
+    cursor: pointer;
+    filter: brightness(0.9);
+}
+
+.info svg{
+    border-radius: 50%;
+    width: 6vh;
+    height: 6vh;
+    padding: 1.4vh;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.tInfo{
+    text-align: left;
+    font-size: 0.7rem;
+}
+
+.pInfo{
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.bi-telephone-fill{
+    padding: 1vh;
+}
+
+.about{
+    display: grid;
+    width: 30%;
+    grid-template-rows: 20% 60% 20%;
+    justify-items: start;
+    gap: 2vh;
+    flex-direction: column;
+    padding: 2vh 1vw;
+    text-align: left;
+}
+
+.title{
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.desc{
+    font-size: 0.6rem;
+}
+
+.links{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1vh;
+}
+
+.links a{
+    transition: all 0.2s ease;
+}
+
+.links a:hover{
+    transform: scale(1.1);
+}
+
+.links svg{
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 1vh;
+    width: 5vh;
+    height: 5vh;
+}
+
+.links a, .links svg{
+    color: var(--white);
+    fill: var(--white);
+}
+
+.formas-pgmt{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     width: auto;
-    height: auto;
-    border-radius: 30px;
-    /* background-color: #ffffff73; */
-} .formas-pgmt h3 {
-    color: var(--dark-brown);
-} .formas-pgmt img {
-    width: 350px;
+    height: 20vh;
+    background-color: rgb(255, 231, 0);
+    border-radius: 2vh;
+
 }
 
 .formas-pgmt img{
-    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

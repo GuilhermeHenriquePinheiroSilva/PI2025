@@ -2,7 +2,7 @@
   <nav class="navbar botões" role="navigation" aria-label="Barra de navegação principal">
     <div class="pcNavbar">
       <a href="/" id="logo" aria-label="Página inicial GoGift">Go<span>Gift</span></a>
-      <a routerLink="/search" aria-label="Ver todos os gift-cards">Gift-Cards</a>
+      <a routerLink="/search" aria-label="Ver todos os gift-cards">Explorar</a>
       <form class="busca" (ngSubmit)="onSearch()">
         <input type="text" id="busca" placeholder="Insira sua busca aqui" aria-label="Campo de busca" autocomplete="off"
           [(ngModel)]="searchTerm" name="searchTerm" />
@@ -140,31 +140,7 @@
                     d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
                 </svg></a></h2>
           </header>
-          <div class="userType">
-            <div class="types">
-              <label class="user" for="user">
-                <input type="radio" name="user" [(ngModel)]="userType" checked value="user" id="user">
-                <div class="svg">
-                  <svg class="">
-                    <use width="100%" height="100%" xlink:href="svgs/person-fill.svg"></use>
-                  </svg>
-                </div>
-              </label>
-              <p>Cliente</p>
-            </div>
-            <div class="types">
-              <label class="user" for="enterprise">
-                <input type="radio" name="user" [(ngModel)]="userType" value="enterprise" id="enterprise">
-                <div class="svg">
-                  <svg class="">
-                    <use width="100%" height="100%" xlink:href="svgs/building-fill.svg"></use>
-                  </svg>
-                </div>
-              </label>
-              <p>Empresa</p>
-            </div>
-          </div>
-          <form *ngSwitchCase="'user'" (ngSubmit)="onSubmitRegister()">
+          <form (ngSubmit)="onSubmitRegister()">
             <div class="inputs">
               <div class="inputs-container">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B4B3F"
@@ -205,47 +181,6 @@
               </div>
             </div>
             <div class="confirmarBotao">
-              <button class="confirmar" type="submit">Confirmar</button>
-            </div>
-          </form>
-          <form *ngSwitchCase="'enterprise'" [ngSwitch]="entFormLayer" (ngSubmit)="onSubmitRegister()">
-            <div class="inputs" *ngSwitchCase="0">
-              <div class="inputs-container">
-                <input type="text" name="nome_fantasia" placeholder="Nome Fantasia" [(ngModel)]="enterpriseRegister.nome_fantasia" required>
-              </div>
-              <div class="inputs-container">
-                <input type="text" name="cnpj" placeholder="CNPJ" [(ngModel)]="enterpriseRegister.cnpj" required>
-              </div>
-              <div class="inputs-container">
-                <input type="text" name="telefone" placeholder="Telefone" [(ngModel)]="enterpriseRegister.telefone" required>
-              </div>
-            </div>
-            <div class="inputs" *ngSwitchCase="1">
-              <div class="inputs-container">
-                <input type="text" name="nome_admin_empresa" placeholder="Nome do Administrador" [(ngModel)]="enterpriseRegister.nome_admin_empresa" required>
-              </div>
-              <div class="inputs-container">
-                <input type="text" name="cpf_adm" placeholder="CPF do Administrador" [(ngModel)]="enterpriseRegister.cpf_adm" required>
-              </div>
-              <div class="inputs-container">
-                <input type="email" name="email" placeholder="E-mail" [(ngModel)]="enterpriseRegister.email" required>
-              </div>
-            </div>
-            <div class="inputs" *ngSwitchCase="2">
-              <div class="inputs-container">
-                <input type="password" name="senha" placeholder="Senha" [(ngModel)]="enterpriseRegister.senha" required>
-              </div>
-              <div class="inputs-container">
-                <input type="password" name="confirmPassword" placeholder="Confirmar Senha" [(ngModel)]="confirmPassword" required>
-              </div>
-            </div>
-            <div class="swtichTabs">
-              <div class="tabs">
-                <p (click)="changeEntFormLayer(-1)">&lt;</p>
-                <p (click)="changeEntFormLayer(1)">&gt;</p>
-              </div>
-            </div>
-            <div *ngIf="entFormLayer == 2" class="confirmarBotao">
               <button class="confirmar" type="submit">Confirmar</button>
             </div>
           </form>

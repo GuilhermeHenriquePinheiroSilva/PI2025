@@ -8,7 +8,7 @@
 </section>
 
 <!-- Seção Mais Vendidos -->
-<section class="vendidos" role="region" aria-labelledby="maisVendidosTitulo">
+<section class="vendidos" *ngIf="maisVendidos.length > 0" role="region" aria-labelledby="maisVendidosTitulo">
   <p id="maisVendidosTitulo">Mais Vendidos</p>
   <div *ngIf="!isLoading && maisVendidos.length > 0" class="row">
     <div class="cards">
@@ -29,7 +29,7 @@
 </section>
 
 <!-- Seção Mais Amados -->
-<section class="maisamados" role="region" aria-labelledby="maisAmadosTitulo">
+<section *ngIf="maisAmados.length > 0" class="maisamados" role="region" aria-labelledby="maisAmadosTitulo">
   <p id="maisAmadosTitulo">Mais Amados</p>
   <div *ngIf="!isLoading && maisAmados.length > 0" class="row">
     <div class="cards">
