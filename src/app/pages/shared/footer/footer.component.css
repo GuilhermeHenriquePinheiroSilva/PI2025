@@ -1,18 +1,23 @@
 .rodape {
     background: var(--brown);
     height: 40vh;
-    width: 100%;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container{
-    position: relative;
+    margin: 0;
     height: 100%;
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 100%;
-    padding: 2vh 0;
+    gap: 4vw;
+    padding: 2vh 4vw;
     align-items: center;
+    max-width: fit-content;
 }
 
 .contato{
@@ -47,11 +52,11 @@
 
 .tInfo{
     text-align: left;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
 }
 
 .pInfo{
-    font-size: 0.8rem;
+    font-size: 1rem;
     font-weight: bold;
 }
 
@@ -60,9 +65,9 @@
 }
 
 .about{ 
-    grid-column: 2 / 3;     /* Posiciona na segunda coluna */
-    grid-row: 1 / 2;        /* (opcional, se só tem uma linha) */
-    justify-self: center;   /* Centraliza horizontalmente */
+    grid-column: 2 / 3;     
+    grid-row: 1 / 2;        
+    justify-self: center;
     align-self: center;   
     display: grid;
     grid-template-rows: 20% 60% 20%;
@@ -74,12 +79,12 @@
 }
 
 .title{
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: bold;
 }
 
 .desc{
-    font-size: 0.6rem;
+    font-size: 0.8rem;
 }
 
 .links{
