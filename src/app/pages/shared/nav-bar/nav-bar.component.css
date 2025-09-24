@@ -738,7 +738,7 @@ input:-webkit-autofill {
     border-radius: 2vh;
     display: flex;
     padding: 1.5vh;
-    align-items: center;
+    align-items: left;
 
     /* Quebra de texto */
     white-space: normal;
@@ -749,6 +749,16 @@ input:-webkit-autofill {
     flex-shrink: 0;
 }
 
+.userMessage p,
+.botMessage p{
+    text-align: left;
+    width: 100%;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+}
+
 .botMessage p,
 .userMessage p {
     margin: 0; /* Garante que o <p> interno não tenha margens */
@@ -756,17 +766,15 @@ input:-webkit-autofill {
 }
 
 .botMessage {
-    /* Alinha à ESQUERDA */
     background: var(--dark-brown);
-    margin-right: auto; /* Empurra para a esquerda */
+    margin-right: auto;
     margin-left: 0;
     border-bottom-left-radius: 0;
 }
 
 .userMessage {
-    /* Alinha à DIREITA */
     background: var(--orange);
-    margin-left: auto; /* Empurra para a direita */
+    margin-left: auto;
     margin-right: 0;
     border-bottom-right-radius: 0;
 }
