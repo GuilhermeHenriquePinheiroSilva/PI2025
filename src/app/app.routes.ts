@@ -10,6 +10,7 @@ import { DashboardGcComponent } from './pages/dashboard-gc/dashboard-gc.componen
 import { EditGcComponent } from './pages/edit-gc/edit-gc.component';
 import { MyPurchasesComponent } from './pages/my-purchases/my-purchases.component';
 import { enterpriseGuard } from './guard/enterprise.guard';
+import { GcGuideComponent } from './pages/gc-guide/gc-guide.component';
 
 export const routes: Routes = [
     {
@@ -23,6 +24,9 @@ export const routes: Routes = [
     {
         path: 'dashboard-gc', component: DashboardGcComponent,
         canActivate: [enterpriseGuard]
+    },
+    {
+        path: 'gc-guide', component: GcGuideComponent,
     },
     {
         path: 'search', component: SearchComponent

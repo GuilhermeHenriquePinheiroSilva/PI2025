@@ -17,6 +17,11 @@
           <span *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</span>
         </a>
       </div>
+
+      <a *ngIf="user" href="/gc-guide">
+        Criar
+      </a>
+
       <a *ngIf="user && user.role === 'ENTERPRISE'" href="/dashboard-gc">
         <svg xmlns="http://www.w3.org/2000/svg" width="5vh" height="5vh" fill="currentColor"
           class="bi bi-person-workspace" viewBox="0 0 16 16">
