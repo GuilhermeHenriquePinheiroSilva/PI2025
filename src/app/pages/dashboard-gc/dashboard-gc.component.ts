@@ -1,16 +1,17 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { GiftcardService, GiftCard } from '../../../services/giftcard.service';
+import { GiftcardService, GiftCard, SoldGiftCardDetails } from '../../../services/giftcard.service';
 import { NavBarComponent } from '../shared/nav-bar/nav-bar.component';
 import { FooterComponent } from '../shared/footer/footer.component';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmationService } from '../../../services/confirmation.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard-gc',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavBarComponent, FooterComponent],
+  imports: [CommonModule, RouterLink, NavBarComponent, FooterComponent, FormsModule],
   templateUrl: './dashboard-gc.component.html',
   styleUrl: './dashboard-gc.component.css'
 })
@@ -22,6 +23,15 @@ export class DashboardGcComponent implements OnInit {
   @ViewChild('btn1') btn1!: ElementRef<HTMLButtonElement>;
   @ViewChild('btn2') btn2!: ElementRef<HTMLButtonElement>;
   @ViewChild('btn3') btn3!: ElementRef<HTMLButtonElement>;
+
+  validationCode: string = '';
+  validationResult: SoldGiftCardDetails | null = null;
+  isValidating: boolean = false;
+  validationError: string | null = null;
+
+  isPopupVisible = false;
+  usedGiftCards: SoldGiftCardDetails[] = [];
+  isLoadingHistory: boolean = false;
 
   ngAfterViewInit() {
   }
@@ -41,7 +51,10 @@ export class DashboardGcComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMyGiftCards();
+    this.loadUsedGiftCards();
   }
+
+  
 
   loadMyGiftCards(): void {
     this.isLoading = true;
@@ -82,5 +95,64 @@ export class DashboardGcComponent implements OnInit {
         this.notificationService.show('Exclusão cancelada.', 'info');
       }
     });
+  }
+
+   loadUsedGiftCards(): void {
+    this.isLoadingHistory = true;
+    this.giftcardService.getUsedGiftCards().subscribe({
+      next: (data) => {
+        this.usedGiftCards = data;
+        this.isLoadingHistory = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar histórico de gift cards:', err);
+        this.isLoadingHistory = false;
+        this.notificationService.show('Não foi possível carregar o histórico de validações.', 'error');
+      }
+    });
+  }
+
+  validateCode(): void {
+    if (!this.validationCode.trim()) {
+      this.notificationService.show('Por favor, insira um código para validar.', 'error');
+      return;
+    }
+    this.isValidating = true;
+    this.validationResult = null;
+    this.validationError = null;
+    
+    this.giftcardService.validateGiftCard(this.validationCode).subscribe({
+      next: (data) => {
+        this.validationResult = data;
+        this.isPopupVisible = true; // Abrir o popup
+        this.isValidating = false;
+        this.validationCode = ''; // Limpar o campo
+      },
+      error: (err) => {
+        this.validationError = err.error.detail || 'Código não encontrado ou inválido.';
+        this.notificationService.show(this.validationError!, 'error');
+        this.isValidating = false;
+      }
+    });
+  }
+
+  markAsUsed(): void {
+    if (!this.validationResult) return;
+
+    this.giftcardService.markGiftCardAsUsed(this.validationResult.code).subscribe({
+      next: (data) => {
+        this.validationResult = data; // Atualiza o status no popup
+        this.notificationService.show('Gift Card marcado como utilizado!', 'success');
+        this.loadUsedGiftCards(); // Recarrega o histórico
+      },
+      error: (err) => {
+        this.notificationService.show(err.error.detail || 'Não foi possível marcar o gift card como utilizado.', 'error');
+      }
+    });
+  }
+
+  closePopup(): void {
+    this.isPopupVisible = false;
+    this.validationResult = null;
   }
 }

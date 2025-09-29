@@ -134,7 +134,7 @@
         </div>
     </div>
 
-    <div *ngIf="activeComponent === 'componente2'" class="DB content dashboard component2">
+       <div *ngIf="activeComponent === 'componente2'" class="DB content dashboard component2">
         <div class="container">
             <header class="header">
                 <p class="title">Verificar Compra</p>
@@ -142,41 +142,79 @@
             </header>
             <div class="form">
                 <div class="cod">
-                    <p>Código Guid:</p><input type="text" placeholder="Ex:4d23589c-8322-4e45-aff4-d00799e61cee" name=""
-                        id="">
+                    <p>Código do Gift Card:</p>
+                    <input type="text" placeholder="Insira o código aqui..." name="validationCode"
+                           [(ngModel)]="validationCode" (keyup.enter)="validateCode()">
                 </div>
-                <p class="space">ou</p>
-                <div class="qr-code">
-                    <p>Código QR:</p>
-                    <div class="optionsRow">
-                        <div class="options">
-                            <label for="camera">
-                                <p>Capturar com Câmera</p>
-                                <input type="file" accept="image/*" capture="environment" name="camera" id="camera">
-                                <div class="svg">
-                                    <svg class="">
-                                        <use width="100%" height="100%" xlink:href="svgs/camera-fill.svg">
-                                        </use>
-                                    </svg>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="options">
-                            <label for="file">
-                                <p>Enviar da Galeria</p>
-                                <input type="file" accept="image/*" name="file" id="file">
-                                <div class="svg">
-                                    <svg class="">
-                                        <use width="100%" height="100%" xlink:href="svgs/uploadImage.svg">
-                                        </use>
-                                    </svg>
-                                </div>
-                            </label>
-                        </div>
+                <button class="validate" (click)="validateCode()" [disabled]="isValidating">
+                    {{ isValidating ? 'Validando...' : 'Validar Código' }}
+                </button>
+            </div>
+
+            <div class="table-section">
+                <div class="table-header">
+                    <p class="title">Histórico de Validações</p>
+                </div>
+                <div class="table-container">
+                    <div *ngIf="isLoadingHistory" class="loading">
+                        <p>Carregando histórico...</p>
                     </div>
+                    <div *ngIf="!isLoadingHistory && usedGiftCards.length === 0" class="no-data">
+                        <p>Nenhum Gift Card foi validado ainda.</p>
+                    </div>
+                    <table *ngIf="!isLoadingHistory && usedGiftCards.length > 0">
+                        <thead>
+                            <th>Produto</th>
+                            <th>Comprador</th>
+                            <th>Valor</th>
+                            <th>Data da Compra</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let gc of usedGiftCards">
+                                <td class="gc-title">{{ gc.original_giftcard.title }}</td>
+                                <td>{{ gc.owner_name }}</td>
+                                <td>R${{ gc.original_giftcard.valor | number:'1.2-2' }}</td>
+                                <td class="validade">{{ gc.purchase_date | date:'dd/MM/yyyy' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <button class="validate">Validar Código</button>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="popup-overlay" *ngIf="isPopupVisible" (click)="closePopup()">
+    <div class="popup-content" *ngIf="validationResult" (click)="$event.stopPropagation()">
+        <button class="close-btn" (click)="closePopup()">X</button>
+        <h4>Detalhes da Compra</h4>
+        <div class="result-grid">
+            <div class="result-item">
+                <span class="label">Produto:</span>
+                <span class="value">{{ validationResult.original_giftcard.title }}</span>
+            </div>
+            <div class="result-item">
+                <span class="label">Comprador:</span>
+                <span class="value">{{ validationResult.owner_name }}</span>
+            </div>
+            <div class="result-item">
+                <span class="label">Valor:</span>
+                <span class="value">R$ {{ validationResult.original_giftcard.valor | number:'1.2-2' }}</span>
+            </div>
+            <div class="result-item">
+                <span class="label">Data da Compra:</span>
+                <span class="value">{{ validationResult.purchase_date | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="result-item">
+                <span class="label">Status:</span>
+                <span class="value status" [ngClass]="{'ativo': validationResult.status === 'VALID', 'inativo': validationResult.status !== 'VALID'}">
+                    {{ validationResult.status === 'VALID' ? 'Válido' : 'Utilizado' }}
+                </span>
+            </div>
+        </div>
+
+        <button *ngIf="validationResult.status === 'VALID'" class="mark-used-btn" (click)="markAsUsed()">
+            Marcar como Usado
+        </button>
     </div>
 </div>

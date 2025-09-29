@@ -587,6 +587,105 @@ img:hover {
     box-shadow: 0 6px 20px rgba(230, 130, 16, 0.4);
 }
 
+.table-section {
+    margin-top: 40px;
+}
+
+/* Estilos do Popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.popup-content h4 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--dark-brown);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #888;
+}
+
+.result-grid {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.result-item .label {
+    font-weight: 600;
+    color: #555;
+}
+
+.result-item .value {
+    color: #333;
+}
+
+.mark-used-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background-color: var(--orange);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.mark-used-btn:hover {
+    background-color: #e67e22;
+}
+
 @media (max-width: 768px) {
     .dashboard .container {
         padding: 1rem;

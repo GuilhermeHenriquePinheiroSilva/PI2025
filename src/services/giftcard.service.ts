@@ -18,6 +18,19 @@ export interface GiftCard {
   nota: number;
 }
 
+export interface SoldGiftCardDetails {
+  id: string;
+  code: string;
+  status: 'VALID' | 'USED' | 'EXPIRED';
+  purchase_date: string;
+  owner_name: string;
+  original_giftcard: {
+    title: string;
+    valor: number;
+    imageUrl: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -56,5 +69,17 @@ export class GiftcardService {
 
   updateGiftCard(id: string, giftCardData: FormData): Observable<any> {
     return this.http.put(`${this.apiUrl}${id}`, giftCardData);
+  }
+
+  validateGiftCard(code: string): Observable<SoldGiftCardDetails> {
+    return this.http.get<SoldGiftCardDetails>(`${this.apiUrl}validate/${code}`);
+  }
+
+  markGiftCardAsUsed(code: string): Observable<SoldGiftCardDetails> {
+    return this.http.put<SoldGiftCardDetails>(`${this.apiUrl}validate/${code}/use`, {});
+  }
+
+  getUsedGiftCards(): Observable<SoldGiftCardDetails[]> {
+    return this.http.get<SoldGiftCardDetails[]>(`${this.apiUrl}used/me`);
   }
 }
