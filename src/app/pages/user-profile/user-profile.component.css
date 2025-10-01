@@ -1,0 +1,74 @@
+.body {
+    width: 100%;
+    height: 100vh;
+    background-color: var(--brown);
+    position: relative;
+    display: grid;
+    grid-template-columns: 20% 80%;
+}
+
+.sidebar {
+    height: 100%;
+    width: 20vw;
+    padding: 18vh 1vw 0;
+    background-color: var(--dark-brown);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2vh;
+}
+
+.user {
+    display: flex;
+    flex-direction: row;
+    padding: 0 1vw;
+    align-items: center;
+    margin-bottom: 1vh;
+}
+
+.user p {
+    font-weight: bold;
+}
+
+.user svg {
+    width: 8vh;
+    height: 6vh;
+    padding: 1vh;
+    border-radius: 100%;
+    background: var(--brown);
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.userInfo input{
+    display: none;
+}
+
+.userInfo p {
+    text-align: left;
+    margin: 0;
+    font-size: 1rem;
+    margin-left: 1vh;
+    transition: all 0.2s ease;
+}
+
+.userInfo:hover p {
+    color: var(--orange);
+}
+
+.userInfo svg {
+    height: 3vh;
+    width: 3vh;
+    fill: var(--orange);
+    margin-bottom: 0.5vh;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2vh;
+}

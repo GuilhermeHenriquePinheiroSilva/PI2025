@@ -13,6 +13,7 @@
         <tr>
           <th>Produto</th>
           <th>Valor</th>
+          <th>Data de compra</th>
           <th class="cod">Código</th>
           <th>Status</th>
         </tr>
@@ -21,6 +22,7 @@
         <tr *ngFor="let card of purchasedCards">
           <td>{{ card.original_giftcard.title }}</td>
           <td>{{ card.original_giftcard.valor | currency:'BRL' }}</td>
+          <td>{{ card.purchase_date | date:'dd/MM/yyyy' }}</td>
           
           <td class="code-cell" (click)="revealAndCopyCode(card)" title="Clique para revelar e copiar">
             <div *ngIf="revealedCodeId === card.id; else placeholder">

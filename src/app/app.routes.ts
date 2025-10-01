@@ -11,6 +11,7 @@ import { EditGcComponent } from './pages/edit-gc/edit-gc.component';
 import { MyPurchasesComponent } from './pages/my-purchases/my-purchases.component';
 import { enterpriseGuard } from './guard/enterprise.guard';
 import { GcGuideComponent } from './pages/gc-guide/gc-guide.component';
+import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 
 export const routes: Routes = [
     {
@@ -33,6 +34,10 @@ export const routes: Routes = [
     },
     {
         path: 'search', component: SearchComponent
+    },
+    {
+        path: 'profile', component: UserProfileComponent
+        // , canActivate: [authGuard]
     },
     {
         path: 'product-page/:id', component: ProductPageComponent

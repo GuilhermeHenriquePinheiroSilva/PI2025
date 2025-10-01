@@ -38,7 +38,7 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
   email: string = '';
   password: string = '';
   userRegister: User = { username: '', email: '', password: '', role: 'CUSTOMER' };
-  enterpriseRegister: Enterprise = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: '', email: '', senha: '' };
+  enterpriseRegister: Enterprise = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: ''};
   confirmPassword: string = '';
 
   // Variáveis do Chatbot
@@ -105,7 +105,7 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
       this.email = '';
       this.password = '';
       this.userRegister = { username: '', email: '', password: '', role: 'CUSTOMER' };
-      this.enterpriseRegister = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: '', email: '', senha: '' };
+      this.enterpriseRegister = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: '' };
       this.confirmPassword = '';
       this.formTransicao = destino === 'login' ? 'entrando-esquerda' : 'entrando-direita';
     }, isOpening ? 0 : 300);
@@ -168,13 +168,9 @@ onSubmitRegister(): void {
         }
       });
     } else { // Lógica para empresa
-      const { nome_fantasia, cnpj, nome_admin_empresa, cpf_adm, telefone, email, senha } = this.enterpriseRegister;
-      if (!nome_fantasia || !cnpj || !telefone || !nome_admin_empresa || !cpf_adm || !email || !senha) {
+      const { nome_fantasia, cnpj, nome_admin_empresa, cpf_adm, telefone} = this.enterpriseRegister;
+      if (!nome_fantasia || !cnpj || !telefone || !nome_admin_empresa || !cpf_adm) {
         this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
-        return;
-      }
-      if (this.enterpriseRegister.senha !== this.confirmPassword) {
-        this.notificationService.show('As senhas não coincidem.', 'error');
         return;
       }
       this.authService.registerEnterprise(this.enterpriseRegister).subscribe({

@@ -4,6 +4,6 @@ export interface Enterprise {
   nome_admin_empresa: string;
   cpf_adm: string;
   telefone: string;
-  email: string;
-  senha: string;
+  // email: string;
+  // senha: string;
 }

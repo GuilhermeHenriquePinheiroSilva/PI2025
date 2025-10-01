@@ -1,3 +1,92 @@
 section{
     margin-top: 20vh;
 }
+
+/* Estilização do container principal */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    background-color: #f4f7f6; /* Um fundo suave para a página */
+}
+
+/* Estilização do card do formulário */
+.card {
+    width: 100%;
+    max-width: 600px; /* Define uma largura máxima para o formulário */
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidade */
+    overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
+}
+
+/* Cabeçalho do card */
+.card-header {
+    background-color: #007bff; /* Cor primária para o cabeçalho */
+    color: #fff; /* Texto branco */
+    padding: 20px;
+    text-align: center;
+    border-bottom: none;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.card-header p {
+    margin: 5px 0 0;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Corpo do card */
+.card-body {
+    padding: 30px;
+    background-color: #fff;
+}
+
+/* Estilo para os campos do formulário */
+.form-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/* Estilo para o botão de envio */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 5px;
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Efeito de leve flutuação */
+}
+
+/* Estilo do botão quando desabilitado */
+.btn-primary:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    cursor: not-allowed;
+}

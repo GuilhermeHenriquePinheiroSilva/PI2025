@@ -31,7 +31,7 @@
         </svg>
       </a>
       <span *ngIf="user; else loginLink" class="user-info">
-        <span class="username" aria-label="Usuário autenticado">Olá, <a href="/minhas-compras">{{ user.username
+        <span class="username" aria-label="Usuário autenticado">Olá, <a href="/profile">{{ user.username.split(' ')[0]
             }}</a></span> |
         <a class="exit" (click)="logout()" style="cursor: pointer;" aria-label="Sair da conta">Sair</a>
       </span>
@@ -77,7 +77,7 @@
         d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0" />
     </svg>
     <p>Carrinho</p>
-    </a>
+  </a>
   <a class="sideBarElement" *ngIf="user" href="/dashboard-gc">
     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-workspace" viewBox="0 0 16 16">
       <path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
@@ -88,7 +88,7 @@
   </a>
 </section>
 
-<div *ngIf="mostrarForm()" class="form" (click)="fecharFormulario()">
+<div *ngIf="mostrarForm()" class="form">
   <div [ngClass]="formTransicao" class="form-container" (click)="$event.stopPropagation()">
     <ng-container [ngSwitch]="formAtual">
 
@@ -145,6 +145,47 @@
                     d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
                 </svg></a></h2>
           </header>
+          <!-- <form *ngSwitchCase="'enterprise'" [ngSwitch]="entFormLayer" (ngSubmit)="onSubmitRegister()">
+            <div class="inputs" *ngSwitchCase="0">
+              <div class="inputs-container">
+                <input type="text" name="nome_fantasia" placeholder="Nome Fantasia" [(ngModel)]="enterpriseRegister.nome_fantasia" required>
+              </div>
+              <div class="inputs-container">
+                <input type="text" name="cnpj" placeholder="CNPJ" [(ngModel)]="enterpriseRegister.cnpj" required>
+              </div>
+              <div class="inputs-container">
+                <input type="text" name="telefone" placeholder="Telefone" [(ngModel)]="enterpriseRegister.telefone" required>
+              </div>
+            </div>
+            <div class="inputs" *ngSwitchCase="1">
+              <div class="inputs-container">
+                <input type="text" name="nome_admin_empresa" placeholder="Nome do Administrador" [(ngModel)]="enterpriseRegister.nome_admin_empresa" required>
+              </div>
+              <div class="inputs-container">
+                <input type="text" name="cpf_adm" placeholder="CPF do Administrador" [(ngModel)]="enterpriseRegister.cpf_adm" required>
+              </div>
+              <div class="inputs-container">
+                <input type="email" name="email" placeholder="E-mail" [(ngModel)]="enterpriseRegister.email" required>
+              </div>
+            </div>
+            <div class="inputs" *ngSwitchCase="2">
+              <div class="inputs-container">
+                <input type="password" name="senha" placeholder="Senha" [(ngModel)]="enterpriseRegister.senha" required>
+              </div>
+              <div class="inputs-container">
+                <input type="password" name="confirmPassword" placeholder="Confirmar Senha" [(ngModel)]="confirmPassword" required>
+              </div>
+            </div>
+            <div class="swtichTabs">
+              <div class="tabs">
+                <p (click)="changeEntFormLayer(-1)">&lt;</p>
+                <p (click)="changeEntFormLayer(1)">&gt;</p>
+              </div>
+            </div>
+            <div *ngIf="entFormLayer == 2" class="confirmarBotao">
+              <button class="confirmar" type="submit">Confirmar</button>
+            </div>
+          </form> -->
           <form (ngSubmit)="onSubmitRegister()">
             <div class="inputs">
               <div class="inputs-container">
@@ -248,18 +289,19 @@
       <button id="chatClose" (click)="toggleChat()">X</button>
     </div>
     <div class="chatcontent" #chatContent>
-    <div *ngFor="let message of chatMessages" [ngClass]="message.role === 'user' ? 'userMessage' : 'botMessage'">
+      <div *ngFor="let message of chatMessages" [ngClass]="message.role === 'user' ? 'userMessage' : 'botMessage'">
         <p>{{ message.parts[0].text }}</p>
-    </div>
+      </div>
 
-    <div *ngIf="isTyping" class="botMessage typing-indicator">
+      <div *ngIf="isTyping" class="botMessage typing-indicator">
         <span></span>
         <span></span>
         <span></span>
-    </div>
+      </div>
     </div>
     <div class="chatsend">
-      <input id="chatInput" type="text" placeholder="Insira sua dúvida..." [(ngModel)]="userMessage" (keyup.enter)="sendMessage()">
+      <input id="chatInput" type="text" placeholder="Insira sua dúvida..." [(ngModel)]="userMessage"
+        (keyup.enter)="sendMessage()">
       <button id="send" (click)="sendMessage()">
         <svg xmlns="http://www.w3.org/2000/svg" width="2vh" height="2vh" fill="var(--white)" class="bi bi-send-fill"
           viewBox="0 0 16 16">
