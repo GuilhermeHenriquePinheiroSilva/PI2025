@@ -12,6 +12,10 @@ import { MyPurchasesComponent } from './pages/my-purchases/my-purchases.componen
 import { enterpriseGuard } from './guard/enterprise.guard';
 import { GcGuideComponent } from './pages/gc-guide/gc-guide.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
+import { AdminGuard } from './guard/admin.guard';
+import { ManageCategoriesComponent } from './pages/admin/manage-categories/manage-categories.component';
+import { CategoryPageComponent } from './pages/category-page/category-page.component';
 
 export const routes: Routes = [
     {
@@ -36,11 +40,22 @@ export const routes: Routes = [
         path: 'search', component: SearchComponent
     },
     {
+        path: 'admin',
+        canActivate: [AdminGuard],
+        children: [
+            { path: '', component: AdminDashboardComponent, pathMatch: 'full' },
+            { path: 'categories', component: ManageCategoriesComponent }
+        ]
+    },
+    {
         path: 'profile', component: UserProfileComponent
         // , canActivate: [authGuard]
     },
     {
         path: 'product-page/:id', component: ProductPageComponent
+    },
+    { 
+        path: 'category/:id', component: CategoryPageComponent 
     },
     {
         path: 'empty-cart', component: EmptyCartComponent

@@ -13,6 +13,15 @@
         <input type="number" min="1" id="quantidade" name="quantidade" [(ngModel)]="quantidade"
           [readonly]="!gerarCodigo" required>
       </section>
+
+      <section class="coluna">
+        <select id="category" class="form-control" [(ngModel)]="categoryId" name="categoryId">
+          <option [ngValue]="null" disabled>Selecione uma categoria</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </section>
     </section>
 
     <section class="linha desc">

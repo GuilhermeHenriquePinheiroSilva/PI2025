@@ -126,27 +126,37 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
   }
 
 onSubmitLogin(): void {
-    if (!this.email || !this.password) {
-      this.notificationService.show("Por favor, preencha seu e-mail e senha para entrar.", "warning");
-      return;
-    }
-
-    // Determina qual método de login chamar com base no userType selecionado no formulário de registro/login
-    const loginObservable = this.userType === 'user'
-      ? this.authService.login(this.email, this.password)
-      : this.authService.loginEnterprise(this.email, this.password);
-
-    loginObservable.subscribe({
-      next: () => {
-        this.notificationService.show('Login realizado com sucesso!', "success");
-        this.fecharFormulario();
-      },
-      error: (err) => {
-        const errorMessage = err.error?.detail || 'E-mail ou senha inválidos.';
-        this.notificationService.show(errorMessage, 'error');
-      }
-    });
+  if (!this.email || !this.password) {
+    this.notificationService.show("Por favor, preencha seu e-mail e senha para entrar.", "warning");
+    return;
   }
+
+  const loginObservable = this.userType === 'user'
+    ? this.authService.login(this.email, this.password)
+    : this.authService.loginEnterprise(this.email, this.password);
+
+  loginObservable.subscribe({
+    next: (response) => { // O 'response' do backend contém os dados do usuário
+
+      console.log('Resposta completa do login:', response); 
+      console.log('Role do usuário recebida:', response?.user?.role);
+
+      this.notificationService.show('Login realizado com sucesso!', "success");
+
+      if (response.user.role === 'ADMIN') {
+        this.router.navigate(['/admin']); // Redireciona para o painel de admin
+      } else {
+        this.router.navigate(['/']); 
+      }
+      
+      this.fecharFormulario();
+    },
+    error: (err) => {
+      const errorMessage = err.error?.detail || 'E-mail ou senha inválidos.';
+      this.notificationService.show(errorMessage, 'error');
+    }
+  });
+}
 
 onSubmitRegister(): void {
     if (this.userType === 'user') {

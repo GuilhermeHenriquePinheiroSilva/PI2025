@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Category } from '../app/models/category.model';
 
-// A interface define a "forma" dos dados de um Gift Card
 export interface GiftCard {
   id: string; 
   user_id: number;
@@ -16,6 +16,8 @@ export interface GiftCard {
   ativo: boolean;
   validade: string;
   nota: number;
+  category_id?: number;
+  category?: Category;
 }
 
 export interface SoldGiftCardDetails {
@@ -81,5 +83,9 @@ export class GiftcardService {
 
   getUsedGiftCards(): Observable<SoldGiftCardDetails[]> {
     return this.http.get<SoldGiftCardDetails[]>(`${this.apiUrl}used/me`);
+  }
+
+  getGiftCardsByCategory(categoryId: number): Observable<GiftCard[]> {
+    return this.http.get<GiftCard[]>(`${this.apiUrl}/category/${categoryId}`);
   }
 }

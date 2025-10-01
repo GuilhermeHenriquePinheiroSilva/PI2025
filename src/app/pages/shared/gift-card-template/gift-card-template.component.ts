@@ -1,6 +1,8 @@
 import { Component, ExperimentalPendingTasks, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AppComponent } from '../../../app.component';
+import { GiftCard } from '../../../../services/giftcard.service';
+
 
 @Component({
   selector: 'app-gift-card-template',
@@ -12,6 +14,7 @@ import { AppComponent } from '../../../app.component';
   styleUrl: './gift-card-template.component.css'
 })
 export class GiftCardTemplateComponent extends AppComponent{
+  @Input() giftCard!: GiftCard;
   @Input() gcName: string = '';
   @Input() gcText: string | null = null;
   @Input() gcImg: string = '';

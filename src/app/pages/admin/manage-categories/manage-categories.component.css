@@ -1,0 +1,84 @@
+:host {
+  display: block;
+  background-color: #f4f7f9;
+}
+
+/* Cabeçalho da Página */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header-section .btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+/* Card Principal */
+.card {
+  border: none;
+  border-radius: 0.75rem;
+  overflow: hidden; /* Garante que os cantos arredondados sejam aplicados a tudo */
+}
+
+/* Seção do Formulário */
+.form-section {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.form-title {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Lista de Categorias */
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.list-group-item .actions {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.list-group-item:hover .actions {
+  opacity: 1;
+}
+
+/* Estados de Carregando e Vazio */
+.loading-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  text-align: center;
+  color: #6c757d;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #ced4da;
+}

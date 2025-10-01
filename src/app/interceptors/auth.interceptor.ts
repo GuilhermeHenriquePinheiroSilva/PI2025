@@ -2,8 +2,6 @@
 
 import { HttpInterceptorFn } from '@angular/common/http';
 
-// Esta é a nova forma funcional de criar um interceptor no Angular.
-// É mais simples e direta.
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // Pega o token do localStorage (onde ele foi salvo durante o login)
   const authToken = localStorage.getItem('authToken');

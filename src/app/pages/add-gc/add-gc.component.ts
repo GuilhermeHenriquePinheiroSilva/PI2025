@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+// front/src/app/pages/add-gc/add-gc.component.ts
+
+// --- ALTERAÇÃO AQUI: Adicione OnInit ---
+import { Component, OnInit } from '@angular/core';
 import { NavBarComponent } from '../shared/nav-bar/nav-bar.component';
 import { FooterComponent } from '../shared/footer/footer.component';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +9,9 @@ import { CommonModule } from '@angular/common';
 import { GiftcardService } from '../../../services/giftcard.service';
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../services/notification.service';
+import { Category } from '../../models/category.model';
+import { CategoryService } from '../../../services/category.service';
+// --- ALTERAÇÃO AQUI: Corrija o nome do serviço ---
 
 @Component({
   selector: 'app-add-gc',
@@ -14,7 +20,8 @@ import { NotificationService } from '../../../services/notification.service';
   templateUrl: './add-gc.component.html',
   styleUrl: './add-gc.component.css'
 })
-export class AddGcComponent {
+// --- ALTERAÇÃO AQUI: Implemente OnInit ---
+export class AddGcComponent implements OnInit {
   titulo: string = '';
   descricao: string = '';
   quantidade: number = 1;
@@ -25,17 +32,40 @@ export class AddGcComponent {
   imageSrc: string | null = null;
   selectedFile: File | null = null;
 
-  // --- NOVOS CAMPOS ADICIONADOS ---
+  // --- CAMPOS DE CATEGORIA ---
+  categories: Category[] = [];
+  categoryId: number | null = null; // Adicione esta linha para guardar o ID da categoria selecionada
+
   ativo: boolean = true;
-  validade: string = ''; // Usar string para o formato yyyy-MM-dd do input date
+  validade: string = '';
   nota: number | null = null;
 
   constructor(
     private giftcardService: GiftcardService,
     private router: Router,
-    private notificationService: NotificationService
-  ) {}
+    private notificationService: NotificationService,
+    // --- ALTERAÇÃO AQUI: Corrija a injeção do serviço ---
+    private categoryService: CategoryService
+  ) { }
 
+  // --- NOVO MÉTODO: Para carregar as categorias ao iniciar o componente ---
+  ngOnInit(): void {
+    this.loadCategories();
+  }
+
+  loadCategories(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar categorias', err);
+        this.notificationService.show('Não foi possível carregar as categorias.', 'error');
+      }
+    });
+  }
+
+  // ... (seus outros métodos como onFileSelected, toggleGerarCodigo, etc. continuam aqui sem alterações) ...
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) {
@@ -67,10 +97,10 @@ export class AddGcComponent {
     const codigos = this.codigosManuais.split(';').filter(codigo => codigo.trim() !== '');
     this.quantidade = codigos.length;
   }
-  
+
   onSubmit(): void {
     if (!this.gerarCodigo) {
-        this.atualizarQuantidadePelosCodigos();
+      this.atualizarQuantidadePelosCodigos();
     }
 
     if (!this.titulo || this.quantidade < 1 || this.valorSelecionado === null) {
@@ -88,16 +118,20 @@ export class AddGcComponent {
     formData.append('description', this.descricao);
     formData.append('quantityavailable', this.quantidade.toString());
     formData.append('generaterandomly', String(this.gerarCodigo));
-
-    // --- ENVIANDO OS NOVOS CAMPOS PARA A API ---
     formData.append('ativo', String(this.ativo));
+
+    // --- ALTERAÇÃO AQUI: Adicione o ID da categoria ao FormData ---
+    if (this.categoryId !== null) {
+      formData.append('category_id', this.categoryId.toString());
+    }
+
     if (this.validade) {
       formData.append('validade', this.validade);
     }
     if (this.nota !== null) {
       formData.append('nota', this.nota.toString());
     }
-    
+
     if (!this.gerarCodigo) {
       const validCodes = this.codigosManuais.split(';').filter(codigo => codigo.trim() !== '').join(';');
       formData.append('codes', validCodes);
@@ -122,6 +156,10 @@ export class AddGcComponent {
         this.ativo = true;
         this.validade = '';
         this.nota = null;
+
+        // --- ALTERAÇÃO AQUI: Limpe a categoria selecionada ---
+        this.categoryId = null;
+
         this.router.navigate(['/dashboard-gc']);
       },
       error: (error) => {

@@ -1,0 +1,20 @@
+<div class="container mt-5">
+  <div *ngIf="!isLoading">
+    <h1>Gift Cards de {{ category?.name }}</h1>
+    <hr>
+    <div class="row" *ngIf="giftCards.length > 0; else noResults">
+      <div class="col-md-4 mb-4" *ngFor="let giftCard of giftCards">
+        <app-gift-card-template [giftCard]="giftCard"></app-gift-card-template>
+      </div>
+    </div>
+    <ng-template #noResults>
+      <p>Nenhum gift card encontrado para esta categoria.</p>
+    </ng-template>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Carregando...</span>
+    </div>
+  </div>
+</div>

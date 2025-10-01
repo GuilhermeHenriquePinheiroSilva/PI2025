@@ -10,9 +10,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes), 
-    
-    // Esta é a forma moderna e correta de fornecer o HttpClient
-    // E, ao mesmo tempo, registrar o interceptor para ser usado em todas as requisições.
+
     provideHttpClient(withInterceptors([authInterceptor]))
   ]
 };

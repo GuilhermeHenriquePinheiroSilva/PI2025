@@ -21,6 +21,14 @@
                 <div class="valor-principal">
                     <p>Valor: <span class="valorRS"> R${{ giftCard.valor | number:'1.2-2' }}</span></p>
                 </div>
+
+                <p class="category" *ngIf="giftCard.category">
+                    Categoria:
+                    <a [routerLink]="['/category', giftCard.category.id]">{{ giftCard.category.name }}</a>
+                </p>
+
+
+
                 <p class="descTitle">Descrição</p>
                 <p class="descContent">{{ giftCard.description }}</p>
 

@@ -1,0 +1,13 @@
+/* Estilos para o painel de administração */
+.admin-dashboard {
+  padding: 2rem;
+  background-color: #f4f7f6;
+  min-height: 80vh;
+}
+
+.admin-dashboard h1 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.5rem;
+}

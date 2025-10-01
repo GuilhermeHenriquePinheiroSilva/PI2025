@@ -1,0 +1,70 @@
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+
+      <div class="header-section">
+        <h1 class="h2 mb-0">Gerenciar Categorias</h1>
+        <button class="btn btn-primary" (click)="resetForm()">
+          <i class="bi bi-plus-circle me-2"></i>
+          <span>Nova Categoria</span>
+        </button>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-body form-section">
+          <h5 class="form-title">{{ isEditMode ? 'Editando Categoria' : 'Adicionar Nova Categoria' }}</h5>
+          <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+              <input type="text" formControlName="name" class="form-control" placeholder="Ex: Jogos, Filmes, Música..." [class.is-invalid]="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+            </div>
+            <div class="form-actions">
+              <button *ngIf="isEditMode" class="btn btn-secondary" type="button" (click)="resetForm()">
+                Cancelar
+              </button>
+              <button class="btn" [ngClass]="isEditMode ? 'btn-success' : 'btn-primary'" type="submit" [disabled]="categoryForm.invalid || isLoading">
+                <span *ngIf="!isLoading">{{ isEditMode ? 'Salvar Alterações' : 'Adicionar' }}</span>
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched" class="invalid-feedback d-block mt-2">
+              O nome da categoria é obrigatório.
+            </div>
+          </form>
+        </div>
+
+        <div class="list-group list-group-flush" *ngIf="!isLoading; else loadingTemplate">
+          <div *ngIf="categories.length > 0; else noCategoriesTemplate">
+            <div *ngFor="let category of categories" class="list-group-item">
+              <span class="fw-bold">{{ category.name }}</span>
+              <div class="actions">
+                <button class="btn btn-sm btn-outline-primary" (click)="editCategory(category)" title="Editar">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteCategory(category.id)" title="Excluir">
+                  <i class="bi bi-trash3-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #loadingTemplate>
+          <div class="loading-state">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Carregando categorias...</p>
+          </div>
+        </ng-template>
+
+        <ng-template #noCategoriesTemplate>
+            <div class="empty-state">
+              <i class="bi bi-tags-fill"></i>
+              <p class="mb-0">Nenhuma categoria encontrada.</p>
+              <small>Use o formulário acima para adicionar a primeira!</small>
+            </div>
+        </ng-template>
+
+      </div>
+    </div>
+  </div>
+</div>

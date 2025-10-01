@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Enterprise } from '../../models/enterprise.model';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-gc-guide',
@@ -23,7 +24,7 @@ export class GcGuideComponent {
     telefone: ''
   };
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private notificationService: NotificationService) {}
 
   onSubmit() {
     // A rota precisa ser protegida, então o token do usuário será enviado automaticamente pelo interceptor
@@ -31,7 +32,7 @@ export class GcGuideComponent {
       .subscribe({
         next: (response) => {
           console.log('Empresa cadastrada com sucesso!', response);
-          alert('Empresa cadastrada com sucesso! Você será redirecionado para o seu perfil.');
+          this.notificationService.show('Empresa cadastrada com sucesso! Você será redirecionado para o seu perfil.', "success");
           this.router.navigate(['/user-profile']);
         },
         error: (error) => {
