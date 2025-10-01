@@ -1,30 +1,41 @@
-section{
-    margin-top: 20vh;
+/*
+  Correção para garantir que o container principal ocupe a altura da tela
+  e o card do formulário tenha espaço para crescer.
+*/
+:host {
+  display: block;
+  box-sizing: border-box; /* Garante que padding e bordas não aumentem o tamanho total */
+  padding-top: 100px; /* Espaçamento para a navbar */
+  padding-bottom: 40px; /* Um respiro na parte de baixo */
+  min-height: 100vh; /* <<< MUDANÇA IMPORTANTE: Força o componente a ter no mínimo a altura da tela */
+  background-color: #f4f7f6;
+  width: 100%;
 }
 
-/* Estilização do container principal */
+/* Container que centraliza o card */
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px;
-    background-color: #f4f7f6; /* Um fundo suave para a página */
+    padding: 0 20px; /* Removemos o padding vertical que agora está no :host */
 }
 
-/* Estilização do card do formulário */
+/*
+  Estilização do card do formulário
+  Nenhuma alteração necessária aqui, mas mantido para contexto.
+*/
 .card {
     width: 100%;
-    max-width: 600px; /* Define uma largura máxima para o formulário */
+    max-width: 600px;
     border: none;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidade */
-    overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
-/* Cabeçalho do card */
 .card-header {
-    background-color: #007bff; /* Cor primária para o cabeçalho */
-    color: #fff; /* Texto branco */
+    background-color: #007bff;
+    color: #fff;
     padding: 20px;
     text-align: center;
     border-bottom: none;
@@ -42,13 +53,11 @@ section{
     opacity: 0.9;
 }
 
-/* Corpo do card */
 .card-body {
     padding: 30px;
     background-color: #fff;
 }
 
-/* Estilo para os campos do formulário */
 .form-label {
     font-weight: 600;
     color: #333;
@@ -67,7 +76,6 @@ section{
     outline: none;
 }
 
-/* Estilo para o botão de envio */
 .btn-primary {
     width: 100%;
     padding: 12px;
@@ -81,10 +89,9 @@ section{
 
 .btn-primary:hover {
     background-color: #0056b3;
-    transform: translateY(-2px); /* Efeito de leve flutuação */
+    transform: translateY(-2px);
 }
 
-/* Estilo do botão quando desabilitado */
 .btn-primary:disabled {
     background-color: #6c757d;
     border-color: #6c757d;

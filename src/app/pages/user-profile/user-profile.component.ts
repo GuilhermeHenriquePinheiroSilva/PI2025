@@ -5,12 +5,13 @@ import { FooterComponent } from '../shared/footer/footer.component';
 import { MyPurchasesComponent } from '../my-purchases/my-purchases.component';
 import { FormsModule } from '@angular/forms';
 import { GcGuideComponent } from '../gc-guide/gc-guide.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
   imports: [
-    CommonModule, NavBarComponent, FooterComponent, MyPurchasesComponent, FormsModule, GcGuideComponent
+    CommonModule, NavBarComponent, FooterComponent, MyPurchasesComponent, FormsModule, GcGuideComponent, RouterModule
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
