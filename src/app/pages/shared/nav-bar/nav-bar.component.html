@@ -122,7 +122,9 @@
               </div>
             </div>
             <div class="formBotões botões">
-              <a (click)="mudarFormulario('forgot')" id="forgot">Esqueceu a senha?</a>
+              <a (click)="goToForgotPassword()" class="forgot-password-link" style="cursor: pointer;">
+                Esqueceu a senha?
+              </a>
               <div class="cadastrar">
                 <p>Primeira vez aqui? <br> <a (click)="mudarFormulario('register')">Cadastrar-se</a></p>
               </div>

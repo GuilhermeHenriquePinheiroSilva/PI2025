@@ -71,7 +71,6 @@ export class ProductPageComponent implements OnInit {
     }
   }
 
-  // CORREÇÃO: Renomeando o método para corresponder ao HTML
   incrementarQuantidade(): void {
     if (this.giftCard && this.quantidade < this.giftCard.quantityavailable) {
       this.quantidade++;
@@ -80,7 +79,6 @@ export class ProductPageComponent implements OnInit {
     }
   }
 
-  // CORREÇÃO: Renomeando o método para corresponder ao HTML
   decrementarQuantidade(): void {
     if (this.quantidade > 1) {
       this.quantidade--;

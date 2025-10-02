@@ -16,6 +16,9 @@ import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-das
 import { AdminGuard } from './guard/admin.guard';
 import { ManageCategoriesComponent } from './pages/admin/manage-categories/manage-categories.component';
 import { CategoryPageComponent } from './pages/category-page/category-page.component';
+import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
     {
@@ -70,6 +73,15 @@ export const routes: Routes = [
     },
     {
         path: '', component: HomeComponent
+    },
+    {
+         path: 'verify-email', component: EmailVerificationComponent
+    },
+    { 
+        path: 'forgot-password', component: ForgotPasswordComponent
+    },
+    { 
+        path: 'reset-password', component: ResetPasswordComponent 
     },
     {
         path: 'home', redirectTo: '', pathMatch: 'full'

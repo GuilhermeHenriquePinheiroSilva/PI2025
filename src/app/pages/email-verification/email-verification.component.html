@@ -1,0 +1,14 @@
+<div class="verification-container">
+  <div class="verification-box">
+    <div *ngIf="isLoading" class="spinner"></div>
+
+    <h2 [ngClass]="{'success-text': isSuccess, 'error-text': !isSuccess && !isLoading}">
+      {{ message }}
+    </h2>
+
+    <div *ngIf="!isLoading">
+      <p *ngIf="isSuccess">Você será redirecionado em breve ou clique no botão abaixo.</p>
+      <button (click)="navigateToLogin()" class="login-button">Ir para Login</button>
+    </div>
+  </div>
+</div>

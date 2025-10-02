@@ -117,6 +117,16 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string): Observable<{message: string}> {
+    // A rota correta é /users/forgot-password
+    return this.http.post<{message: string}>(`${this.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, new_password: string): Observable<{message: string}> {
+    // A rota correta é /users/reset-password
+    return this.http.post<{message: string}>(`${this.apiUrl}/auth/reset-password`, { token, new_password });
+  }
+
   loginEnterprise(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/enterprise/login`, { email, senha: password }).pipe(
       tap(response => this.handleLoginResponse(response))
@@ -151,6 +161,10 @@ export class AuthService {
   // Retorna a role ATUAL do usuário. Síncrono e confiável.
   getUserRole(): string | null {
     return this.userRole.getValue();
+  }
+
+  verifyEmail(token: string): Observable<{message: string}> {
+    return this.http.get<{message: string}>(`${this.apiUrl}/auth/verify-email?token=${token}`);
   }
 
   // --- FUNÇÕES PRIVADAS DE MANIPULAÇÃO ---

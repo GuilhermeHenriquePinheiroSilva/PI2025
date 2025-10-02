@@ -158,42 +158,59 @@ onSubmitLogin(): void {
   });
 }
 
+goToForgotPassword(): void {
+    this.router.navigate(['/forgot-password']); // Navega para a página de esqueci a senha
+}
+
 onSubmitRegister(): void {
-    if (this.userType === 'user') {
-      if (!this.userRegister.username || !this.userRegister.email || !this.userRegister.password) {
-        this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
-        return;
-      }
-      if (this.userRegister.password !== this.confirmPassword) {
-        this.notificationService.show('As senhas não coincidem.', 'error');
-        return;
-      }
-      this.authService.register(this.userRegister).subscribe({
-        next: () => {
-          this.notificationService.show('Cadastro realizado com sucesso!', 'success');
-          this.mudarFormulario('login');
-        },
-        error: (err) => {
-          this.notificationService.show('Erro ao cadastrar. Tente novamente.', 'error');
-        }
-      });
-    } else { // Lógica para empresa
-      const { nome_fantasia, cnpj, nome_admin_empresa, cpf_adm, telefone} = this.enterpriseRegister;
-      if (!nome_fantasia || !cnpj || !telefone || !nome_admin_empresa || !cpf_adm) {
-        this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
-        return;
-      }
-      this.authService.registerEnterprise(this.enterpriseRegister).subscribe({
-        next: () => {
-          this.notificationService.show('Empresa cadastrada com sucesso!', 'success');
-          this.mudarFormulario('login');
-        },
-        error: (err) => {
-          this.notificationService.show(err.error.detail || 'Erro ao cadastrar. Tente novamente.', 'error');
-        }
-      });
+  if (this.userType === 'user') {
+    if (!this.userRegister.username || !this.userRegister.email || !this.userRegister.password) {
+      this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
+      return;
     }
+    if (this.userRegister.password !== this.confirmPassword) {
+      this.notificationService.show('As senhas não coincidem.', 'error');
+      return;
+    }
+
+    // --- INÍCIO DA ATUALIZAÇÃO ---
+    this.authService.register(this.userRegister).subscribe({
+      next: () => {
+        // 1. Exibe a nova mensagem, instruindo a verificação do e-mail.
+        this.notificationService.show(
+          'Cadastro realizado! Verifique seu e-mail para ativar a conta.', 
+          'success'
+        );
+
+        // 2. Removemos a mudança automática para o formulário de login.
+        //    O usuário agora precisa primeiro ativar a conta.
+        // this.mudarFormulario('login'); 
+      },
+      error: (err) => {
+        // Melhoramos a mensagem de erro para ser mais específica.
+        const errorMessage = err.error?.detail || 'Erro ao cadastrar. Tente novamente.';
+        this.notificationService.show(errorMessage, 'error');
+      }
+    });
+    // --- FIM DA ATUALIZAÇÃO ---
+
+  } else { // Lógica para empresa (mantida como está)
+    const { nome_fantasia, cnpj, nome_admin_empresa, cpf_adm, telefone} = this.enterpriseRegister;
+    if (!nome_fantasia || !cnpj || !telefone || !nome_admin_empresa || !cpf_adm) {
+      this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
+      return;
+    }
+    this.authService.registerEnterprise(this.enterpriseRegister).subscribe({
+      next: () => {
+        this.notificationService.show('Empresa cadastrada com sucesso!', 'success');
+        this.mudarFormulario('login');
+      },
+      error: (err) => {
+        this.notificationService.show(err.error.detail || 'Erro ao cadastrar. Tente novamente.', 'error');
+      }
+    });
   }
+}
 
   onSubmitForgot(): void {
     if (!this.email) {
