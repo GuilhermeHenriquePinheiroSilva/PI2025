@@ -1,6 +1,20 @@
 :host {
-  display: block;
-  background-color: #f4f7f9;
+  display: flex;
+  justify-content: center; 
+}
+
+.row{
+  height: 100%;
+}
+
+.container{
+  margin: 0;
+  margin-top: 20vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Cabeçalho da Página */
@@ -9,6 +23,31 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  background-color: var(--orange);
+  padding: 6vh;
+  border-top-left-radius: 6vh;
+  border-top-right-radius: 6vh;
+  width: 100%;
+  margin: 0;
+}
+
+.btn{
+  background-color: var(--dark-orange);
+  transition: all 0.2s ease;
+  height: 8vh;
+}
+
+.bi-plus-circle{
+  transform: rotateZ(-180deg);
+  transition: all 0.4s ease;
+}
+
+.btn:hover{
+  transform: scale(1.02);
+}
+
+.btn:hover .bi-plus-circle{
+  transform: rotateZ(-360deg);
 }
 
 .header-section .btn {
@@ -21,28 +60,37 @@
 /* Card Principal */
 .card {
   border: none;
-  border-radius: 0.75rem;
+  border-radius: 0;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  border-spacing: 1px;
+  gap: 1vh;
   overflow: hidden; /* Garante que os cantos arredondados sejam aplicados a tudo */
+  width: 100%;
+  height: 100%;
+  background-color: var(--brown);
 }
 
 /* Seção do Formulário */
 .form-section {
   padding: 1.5rem;
-  background-color: #ffffff;
-  border-bottom: 1px solid #dee2e6;
 }
 
 .form-title {
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #333;
+  color: var(--white);
 }
 
 .form-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0.5rem;
   margin-top: 1rem;
+}
+
+.form-actions button{
+  width: 100%;
 }
 
 /* Lista de Categorias */
