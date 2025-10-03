@@ -19,6 +19,7 @@ import { CategoryPageComponent } from './pages/category-page/category-page.compo
 import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { ValidateEnterprisesComponent } from './pages/admin/validate-enterprises/validate-enterprises.component';
 
 export const routes: Routes = [
     {
@@ -47,7 +48,8 @@ export const routes: Routes = [
         canActivate: [AdminGuard],
         children: [
             { path: '', component: AdminDashboardComponent, pathMatch: 'full' },
-            { path: 'categories', component: ManageCategoriesComponent }
+            { path: 'categories', component: ManageCategoriesComponent },
+            { path: 'validate-enterprises', component: ValidateEnterprisesComponent }
         ]
     },
     {

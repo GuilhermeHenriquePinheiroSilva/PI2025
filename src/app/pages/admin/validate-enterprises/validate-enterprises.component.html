@@ -1,0 +1,63 @@
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Validar Empresas</h1>
+        <button class="btn btn-sm" (click)="loadPendingEnterprises()" [disabled]="isLoading">
+            <img src="/svgs/arrow-repeat.svg" alt="Atualizar" width="20">
+        </button>
+    </div>
+    <p class="lead">Aprove ou rejeite os cadastros de novas empresas pendentes.</p>
+
+    <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!isLoading && pendingEnterprises.length === 0" class="alert alert-info text-center">
+        🎉 Nenhuma empresa pendente de validação no momento.
+    </div>
+
+    <div *ngIf="!isLoading && pendingEnterprises.length > 0" class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Nome Fantasia</th>
+                    <th scope="col">CNPJ</th>
+                    <th scope="col">Administrador</th>
+                    <th scope="col">Telefone</th>
+                    <th scope="col" class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let enterprise of pendingEnterprises">
+                    <td>{{ enterprise.nome_fantasia }}</td>
+                    <td>{{ enterprise.cnpj }}</td>
+                    <td>{{ enterprise.nome_admin_empresa }}</td>
+                    <td>{{ enterprise.telefone }}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-success me-2" (click)="approve(enterprise.id!)">Aprovar</button>
+                        <button (click)="openRejectionModal(enterprise.id)" class="btn btn-danger">Rejeitar</button>
+
+                        <div class="modal-overlay" *ngIf="isRejectionModalVisible">
+                            <div class="modal-content">
+                                <h4>Motivo da Rejeição</h4>
+                                <p>Por favor, descreva o motivo pelo qual o cadastro desta empresa está a ser rejeitado.
+                                </p>
+
+                                <textarea [(ngModel)]="rejectionReason" rows="4"
+                                    placeholder="Ex: Documento CNPJ ilegível, dados cadastrais inconsistentes, etc.">
+                                </textarea>
+
+                                <div class="modal-actions">
+                                    <button (click)="cancelRejection()" class="btn btn-secondary">Cancelar</button>
+                                    <button (click)="confirmRejection()" class="btn btn-danger">Confirmar
+                                        Rejeição</button>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

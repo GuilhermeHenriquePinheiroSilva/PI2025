@@ -13,27 +13,33 @@
             <form (ngSubmit)="onSubmit()" #enterpriseForm="ngForm">
                 <div class="mb-3">
                     <label for="nome_fantasia" class="form-label">Nome Fantasia</label>
-                    <input type="text" id="nome_fantasia" class="form-control" name="nome_fantasia" [(ngModel)]="enterprise.nome_fantasia" required>
+                    <input type="text" id="nome_fantasia" class="form-control" name="nome_fantasia"
+                        [(ngModel)]="enterprise.nome_fantasia" required>
                 </div>
                 <div class="mb-3">
                     <label for="cnpj" class="form-label">CNPJ</label>
-                    <input type="text" id="cnpj" class="form-control" name="cnpj" [(ngModel)]="enterprise.cnpj" required>
+                    <input type="text" id="cnpj" class="form-control" name="cnpj" [(ngModel)]="enterprise.cnpj"
+                        required>
                 </div>
                 <div class="mb-3">
                     <label for="nome_admin_empresa" class="form-label">Nome do Administrador</label>
-                    <input type="text" id="nome_admin_empresa" class="form-control" name="nome_admin_empresa" [(ngModel)]="enterprise.nome_admin_empresa" required>
+                    <input type="text" id="nome_admin_empresa" class="form-control" name="nome_admin_empresa"
+                        [(ngModel)]="enterprise.nome_admin_empresa" required>
                 </div>
                 <div class="mb-3">
                     <label for="cpf_adm" class="form-label">CPF do Administrador</label>
-                    <input type="text" id="cpf_adm" class="form-control" name="cpf_adm" [(ngModel)]="enterprise.cpf_adm" required>
+                    <input type="text" id="cpf_adm" class="form-control" name="cpf_adm" [(ngModel)]="enterprise.cpf_adm"
+                        required>
                 </div>
                 <div class="mb-3">
                     <label for="telefone" class="form-label">Telefone</label>
-                    <input type="text" id="telefone" class="form-control" name="telefone" [(ngModel)]="enterprise.telefone" required>
+                    <input type="text" id="telefone" class="form-control" name="telefone"
+                        [(ngModel)]="enterprise.telefone" required>
                 </div>
-                <button type="submit" class="btn btn-primary" [disabled]="!enterpriseForm.form.valid">Cadastrar Empresa</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!enterpriseForm.form.valid || isSubmitting">
+                    {{ isSubmitting ? 'A Enviar...' : 'Solicitar Cadastro' }}
+                </button>
             </form>
         </div>
     </div>
 </section>
-

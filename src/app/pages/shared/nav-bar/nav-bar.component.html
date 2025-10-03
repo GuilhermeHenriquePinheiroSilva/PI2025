@@ -147,47 +147,6 @@
                     d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
                 </svg></a></h2>
           </header>
-          <!-- <form *ngSwitchCase="'enterprise'" [ngSwitch]="entFormLayer" (ngSubmit)="onSubmitRegister()">
-            <div class="inputs" *ngSwitchCase="0">
-              <div class="inputs-container">
-                <input type="text" name="nome_fantasia" placeholder="Nome Fantasia" [(ngModel)]="enterpriseRegister.nome_fantasia" required>
-              </div>
-              <div class="inputs-container">
-                <input type="text" name="cnpj" placeholder="CNPJ" [(ngModel)]="enterpriseRegister.cnpj" required>
-              </div>
-              <div class="inputs-container">
-                <input type="text" name="telefone" placeholder="Telefone" [(ngModel)]="enterpriseRegister.telefone" required>
-              </div>
-            </div>
-            <div class="inputs" *ngSwitchCase="1">
-              <div class="inputs-container">
-                <input type="text" name="nome_admin_empresa" placeholder="Nome do Administrador" [(ngModel)]="enterpriseRegister.nome_admin_empresa" required>
-              </div>
-              <div class="inputs-container">
-                <input type="text" name="cpf_adm" placeholder="CPF do Administrador" [(ngModel)]="enterpriseRegister.cpf_adm" required>
-              </div>
-              <div class="inputs-container">
-                <input type="email" name="email" placeholder="E-mail" [(ngModel)]="enterpriseRegister.email" required>
-              </div>
-            </div>
-            <div class="inputs" *ngSwitchCase="2">
-              <div class="inputs-container">
-                <input type="password" name="senha" placeholder="Senha" [(ngModel)]="enterpriseRegister.senha" required>
-              </div>
-              <div class="inputs-container">
-                <input type="password" name="confirmPassword" placeholder="Confirmar Senha" [(ngModel)]="confirmPassword" required>
-              </div>
-            </div>
-            <div class="swtichTabs">
-              <div class="tabs">
-                <p (click)="changeEntFormLayer(-1)">&lt;</p>
-                <p (click)="changeEntFormLayer(1)">&gt;</p>
-              </div>
-            </div>
-            <div *ngIf="entFormLayer == 2" class="confirmarBotao">
-              <button class="confirmar" type="submit">Confirmar</button>
-            </div>
-          </form> -->
           <form (ngSubmit)="onSubmitRegister()">
             <div class="inputs">
               <div class="inputs-container">

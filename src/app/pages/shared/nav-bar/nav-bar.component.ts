@@ -7,7 +7,8 @@ import { User } from '../../../models/user.model';
 import { NotificationService } from '../../../../services/notification.service';
 import { CartService } from '../../../../services/cart.service';
 import { ChatbotService } from '../../../../services/chatbot.service';
-import { Enterprise } from '../../../models/enterprise.model';
+import { Enterprise, EnterpriseFormData } from '../../../models/enterprise.model';
+import { EnterpriseService } from '../../../../services/enterprise.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -38,7 +39,7 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
   email: string = '';
   password: string = '';
   userRegister: User = { username: '', email: '', password: '', role: 'CUSTOMER' };
-  enterpriseRegister: Enterprise = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: ''};
+  enterpriseRegister: EnterpriseFormData  = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: ''};
   confirmPassword: string = '';
 
   // Variáveis do Chatbot
@@ -56,6 +57,7 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
     private notificationService: NotificationService,
     private cartService: CartService,
     private chatbotService: ChatbotService,
+    private enterpriseService: EnterpriseService,
     private cdr: ChangeDetectorRef // <-- Adicionado para forçar detecção de mudanças
   ) { }
 
@@ -195,21 +197,25 @@ onSubmitRegister(): void {
     // --- FIM DA ATUALIZAÇÃO ---
 
   } else { // Lógica para empresa (mantida como está)
-    const { nome_fantasia, cnpj, nome_admin_empresa, cpf_adm, telefone} = this.enterpriseRegister;
-    if (!nome_fantasia || !cnpj || !telefone || !nome_admin_empresa || !cpf_adm) {
-      this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
-      return;
-    }
-    this.authService.registerEnterprise(this.enterpriseRegister).subscribe({
-      next: () => {
-        this.notificationService.show('Empresa cadastrada com sucesso!', 'success');
-        this.mudarFormulario('login');
-      },
-      error: (err) => {
-        this.notificationService.show(err.error.detail || 'Erro ao cadastrar. Tente novamente.', 'error');
+    // Lógica para empresa
+      const { nome_fantasia, cnpj, nome_admin_empresa, cpf_adm, telefone} = this.enterpriseRegister;
+      if (!nome_fantasia || !cnpj || !telefone || !nome_admin_empresa || !cpf_adm) {
+        this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
+        return;
       }
-    });
-  }
+
+      // --- 3. CHAMAR O SERVIÇO CORRETO ---
+      // Usamos o enterpriseService, que já está preparado para receber EnterpriseFormData
+      this.enterpriseService.registerEnterprise(this.enterpriseRegister).subscribe({
+        next: () => {
+          this.notificationService.show('Cadastro da empresa enviado para análise!', 'success');
+          this.fecharFormulario(); // Fecha o formulário após o envio
+        },
+        error: (err) => {
+          this.notificationService.show(err.error.detail || 'Erro ao cadastrar. Tente novamente.', 'error');
+        }
+      });
+    }
 }
 
   onSubmitForgot(): void {
