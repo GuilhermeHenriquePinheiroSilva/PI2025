@@ -1,8 +1,14 @@
+from enum import Enum
 from sqlalchemy import Column, Integer, String, Enum as SqlEnum, DateTime, ForeignKey
 from app.enums.roles import Role
 from app.database.db_config import Base
 from datetime import datetime
 from sqlalchemy.orm import relationship
+
+class EnterpriseStatus(str, Enum):
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
 
 class EmpresaORM(Base):
     __tablename__ = "enterprise"
@@ -15,7 +21,8 @@ class EmpresaORM(Base):
     telefone = Column(String(20), nullable=False)
     role = Column(SqlEnum(Role), nullable=False, default=Role.ENTERPRISE)
     creation_date = Column(DateTime, default=datetime.utcnow)
-
+    status = Column(SqlEnum(EnterpriseStatus), nullable=False, default=EnterpriseStatus.PENDING)
+    rejection_reason = Column(String(500), nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False, unique=True)
     
-    user = relationship("UserORM", back_populates="enterprise_details")
+    user = relationship("UserORM", back_populates="enterprise_details", lazy="joined")

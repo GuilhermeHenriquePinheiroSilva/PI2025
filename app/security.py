@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from passlib.context import CryptContext # Importar para hashing de senha
 import os
 
+
 from app.database.db_config import get_db
 from app.models.user_orm import UserORM
 

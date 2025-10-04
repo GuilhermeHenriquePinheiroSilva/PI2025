@@ -1,3 +1,6 @@
+from app.enums.roles import Role
+from app.models.user_orm import UserORM
+from app.security import get_current_user
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
@@ -7,11 +10,6 @@ from app.auth.jwt_handler import decode_access_token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 async def get_current_admin(token: str = Depends(oauth2_scheme)):
-    """
-    Dependência para verificar se o usuário é um admin.
-    Decodifica o token, verifica a role e retorna os dados do usuário.
-    Levanta HTTPException se o token for inválido ou o usuário não for admin.
-    """
     try:
         payload = decode_access_token(token) 
         if payload is None:
@@ -33,4 +31,16 @@ async def get_current_admin(token: str = Depends(oauth2_scheme)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Não foi possível validar as credenciais",
             headers={"WWW-Authenticate": "Bearer"},
+        )
+
+
+def is_admin(current_user: UserORM = Depends(get_current_user)):
+    """
+    Verifica se o usuário atual é um administrador.
+    Esta é a abordagem padronizada e recomendada.
+    """
+    if current_user.role != Role.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso negado. Requer privilégios de administrador."
         )

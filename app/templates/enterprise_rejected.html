@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Atualização de Cadastro</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+    <h2>Olá, {{ enterprise_name }}!</h2>
+    <p>Temos uma atualização sobre o seu pedido de cadastro na plataforma GoGift.</p>
+    <p>Infelizmente, o seu cadastro foi rejeitado no momento.</p>
+    
+    <div style="background-color: #f9f9f9; border-left: 4px solid #d9534f; padding: 15px; margin-top: 20px;">
+        <h4 style="margin-top: 0;">Motivo da Rejeição:</h4>
+        <p>{{ rejection_reason }}</p>
+    </div>
+    
+    <p style="margin-top: 20px;">
+        Se tiver alguma dúvida ou precisar de ajuda para corrigir as informações, por favor, entre em contato com o nosso suporte.
+    </p>
+    <p>Atenciosamente,<br>Equipe GoGift</p>
+</body>
+</html>
