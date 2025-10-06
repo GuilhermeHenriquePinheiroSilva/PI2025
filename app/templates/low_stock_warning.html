@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Alerta de Estoque Baixo</title>
+</head>
+<body style="font-family: Arial, sans-serif; color: #333;">
+    <h2>Alerta de Estoque Baixo, {{ enterprise_name }}!</h2>
+    <p>Este é um aviso de que o estoque do seu produto na plataforma GoGift está baixo.</p>
+    
+    <div style="background-color: #fff3cd; border-left: 4px solid #ffeeba; padding: 15px; margin-top: 20px;">
+        <h4 style="margin-top: 0;">Detalhes do Produto:</h4>
+        <p><strong>Produto:</strong> {{ product_title }}</p>
+        <p><strong>Estoque Atual:</strong> {{ current_stock }} unidades</p>
+    </div>
+    
+    <p style="margin-top: 20px;">
+        Recomendamos que você acesse seu painel para atualizar a quantidade disponível e não perder vendas.
+    </p>
+    <p>Atenciosamente,<br>Equipe GoGift</p>
+</body>
+</html>

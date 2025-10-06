@@ -43,6 +43,7 @@ class SoldGiftCard(BaseModel):
     purchase_date: date
     register_giftcard_id: UUID
     owner_id: int
+    nota: Optional[int] = None
     
     original_giftcard: RegisterGiftCardInfo
 

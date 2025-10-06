@@ -2,7 +2,8 @@ from datetime import timedelta
 import os
 from fastapi import APIRouter, HTTPException, Depends, status, BackgroundTasks
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
+import re 
 
 # Importe os Pydantic models (Schemas)
 from app.auth.jwt_handler import decode_access_token
@@ -31,49 +32,21 @@ class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str
 
-# @router.post("/register")
-# async def register_user(user: UserSchema, db: Session = Depends(get_db)):
-#     db_user = db.query(UserORM).filter(UserORM.email == user.email).first()
-#     if db_user:
-#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email já registrado")
-
-#     hashed_password = get_password_hash(user.password)
-
-#     new_user = UserORM(
-#         username=user.username,
-#         email=user.email,
-#         password=hashed_password,
-#         role=user.role 
-#     )
-#     db.add(new_user)
-#     db.commit()
-#     db.refresh(new_user)
-#     return {"message": "Usuário registrado com sucesso"}
-
-# @router.post("/login")
-# async def login_user(user_login: UserLogin, db: Session = Depends(get_db)):
-#     db_user = db.query(UserORM).filter(UserORM.email == user_login.email).first()
-    
-#     if not db_user or not verify_password(user_login.password, db_user.password):
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED, 
-#             detail="Email ou senha inválidos",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-
-#     token_data = {"sub": db_user.email, "role": db_user.role.name}
-#     token = create_access_token(token_data)
-    
-#     return {
-#         "access_token": token,
-#         "token_type": "bearer",
-#         "user": {
-#             "id": db_user.id,
-#             "username": db_user.username,
-#             "email": db_user.email,
-#             "role": db_user.role.name
-#         }
-#     }
+    @field_validator("new_password")
+    @classmethod
+    def password_validation(cls, v):
+        """Valida que a nova senha atende aos critérios de segurança."""
+        if len(v) < 8:
+            raise ValueError("A senha deve ter pelo menos 8 caracteres.")
+        if not re.search(r"[a-z]", v):
+            raise ValueError("A senha deve conter pelo menos uma letra minúscula.")
+        if not re.search(r"[A-Z]", v):
+            raise ValueError("A senha deve conter pelo menos uma letra maiúscula.")
+        if not re.search(r"[0-9]", v):
+            raise ValueError("A senha deve conter pelo menos um número.")
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", v):
+            raise ValueError("A senha deve conter pelo menos um caractere especial.")
+        return v
 
 @router.post("/forgot-password")
 async def forgot_password(data: ForgotPasswordRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):

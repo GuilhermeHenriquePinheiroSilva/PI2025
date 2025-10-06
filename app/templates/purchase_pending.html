@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagamento Pendente - GoGift</title>
+</head>
+<body style="font-family: Arial, sans-serif; color: #333;">
+    <h2>Olá, {{ username }}!</h2>
+    <p>Recebemos o seu pedido na GoGift e estamos apenas aguardando a confirmação do pagamento. Assim que for aprovado, você receberá um novo e-mail com os detalhes e os códigos dos seus Gift Cards.</p>
+    
+    <h3 style="border-bottom: 2px solid #eee; padding-bottom: 5px;">Resumo do Pedido</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f9f9f9;">
+                <th style="padding: 10px; text-align: left;">Produto</th>
+                <th style="padding: 10px; text-align: center;">Quantidade</th>
+                <th style="padding: 10px; text-align: right;">Preço Unitário</th>
+                <th style="padding: 10px; text-align: right;">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ item.title }}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">{{ item.quantity }}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">R$ {{ "%.2f"|format(item.unit_price) }}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">R$ {{ "%.2f"|format(item.subtotal) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" style="padding: 15px 10px 10px; text-align: right; font-weight: bold;">Total:</td>
+                <td style="padding: 15px 10px 10px; text-align: right; font-weight: bold;">R$ {{ "%.2f"|format(total_price) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <p style="margin-top: 25px;">
+        Você pode acompanhar o status do seu pedido na seção "Minhas Compras" em nosso site.
+    </p>
+    <p>Atenciosamente,<br>Equipe GoGift</p>
+</body>
+</html>

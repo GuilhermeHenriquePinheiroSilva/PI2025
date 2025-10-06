@@ -1,5 +1,5 @@
 from enum import Enum
-from sqlalchemy import Column, Integer, String, Enum as SqlEnum, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Enum as SqlEnum, DateTime, ForeignKey, Boolean
 from app.enums.roles import Role
 from app.database.db_config import Base
 from datetime import datetime
@@ -24,5 +24,6 @@ class EmpresaORM(Base):
     status = Column(SqlEnum(EnterpriseStatus), nullable=False, default=EnterpriseStatus.PENDING)
     rejection_reason = Column(String(500), nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False, unique=True)
+    low_stock_notified = Column(Boolean, default=False, nullable=False)
     
     user = relationship("UserORM", back_populates="enterprise_details", lazy="joined")

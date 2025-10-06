@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Problema na sua Compra</title>
+</head>
+<body style="font-family: Arial, sans-serif; color: #333;">
+    <h2>Olá, {{ username }}!</h2>
+    <p>Tivemos um problema ao processar um item do seu pedido na GoGift e, por segurança, a sua transação foi totalmente estornada.</p>
+    
+    <div style="background-color: #f9f9f9; border-left: 4px solid #d9534f; padding: 15px; margin-top: 20px;">
+        <h4 style="margin-top: 0;">Detalhes do Problema:</h4>
+        <p><strong>Motivo:</strong> {{ error_reason }}</p>
+        <p><strong>ID da Transação:</strong> {{ transaction_id }}</p>
+    </div>
+    
+    <p style="margin-top: 20px;">
+        O valor total da compra será estornado para você através do Mercado Pago. Pedimos desculpas pelo inconveniente.
+    </p>
+    <p>Se tiver alguma dúvida, por favor, entre em contato com o nosso suporte.</p>
+    <p>Atenciosamente,<br>Equipe GoGift</p>
+</body>
+</html>

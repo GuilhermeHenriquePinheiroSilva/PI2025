@@ -38,6 +38,7 @@ class RegisterGiftCardORM(Base):
     generaterandomly = Column(Boolean, default=False)
     codes = Column(String(1000), nullable=True) # Campo com os códigos separados por ;
     imageUrl = Column(String(255), nullable=True)
+    low_stock_notified = Column(Boolean, default=False, nullable=False)
 
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     category = relationship("CategoriesORM")
@@ -54,6 +55,7 @@ class SoldGiftCardORM(Base):
     code = Column(String(100), unique=True, nullable=False, index=True)
     status = Column(SqlEnum(SoldStatus), nullable=False, default=SoldStatus.VALID)
     purchase_date = Column(Date, nullable=False, default=datetime.utcnow().date)
+    nota = Column(Integer, nullable=True)
 
     # Chave estrangeira para o "produto" gift card que foi comprado
     register_giftcard_id = Column(GUID(), ForeignKey("register_giftcards.id"), nullable=False)

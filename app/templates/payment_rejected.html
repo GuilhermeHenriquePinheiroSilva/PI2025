@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagamento Não Aprovado</title>
+</head>
+<body style="font-family: Arial, sans-serif; color: #333;">
+    <h2>Olá, {{ username }}!</h2>
+    <p>Houve um problema ao processar o pagamento do seu pedido na GoGift.</p>
+    
+    <div style="background-color: #f9f9f9; border-left: 4px solid #d9534f; padding: 15px; margin-top: 20px;">
+        <h4 style="margin-top: 0;">Detalhes da Transação:</h4>
+        <p><strong>Status:</strong> Pagamento Recusado</p>
+        <p><strong>ID da Transação:</strong> {{ transaction_id }}</p>
+        <p><strong>Motivo:</strong> {{ rejection_reason }}</p>
+    </div>
+    
+    <p style="margin-top: 20px;">
+        Nenhum valor foi cobrado no seu cartão. Você pode tentar realizar a compra novamente, talvez utilizando outra forma de pagamento.
+    </p>
+    <p>Se tiver alguma dúvida, por favor, entre em contato com o nosso suporte.</p>
+    <p>Atenciosamente,<br>Equipe GoGift</p>
+</body>
+</html>
