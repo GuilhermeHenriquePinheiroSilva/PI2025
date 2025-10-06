@@ -1,5 +1,4 @@
-/* Adicione estilos básicos para a página */
-.container {
+/* .container {
     margin-top: 15vh;
     padding: 2rem;
 }
@@ -37,14 +36,14 @@ th {
 
 .code-cell {
     cursor: pointer;
-    user-select: none; /* Impede que o texto seja selecionado normalmente */
+    user-select: none; 
     text-align: center;
     border-bottom: 1px solid var(--brown);
     transition: background-color 0.2s;
   }
   
   .code-cell:hover {
-    background-color: #f0ebeb; /* Um leve destaque no hover */
+    background-color: #f0ebeb; 
   }
   
   .placeholder-text {
@@ -63,4 +62,149 @@ th {
     text-align: center;
     padding: 3rem;
     font-style: italic;
+  } */
+
+  /* Estilos básicos para a página */
+.container {
+    margin-top: 15vh;
+    padding: 2rem;
+}
+
+/* Nova classe para envolver cada seção de tabela */
+.table-section {
+    margin-bottom: 3rem;
+}
+
+.table-section h2 {
+    text-align: left;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--brown);
+}
+
+.table-section .subtitle {
+    text-align: left;
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 1.5rem;
+}
+
+table {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--brown);
+    text-align: left;
+}
+
+th {
+    background-color: var(--brown);
+}
+
+/* Estilo específico para o cabeçalho da tabela de pendentes */
+.pending-header th {
+    background-color: #856404; /* Tom de amarelo escuro */
+}
+
+.cod {
+  text-align: center;
+}
+
+.code {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.status.valid { background-color: #28a745; }
+.status.used { background-color: #dc3545; }
+.status.expired { background-color: #6c757d; }
+.status.pending { background-color: #ffc107; color: #333; } /* Estilo para o status pendente */
+
+.code-cell {
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+    border-bottom: 1px solid var(--brown);
+    transition: background-color 0.2s;
   }
+  
+  .code-cell:hover {
+    background-color: var(--brown);
+  }
+  
+  .placeholder-text {
+    color: #888;
+    font-style: italic;
+  }
+  
+  .revealed-code {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--orange);
+  }
+  
+  .empty-message {
+    text-align: center;
+    padding: 3rem;
+    font-style: italic;
+  }
+
+.loading-indicator {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+}
+
+.rating-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.rating-stars {
+  display: flex;
+  flex-direction: row-reverse; /* Faz as estrelas preencherem da direita para a esquerda */
+  justify-content: center;
+}
+
+.rating-stars .star {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* Estilo quando o mouse passa por cima de uma estrela (e as anteriores) */
+.rating-stars:hover .star {
+  color: var(--orange);
+}
+
+.rating-stars .star:hover ~ .star {
+  color: #ccc;
+}
+
+.rated-text {
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rated-text .star-icon {
+  font-size: 1.2rem;
+  color: var(--orange);
+}

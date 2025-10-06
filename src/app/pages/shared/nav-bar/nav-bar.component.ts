@@ -47,7 +47,7 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
   chatStyle: string = 'hidden';
   userMessage: string = '';
   chatMessages: { role: string, parts: { text: string }[] }[] = [];
-  isTyping: boolean = false; // <-- Adicionado para controlar a animação
+  isTyping: boolean = false; 
 
   @ViewChild('chatContent') private chatContent!: ElementRef;
 
@@ -58,7 +58,7 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
     private cartService: CartService,
     private chatbotService: ChatbotService,
     private enterpriseService: EnterpriseService,
-    private cdr: ChangeDetectorRef // <-- Adicionado para forçar detecção de mudanças
+    private cdr: ChangeDetectorRef 
   ) { }
 
   ngOnInit(): void {
@@ -66,6 +66,22 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
     this.cartService.cart$.subscribe(items => {
       this.cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
     });
+  }
+
+  hasUpperCase(password: string): boolean {
+    return /[A-Z]/.test(password);
+  }
+
+  hasLowerCase(password: string): boolean {
+    return /[a-z]/.test(password);
+  }
+
+  hasNumber(password: string): boolean {
+    return /[0-9]/.test(password);
+  }
+
+  hasSpecialChar(password: string): boolean {
+    return /[!@#$%^&*(),.?":{}|<>]/.test(password);
   }
 
   ngAfterViewChecked(): void {
@@ -183,18 +199,12 @@ onSubmitRegister(): void {
           'Cadastro realizado! Verifique seu e-mail para ativar a conta.', 
           'success'
         );
-
-        // 2. Removemos a mudança automática para o formulário de login.
-        //    O usuário agora precisa primeiro ativar a conta.
-        // this.mudarFormulario('login'); 
       },
       error: (err) => {
-        // Melhoramos a mensagem de erro para ser mais específica.
         const errorMessage = err.error?.detail || 'Erro ao cadastrar. Tente novamente.';
         this.notificationService.show(errorMessage, 'error');
       }
     });
-    // --- FIM DA ATUALIZAÇÃO ---
 
   } else { // Lógica para empresa (mantida como está)
     // Lógica para empresa
@@ -203,9 +213,6 @@ onSubmitRegister(): void {
         this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
         return;
       }
-
-      // --- 3. CHAMAR O SERVIÇO CORRETO ---
-      // Usamos o enterpriseService, que já está preparado para receber EnterpriseFormData
       this.enterpriseService.registerEnterprise(this.enterpriseRegister).subscribe({
         next: () => {
           this.notificationService.show('Cadastro da empresa enviado para análise!', 'success');

@@ -524,6 +524,45 @@ input:-webkit-autofill {
     transform: scale(1.05);
 }
 
+.password-rules {
+  width: 90%;
+  margin: -10px auto 10px auto;
+  padding: 10px;
+  background-color: var(--dark-brown);
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.password-rules ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.password-rules li {
+  margin-bottom: 5px;
+  transition: color 0.3s ease;
+}
+
+.password-rules li.valid {
+  color: #28a745; /* Verde para válido */
+}
+
+.password-rules li.valid::before {
+  content: '✔ ';
+  margin-right: 5px;
+}
+
+.password-rules li.invalid {
+  color: #dc3545; /* Vermelho para inválido */
+}
+
+.password-rules li.invalid::before {
+  content: '✖ ';
+  margin-right: 5px;
+}
+
 .messageError {
     color: red;
 }

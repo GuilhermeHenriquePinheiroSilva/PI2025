@@ -23,7 +23,7 @@ export interface GiftCard {
 export interface SoldGiftCardDetails {
   id: string;
   code: string;
-  status: 'VALID' | 'USED' | 'EXPIRED';
+  status: 'VALID' | 'USED' | 'EXPIRED' | 'PENDING';
   purchase_date: string;
   owner_name: string;
   original_giftcard: {

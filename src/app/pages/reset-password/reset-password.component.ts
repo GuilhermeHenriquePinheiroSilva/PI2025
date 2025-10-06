@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule 
   ],
   templateUrl: './reset-password.component.html',
+  styleUrls: ['./reset-password.component.css']
   // Adicione seus imports de standalone aqui
 })
 export class ResetPasswordComponent implements OnInit {
@@ -33,6 +34,22 @@ export class ResetPasswordComponent implements OnInit {
       this.notificationService.show('Token de redefinição inválido.', 'error');
       this.router.navigate(['/']); // Volta para a home
     }
+  }
+
+  hasUpperCase(password: string): boolean {
+    return /[A-Z]/.test(password);
+  }
+
+  hasLowerCase(password: string): boolean {
+    return /[a-z]/.test(password);
+  }
+
+  hasNumber(password: string): boolean {
+    return /[0-9]/.test(password);
+  }
+
+  hasSpecialChar(password: string): boolean {
+    return /[!@#$%^&*(),.?":{}|<>]/.test(password);
   }
 
   onSubmit(): void {

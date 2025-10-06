@@ -14,9 +14,10 @@ export interface GiftCardInfo {
 export interface SoldGiftCard {
     id: string;
     code: string;
-    status: 'VALID' | 'USED' | 'EXPIRED';
+    status: 'VALID' | 'USED' | 'EXPIRED' | 'PENDING';
     purchase_date: string;
     register_giftcard_id: string;
+    nota: number | null;
     owner_id: number;
     original_giftcard: GiftCardInfo;
 }
@@ -64,12 +65,8 @@ export class PurchaseService {
     return this.http.post(`${this.actionsApiUrl}/validate/${code}`, {});
   }
 
-  // A função purchaseGiftCard parece ter sido substituída pelo fluxo do Mercado Pago
-  // Se não estiver sendo usada, pode ser removida no futuro.
-  /*
-  purchaseGiftCard(giftcardId: string, quantity: number): Observable<SoldGiftCard[]> {
-    const params = new HttpParams().set('quantity', quantity.toString());
-    return this.http.post<SoldGiftCard[]>(`${this.actionsApiUrl}/purchase/${giftcardId}`, {}, { params });
+  rateGiftCard(soldGiftCardId: string, nota: number): Observable<{ message: string }> {
+    const payload = { nota: nota };
+    return this.http.post<{ message: string }>(`${this.actionsApiUrl}/rate/${soldGiftCardId}`, payload);
   }
-  */
 }
