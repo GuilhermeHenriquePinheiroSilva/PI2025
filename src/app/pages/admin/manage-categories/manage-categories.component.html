@@ -34,14 +34,14 @@
     </div>
 
     <div class="list-group list-group-flush" *ngIf="!isLoading; else loadingTemplate">
-      <div *ngIf="categories.length > 0; else noCategoriesTemplate">
+      <div *ngIf="categories.length > 0; else noCategoriesTemplate" class="list-group-table">
         <div *ngFor="let category of categories" class="list-group-item">
           <span class="fw-bold">{{ category.name }}</span>
           <div class="actions">
-            <button class="btn btn-sm btn-outline-primary" (click)="editCategory(category)" title="Editar">
+            <button class="btn btn-sm" (click)="editCategory(category)" title="Editar">
               <i class="bi bi-pencil-square"></i>
             </button>
-            <button class="btn btn-sm btn-outline-danger" (click)="deleteCategory(category.id)" title="Excluir">
+            <button class="btn btn-sm" (click)="deleteCategory(category.id)" title="Excluir">
               <i class="bi bi-trash3-fill"></i>
             </button>
           </div>

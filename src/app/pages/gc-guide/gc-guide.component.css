@@ -1,23 +1,8 @@
-/*
-  Correção para garantir que o container principal ocupe a altura da tela
-  e o card do formulário tenha espaço para crescer.
-*/
-:host {
-  display: block;
-  box-sizing: border-box; /* Garante que padding e bordas não aumentem o tamanho total */
-  padding-top: 100px; /* Espaçamento para a navbar */
-  padding-bottom: 40px; /* Um respiro na parte de baixo */
-  min-height: 100vh; /* <<< MUDANÇA IMPORTANTE: Força o componente a ter no mínimo a altura da tela */
-  background-color: #f4f7f6;
-  width: 100%;
-}
-
-/* Container que centraliza o card */
 .container {
+    margin-top: 20vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 20px; /* Removemos o padding vertical que agora está no :host */
 }
 
 /*
@@ -26,15 +11,16 @@
 */
 .card {
     width: 100%;
-    max-width: 600px;
+    height: 100%;
     border: none;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    box-shadow: 0px 5px 10px black;
 }
 
 .card-header {
-    background-color: #007bff;
+    background-color: var(--orange);
+    width: 100%;
     color: #fff;
     padding: 20px;
     text-align: center;
@@ -55,12 +41,13 @@
 
 .card-body {
     padding: 30px;
-    background-color: #fff;
+    width: 100%;
+    background-color: var(--light-brown);
+    color: var(--white);
 }
 
 .form-label {
     font-weight: 600;
-    color: #333;
 }
 
 .form-control {

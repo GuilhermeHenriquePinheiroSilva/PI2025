@@ -31,8 +31,9 @@
 }
 
 .user svg {
-    width: 8vh;
+    width: 6vh;
     height: 6vh;
+    margin-right: 1vh;
     padding: 1vh;
     border-radius: 100%;
     background: var(--brown);

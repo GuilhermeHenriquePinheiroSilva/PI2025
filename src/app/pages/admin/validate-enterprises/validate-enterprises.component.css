@@ -1,5 +1,42 @@
 /* Front/src/app/pages/admin/validate-enterprises/validate-enterprises.component.css */
 
+.container {
+  margin-top: 12vh;
+  height: auto;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.container-head {
+  background-color: var(--orange);
+  height: 100%;
+  padding: 2vh;
+  border-top-left-radius: 1vh;
+  border-top-right-radius: 1vh;
+  box-shadow: 0px 5px 10px black;
+}
+
+.refresh svg {
+  width: 4vh;
+  height: 4vh;
+  -webkit-filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, .7));
+  filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, .7));
+}
+
+.refresh{
+  transition: all 0.4s ease;
+}
+
+.refresh:hover{
+  transform: rotateZ(360deg);
+}
+
+.lead {
+  background-color: var(--brown);
+  height: 100%;
+  padding: 2vh 0;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -14,12 +51,12 @@
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--brown);
   padding: 25px;
   border-radius: 8px;
   width: 90%;
   max-width: 500px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .modal-content h4 {
@@ -36,8 +73,86 @@
   resize: vertical;
 }
 
+th {
+  background-color: var(--orange);
+  color: var(--white);
+  padding: 2vh;
+}
+
+td {
+  padding: 1vh;
+  background-color: var(--brown);
+  color: var(--white);
+}
+
+table:nth-child(odd) td {
+  background-color: var(--light-brown);
+}
+
+.table-responsive {
+  background-color: var(--brown);
+  border-bottom-left-radius: 1vh;
+  border-bottom-right-radius: 1vh;
+  height: 60vh;
+  overflow-y: auto;
+}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.tableButtons button {
+  height: 100%;
+  font-size: 0.9rem;
+}
+
+.approve {
+  background-color: var(--orange);
+  color: var(--white);
+}
+
+.approve:hover {
+  background-color: var(--dark-orange);
+  color: var(--smoke-white);
+}
+
+.tableButtons button {
+  padding: 1vh;
+}
+
+.alert{
+  margin-top: 10vh;
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--brown);
+  border-color: var(--dark-brown);
+  position: relative;
+}
+
+.alert{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+}
+
+.alert p{
+  margin: 0;
+  display: flex; 
+}
+
+
+
+.modal-actions .confirm{
+   color: var(--white);
+  background-color: var(--orange);
+  transition: all 0.2s ease;
+}
+
+.modal-actions .confirm:hover{
+  filter: brightness(1.1);
 }

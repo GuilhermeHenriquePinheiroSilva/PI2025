@@ -525,42 +525,44 @@ input:-webkit-autofill {
 }
 
 .password-rules {
-  width: 90%;
-  margin: -10px auto 10px auto;
-  padding: 10px;
-  background-color: var(--dark-brown);
-  border-radius: 8px;
-  font-size: 0.8rem;
+    width: 90%;
+    margin: -10px auto 10px auto;
+    padding: 10px;
+    background-color: var(--dark-brown);
+    border-radius: 8px;
+    font-size: 0.8rem;
 }
 
 .password-rules ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  text-align: left;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
 }
 
 .password-rules li {
-  margin-bottom: 5px;
-  transition: color 0.3s ease;
+    margin-bottom: 5px;
+    transition: color 0.3s ease;
 }
 
 .password-rules li.valid {
-  color: #28a745; /* Verde para válido */
+    color: #28a745;
+    /* Verde para válido */
 }
 
 .password-rules li.valid::before {
-  content: '✔ ';
-  margin-right: 5px;
+    content: '✔ ';
+    margin-right: 5px;
 }
 
 .password-rules li.invalid {
-  color: #dc3545; /* Vermelho para inválido */
+    color: #dc3545;
+    /* Vermelho para inválido */
 }
 
 .password-rules li.invalid::before {
-  content: '✖ ';
-  margin-right: 5px;
+    content: '✖ ';
+    margin-right: 5px;
 }
 
 .messageError {
@@ -658,7 +660,7 @@ input:-webkit-autofill {
     z-index: 2;
     position: fixed;
     bottom: 3vh;
-    right: 2vw;
+    right: 1vw;
     width: 8vh;
     height: 8vh;
 }
@@ -742,7 +744,8 @@ input:-webkit-autofill {
     /* Ajustes para o conteúdo do chat */
     display: flex;
     flex-direction: column;
-    gap: 1.5vh; /* Espaçamento consistente entre as mensagens */
+    gap: 1.5vh;
+    /* Espaçamento consistente entre as mensagens */
     padding: 2vh 1vh;
     overflow-y: auto;
     height: 100%;
@@ -789,7 +792,7 @@ input:-webkit-autofill {
 }
 
 .userMessage p,
-.botMessage p{
+.botMessage p {
     text-align: left;
     width: 100%;
     white-space: normal;
@@ -800,7 +803,8 @@ input:-webkit-autofill {
 
 .botMessage p,
 .userMessage p {
-    margin: 0; /* Garante que o <p> interno não tenha margens */
+    margin: 0;
+    /* Garante que o <p> interno não tenha margens */
     padding: 0;
 }
 
@@ -854,28 +858,48 @@ input:-webkit-autofill {
 }
 
 @keyframes jump {
-    10% { transform: rotate(-45deg); }
-    15% { transform: rotate(45deg); }
-    20% { transform: rotate(-45deg); }
-    25% { transform: rotate(45deg); }
-    30% { transform: rotate(-45deg); }
-    40% { transform: rotate(0); }
+    10% {
+        transform: rotate(-45deg);
+    }
+
+    15% {
+        transform: rotate(45deg);
+    }
+
+    20% {
+        transform: rotate(-45deg);
+    }
+
+    25% {
+        transform: rotate(45deg);
+    }
+
+    30% {
+        transform: rotate(-45deg);
+    }
+
+    40% {
+        transform: rotate(0);
+    }
 }
 
 .typing-indicator {
     padding: 1.5vh 2vh;
     display: flex;
     align-items: center;
-    justify-content: center; /* Centraliza os pontos */
+    justify-content: center;
+    /* Centraliza os pontos */
 }
 
 .typing-indicator span {
     height: 10px;
     width: 10px;
-    background-color: var(--white); /* Cor dos pontos */
+    background-color: var(--white);
+    /* Cor dos pontos */
     border-radius: 50%;
     display: inline-block;
-    margin: 0 3px; /* Espaçamento entre os pontos */
+    margin: 0 3px;
+    /* Espaçamento entre os pontos */
     /* Animação */
     animation: bounce 1.4s infinite ease-in-out both;
 }
@@ -890,12 +914,16 @@ input:-webkit-autofill {
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
-    transform: scale(0);
-  }
-  40% {
-    transform: scale(1.0);
-  }
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+
+    40% {
+        transform: scale(1.0);
+    }
 }
 
 @media screen and (max-width: 768px) {

@@ -69,6 +69,11 @@
   width: 100%;
   height: 100%;
   background-color: var(--brown);
+  padding-bottom: 2vh;
+}
+
+.card-body{
+  width: 100%;
 }
 
 /* Seção do Formulário */
@@ -93,13 +98,29 @@
   width: 100%;
 }
 
+.list-group{
+  width: 100%;
+  padding: 0 2vw;
+}
+
+.list-group-table{
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background-color: var(--white);
+  overflow-y: auto;
+}
+
 /* Lista de Categorias */
 .list-group-item {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
   transition: background-color 0.2s ease-in-out;
+  background-color: var(--light-brown);
+  border: none;
 }
 
 .list-group-item .actions {
@@ -107,6 +128,11 @@
   gap: 0.5rem;
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
+}
+
+.actions button{
+  width: 4vw;
+  height: 2vw;
 }
 
 .list-group-item:hover .actions {
