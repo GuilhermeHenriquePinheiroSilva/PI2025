@@ -2,12 +2,34 @@
 <html>
 <head>
     <title>Cadastro Aprovado!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #1d1302; color: #efe8e0; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #5b4b3f; border-radius: 15px; overflow: hidden; border: 1px solid #c9720e; }
+        .header { background-color: #e68210; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; color: #1d1302; font-size: 28px; }
+        .content { padding: 30px 40px; text-align: center; }
+        .content h2 { margin-top: 0; }
+        .content p { font-size: 16px; line-height: 1.6; margin: 15px 0; }
+        .footer { padding: 20px; text-align: center; font-size: 12px; color: #ddd3ca; }
+    </style>
 </head>
 <body>
-    <h1>Parabéns, {{ enterprise_name }}!</h1>
-    <p>Seu cadastro na plataforma GoGift foi aprovado.</p>
-    <p>Saia de sua conta e entre novamente para atualizar suas informações!</p>
-    <p>Você já pode acessar seu painel e começar a cadastrar seus gift cards.</p>
-    <p>Boas vendas!</p>
+    <div class="container">
+        <div class="header">
+            <h1>Go<span style="color: #efe8e0;">Gift</span></h1>
+        </div>
+        <div class="content">
+            <h2>Parabéns, {{ enterprise_name }}!</h2>
+            <p>Seu cadastro na plataforma GoGift foi <strong>aprovado com sucesso!</strong></p>
+            <p>Para ativar suas novas permissões, por favor, saia da sua conta e faça o login novamente.</p>
+            <p>Você já pode acessar seu painel para começar a cadastrar seus gift cards e impulsionar suas vendas.</p>
+            <p><strong>Boas vendas!</strong></p>
+        </div>
+        <div class="footer">
+            &copy; 2024 GoGift. Todos os direitos reservados.
+        </div>
+    </div>
 </body>
 </html>

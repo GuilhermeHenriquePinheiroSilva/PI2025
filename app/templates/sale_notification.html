@@ -3,30 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Venda Realizada!</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #1d1302; color: #efe8e0; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #5b4b3f; border-radius: 15px; overflow: hidden; border: 1px solid #c9720e; }
+        .header { background-color: #e68210; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; color: #1d1302; font-size: 28px; }
+        .content { padding: 30px 40px; text-align: center; }
+        .content h2 { margin-top: 0; }
+        .content p { font-size: 16px; line-height: 1.6; margin: 15px 0; }
+        .sale-details { background-color: #705c4e; padding: 20px; margin-top: 25px; text-align: left; border-radius: 8px; }
+        .sale-details h4 { margin-top: 0; color: #efe8e0; border-bottom: 1px solid #c9720e; padding-bottom: 10px; }
+        .button { background-color: #e68210; color: #ffffff; padding: 15px 25px; text-align: center; text-decoration: none; display: inline-block; border-radius: 8px; font-weight: bold; margin-top: 25px; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; color: #333;">
-    <h2>Olá, {{ enterprise_name }}!</h2>
-    <p>Ótima notícia! Você realizou uma nova venda na plataforma GoGift.</p>
-    
-    <h3 style="border-bottom: 2px solid #eee; padding-bottom: 5px;">Detalhes da Venda</h3>
-    <table style="width: 100%; border-collapse: collapse;">
-        <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Produto Vendido:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ product_title }}</td>
-        </tr>
-        <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Quantidade:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ quantity_sold }}</td>
-        </tr>
-        <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Estoque Restante:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ remaining_stock }} unidades</td>
-        </tr>
-    </table>
-    
-    <p style="margin-top: 25px;">
-        Para mais detalhes, acesse seu painel de controle na GoGift.
-    </p>
-    <p>Atenciosamente,<br>Equipe GoGift</p>
+<body>
+    <div class="container">
+        <div class="header"><h1>Go<span style="color: #efe8e0;">Gift</span></h1></div>
+        <div class="content">
+            <h2>Olá, {{ enterprise_name }}!</h2>
+            <p>Ótima notícia! Você realizou uma nova venda na plataforma GoGift.</p>
+            <div class="sale-details">
+                <h4>Detalhes da Venda</h4>
+                <p><strong>Produto Vendido:</strong> {{ product_title }}</p>
+                <p><strong>Quantidade:</strong> {{ quantity_sold }}</p>
+                <p><strong>Estoque Restante:</strong> {{ remaining_stock }} unidades</p>
+            </div>
+            <p style="margin-top: 25px;">Para mais detalhes, acesse seu painel de controle.</p>
+            <a href="#" class="button">Acessar Painel</a>
+        </div>
+    </div>
 </body>
 </html>

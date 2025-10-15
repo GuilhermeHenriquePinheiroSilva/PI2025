@@ -1,8 +1,8 @@
 import uuid
 import os
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, Query, status, UploadFile, File, Form
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import func, desc
+from sqlalchemy import asc, func, desc
 from typing import List, Optional
 from decimal import Decimal
 from datetime import date
@@ -124,22 +124,44 @@ def read_my_giftcards(current_user: UserORM = Depends(get_current_user), db: Ses
      return db.query(RegisterGiftCardORM).options(joinedload(RegisterGiftCardORM.category)).filter(RegisterGiftCardORM.user_id == current_user.id).all()
 
 @router.get("/search/", response_model=List[RegisterGiftCard])
-def search_giftcards(q: Optional[str] = None, db: Session = Depends(get_db)):
+def search_giftcards(
+    q: Optional[str] = None,
+    category_id: Optional[int] = Query(None),
+    min_price: Optional[Decimal] = Query(None),
+    max_price: Optional[Decimal] = Query(None),
+    sort_by: Optional[str] = Query(None), 
+    db: Session = Depends(get_db)
+):
     # Inicia a query filtrando apenas os cards ativos
     query = db.query(RegisterGiftCardORM).options(joinedload(RegisterGiftCardORM.category)).filter(RegisterGiftCardORM.ativo == True)
   
-    # Se um termo de busca for fornecido, adiciona o filtro de título
+    # Filtro por termo de busca no título
     if q:
         search_term = f"%{q}%"
         query = query.filter(RegisterGiftCardORM.title.ilike(search_term))
+    
+    # Filtro por categoria
+    if category_id:
+        query = query.filter(RegisterGiftCardORM.category_id == category_id)
+
+    # Filtro por faixa de preço
+    if min_price is not None:
+        query = query.filter(RegisterGiftCardORM.valor >= min_price)
+    if max_price is not None:
+        query = query.filter(RegisterGiftCardORM.valor <= max_price)
+
+    # Ordenação
+    if sort_by == "price_asc":
+        query = query.order_by(asc(RegisterGiftCardORM.valor))
+    elif sort_by == "price_desc":
+        query = query.order_by(desc(RegisterGiftCardORM.valor))
+    elif sort_by == "nota_desc":
+        query = query.order_by(desc(RegisterGiftCardORM.nota))
     
     return query.all()
 
 @router.get("/category/{category_id}", response_model=List[RegisterGiftCard])
 def get_giftcards_by_category(category_id: int, db: Session = Depends(get_db)):
-    """
-    Retorna uma lista de gift cards de uma categoria específica.
-    """
     giftcards = db.query(RegisterGiftCardORM).options(joinedload(RegisterGiftCardORM.category)).filter(RegisterGiftCardORM.category_id == category_id, RegisterGiftCardORM.ativo == True).all()
     return giftcards
 
@@ -156,9 +178,6 @@ def get_top_rated_giftcards(db: Session = Depends(get_db)):
 
 @router.get("/", response_model=List[RegisterGiftCard])
 def read_all_giftcards(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """
-    Retorna uma lista de todos os gift cards que estão ATIVOS (público).
-    """
     giftcards = db.query(RegisterGiftCardORM).options(joinedload(RegisterGiftCardORM.category)).filter(RegisterGiftCardORM.ativo == True).offset(skip).limit(limit).all()
 
     return giftcards
@@ -224,7 +243,7 @@ def validate_giftcard_code(code: str, db: Session = Depends(get_db), current_use
         original_giftcard=sold_giftcard.original_giftcard
     )
 
-# ROTA ATUALIZADA
+# ROTA VALIDAÇÃO
 @router.put("/validate/{code}/use", response_model=SoldGiftCardDetails)
 def mark_giftcard_as_used(code: str, db: Session = Depends(get_db), current_user: UserORM = Depends(enterprise_required)):
     sold_giftcard = db.query(SoldGiftCardORM)\
@@ -255,7 +274,7 @@ def mark_giftcard_as_used(code: str, db: Session = Depends(get_db), current_user
         original_giftcard=sold_giftcard.original_giftcard
     )
     
-# NOVA ROTA PARA HISTÓRICO
+# ROTA PARA HISTÓRICO
 @router.get("/used/me", response_model=List[SoldGiftCardDetails])
 def get_my_used_giftcards(db: Session = Depends(get_db), current_user: UserORM = Depends(enterprise_required)):
     used_giftcards = db.query(SoldGiftCardORM)\

@@ -27,11 +27,33 @@ async def get_pending_enterprises(
     pending_enterprises = db.query(EmpresaORM).filter(EmpresaORM.status == EnterpriseStatus.PENDING).all()
     return pending_enterprises
 
+@router.get("/approved", response_model=List[EnterpriseResponse])
+async def get_approved_enterprises(
+    db: Session = Depends(get_db),
+    admin_user: dict = Depends(get_current_admin)
+):
+    approved_enterprises = db.query(EmpresaORM).filter(EmpresaORM.status == EnterpriseStatus.APPROVED).all()
+    return approved_enterprises
 
-@router.get("/", response_model=List[EnterpriseResponse])
-async def get_all_enterprises(db: Session = Depends(get_db)):
-    enterprises = db.query(EmpresaORM).all()
-    return enterprises
+@router.get("/rejected", response_model=List[EnterpriseResponse])
+async def get_rejected_enterprises(
+    db: Session = Depends(get_db),
+    admin_user: dict = Depends(get_current_admin)
+):
+    rejected_enterprises = db.query(EmpresaORM).filter(EmpresaORM.status == EnterpriseStatus.REJECTED).all()
+    return rejected_enterprises
+
+
+@router.get("/me", response_model=EnterpriseResponse)
+async def get_my_enterprise_details(
+    db: Session = Depends(get_db),
+    current_user: UserORM = Depends(get_current_user)
+):
+    enterprise = db.query(EmpresaORM).filter(EmpresaORM.user_id == current_user.id).first()
+    if not enterprise:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhuma empresa associada a este usuário.")
+    return enterprise
+
 
 @router.get("/{enterprise_id}", response_model=EnterpriseResponse)
 async def get_enterprise_by_id(enterprise_id: int, db: Session = Depends(get_db)):
@@ -74,6 +96,7 @@ async def approve_enterprise(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Empresa não encontrada")
 
     db_enterprise.status = EnterpriseStatus.APPROVED
+    db_enterprise.rejection_reason = None
     user_to_update = db_enterprise.user
     if user_to_update:
         user_to_update.role = Role.ENTERPRISE

@@ -3,6 +3,7 @@ from app.models import user_orm
 from app.models import giftcard_orm
 from app.models import enterprise_orm
 from app.models import categories_orm
+from app.models import order_orm
 
 def init_db():
     print("Criando tabelas no banco de dados...")

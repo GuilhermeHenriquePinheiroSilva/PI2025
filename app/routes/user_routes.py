@@ -5,26 +5,21 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr, field_validator
 import re 
 
-# Importe os Pydantic models (Schemas)
 from app.auth.jwt_handler import decode_access_token
 from app.models.user_models import User as UserSchema, UserLogin
 
-# Importe o modelo ORM
 from app.models.user_orm import UserORM
 
-# Importe as novas funções de segurança e o get_db centralizado
 from app.security import create_access_token, get_current_user
 from app.database.db_config import get_db
 from app.services.email_service import send_email_with_template
 from werkzeug.security import generate_password_hash
 
-# É uma boa prática agrupar rotas relacionadas com um prefixo e uma tag
 router = APIRouter(
     prefix="/auth", 
     tags=["Authentication"]
 )
 
-# Pydantic models para as requisições de redefinição de senha
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 
@@ -52,8 +47,6 @@ class ResetPasswordRequest(BaseModel):
 async def forgot_password(data: ForgotPasswordRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(UserORM).filter(UserORM.email == data.email).first()
     if not user:
-        # Por segurança, não confirme se o e-mail existe.
-        # A mensagem de sucesso é retornada de qualquer forma.
         return {"message": "Se um usuário com este email existir, um link de redefinição foi enviado."}
 
     # Gera um token de curta duração para a redefinição de senha

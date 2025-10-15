@@ -3,12 +3,9 @@ import os
 from fastapi import APIRouter, HTTPException, Depends, status, BackgroundTasks, Request
 from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash, check_password_hash
-
-# CORREÇÃO: Importando 'User' (como UserSchema) e 'UserLogin' do seu arquivo de modelos
 from app.models.user_models import User as UserSchema, UserLogin
 from app.models.user_orm import UserORM
 
-# Usando o seu handler JWT original
 from app.auth.jwt_handler import create_access_token, decode_access_token
 from app.database.db_config import get_db
 from app.services.email_service import send_email_with_template
@@ -20,14 +17,10 @@ router = APIRouter(
 
 @router.post("/register")
 async def register_user(user: UserSchema, background_tasks: BackgroundTasks, request: Request, db: Session = Depends(get_db)):
-    """
-    Registra um novo usuário usando o modelo 'User' existente.
-    """
     db_user = db.query(UserORM).filter(UserORM.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email já registrado")
 
-    # Usando werkzeug, conforme seu padrão original
     hashed_password = generate_password_hash(user.password)
 
     new_user = UserORM(
@@ -50,7 +43,7 @@ async def register_user(user: UserSchema, background_tasks: BackgroundTasks, req
     else:
         base_url = os.getenv("FRONTEND_URL")
 
-    # A variável agora é definida apenas uma vez e corretamente
+   
     verification_link = f"{base_url}/verify-email?token={token}"
     
 

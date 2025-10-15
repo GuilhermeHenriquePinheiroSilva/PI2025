@@ -3,10 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Bem-vindo ao GoGift!</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #1d1302; color: #efe8e0; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #5b4b3f; border-radius: 15px; overflow: hidden; border: 1px solid #c9720e; }
+        .header { background-color: #e68210; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; color: #1d1302; font-size: 28px; }
+        .content { padding: 30px 40px; text-align: center; }
+        .content h2 { margin-top: 0; }
+        .content p { font-size: 16px; line-height: 1.6; margin: 15px 0; }
+        .button { background-color: #e68210; color: #ffffff; padding: 15px 25px; text-align: center; text-decoration: none; display: inline-block; border-radius: 8px; font-weight: bold; margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <h1>Olá, {{ username }}!</h1>
-    <p>Seja muito bem-vindo ao <strong>GoGift</strong>!</p>
-    <p>Seu cadastro foi realizado com sucesso. Explore nossa plataforma e aproveite as melhores ofertas de gift cards.</p>
+    <div class="container">
+        <div class="header"><h1>Go<span style="color: #efe8e0;">Gift</span></h1></div>
+        <div class="content">
+            <h2>Olá, {{ username }}!</h2>
+            <p>Seja muito bem-vindo ao <strong>GoGift</strong>! Seu cadastro foi realizado com sucesso.</p>
+            <p>Explore nossa plataforma e aproveite as melhores ofertas de gift cards.</p>
+            <a href="#" class="button">Explorar Gift Cards</a>
+        </div>
+    </div>
 </body>
 </html>

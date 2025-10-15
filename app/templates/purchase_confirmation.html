@@ -3,42 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Confirmação de Compra</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #1d1302; color: #efe8e0; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #5b4b3f; border-radius: 15px; overflow: hidden; border: 1px solid #c9720e; }
+        .header { background-color: #e68210; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; color: #1d1302; font-size: 28px; }
+        .content { padding: 30px 40px; }
+        .content h2 { text-align: center; margin-top: 0; }
+        .content p { font-size: 16px; line-height: 1.6; margin: 15px 0; text-align: center; }
+        .order-id { text-align: center; font-size: 14px; color: #ddd3ca; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; color: #efe8e0; }
+        th, td { padding: 12px; border-bottom: 1px solid #705c4e; text-align: left; }
+        th { background-color: #705c4e; font-weight: bold; }
+        .footer-table { font-weight: bold; text-align: right; }
+        .button-container { text-align: center; margin-top: 25px; }
+        .button { background-color: #e68210; color: #ffffff; padding: 15px 25px; text-align: center; text-decoration: none; display: inline-block; border-radius: 8px; font-weight: bold; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; color: #333;">
-    <h2>Olá, {{ username }}!</h2>
-    <p>Sua compra na GoGift foi confirmada com sucesso. Obrigado por escolher a nossa plataforma!</p>
-    
-    <h3 style="border-bottom: 2px solid #eee; padding-bottom: 5px;">Detalhes do Pedido</h3>
-    <table style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr style="background-color: #f9f9f9;">
-                <th style="padding: 10px; text-align: left;">Produto</th>
-                <th style="padding: 10px; text-align: center;">Quantidade</th>
-                <th style="padding: 10px; text-align: right;">Preço Unitário</th>
-                <th style="padding: 10px; text-align: right;">Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-            <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ item.title }}</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">{{ item.quantity }}</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">R$ {{ "%.2f"|format(item.unit_price) }}</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">R$ {{ "%.2f"|format(item.subtotal) }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" style="padding: 15px 10px 10px; text-align: right; font-weight: bold;">Total:</td>
-                <td style="padding: 15px 10px 10px; text-align: right; font-weight: bold;">R$ {{ "%.2f"|format(total_price) }}</td>
-            </tr>
-        </tfoot>
-    </table>
-    
-    <p style="margin-top: 25px;">
-        Para ver os códigos dos seus Gift Cards, acesse a seção "Minhas Compras" no nosso site.
-    </p>
-    <p>Atenciosamente,<br>Equipe GoGift</p>
+<body>
+    <div class="container">
+        <div class="header"><h1>Go<span style="color: #efe8e0;">Gift</span></h1></div>
+        <div class="content">
+            <h2>Olá, {{ username }}!</h2>
+            <p>Sua compra na GoGift foi confirmada com sucesso. Obrigado por escolher nossa plataforma!</p>
+            <div class="order-id"><strong>Número do Pedido:</strong> {{ order_id }}</div>
+
+            <h3>Detalhes do Pedido</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th style="text-align: center;">Qtd.</th>
+                        <th style="text-align: right;">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td style="text-align: center;">{{ item.quantity }}</td>
+                        <td style="text-align: right;">R$ {{ "%.2f"|format(item.subtotal) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2" class="footer-table">Total:</td>
+                        <td class="footer-table">R$ {{ "%.2f"|format(total_price) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="button-container">
+                 <a href="{{ base_url }}/minhas-compras" class="button">Ver Meus Códigos</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

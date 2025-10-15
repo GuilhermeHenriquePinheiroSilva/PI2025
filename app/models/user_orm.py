@@ -27,3 +27,4 @@ class UserORM(Base):
     )
 
     enterprise_details = relationship("EmpresaORM", back_populates="user", uselist=False)
+    orders = relationship("OrderORM", back_populates="owner")

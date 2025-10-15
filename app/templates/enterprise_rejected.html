@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Atualização de Cadastro</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #1d1302; color: #efe8e0; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #5b4b3f; border-radius: 15px; overflow: hidden; border: 1px solid #c9720e; }
+        .header { background-color: #e68210; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; color: #1d1302; font-size: 28px; }
+        .content { padding: 30px 40px; text-align: center; }
+        .content h2 { color: #efe8e0; margin-top: 0;}
+        .content p { font-size: 16px; line-height: 1.6; margin: 15px 0; }
+        .rejection-box { background-color: #705c4e; border-left: 5px solid #c9720e; padding: 20px; margin-top: 25px; text-align: left; border-radius: 8px; }
+        .rejection-box h4 { margin-top: 0; color: #efe8e0; }
+        .footer { padding: 20px; text-align: center; font-size: 12px; color: #ddd3ca; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif;">
-    <h2>Olá, {{ enterprise_name }}!</h2>
-    <p>Temos uma atualização sobre o seu pedido de cadastro na plataforma GoGift.</p>
-    <p>Infelizmente, o seu cadastro foi rejeitado no momento.</p>
-    
-    <div style="background-color: #f9f9f9; border-left: 4px solid #d9534f; padding: 15px; margin-top: 20px;">
-        <h4 style="margin-top: 0;">Motivo da Rejeição:</h4>
-        <p>{{ rejection_reason }}</p>
+<body>
+    <div class="container">
+        <div class="header"><h1>Go<span style="color: #efe8e0;">Gift</span></h1></div>
+        <div class="content">
+            <h2>Olá, {{ enterprise_name }}!</h2>
+            <p>Temos uma atualização sobre seu pedido de cadastro na plataforma GoGift. Infelizmente, seu cadastro foi <strong>rejeitado</strong> no momento.</p>
+            <div class="rejection-box">
+                <h4>Motivo da Rejeição:</h4>
+                <p>{{ rejection_reason }}</p>
+            </div>
+            <p style="margin-top: 25px;">Se tiver alguma dúvida ou precisar de ajuda para corrigir as informações, por favor, entre em contato com nosso suporte.</p>
+        </div>
+        <div class="footer"><p>Atenciosamente,<br>Equipe GoGift</p></div>
     </div>
-    
-    <p style="margin-top: 20px;">
-        Se tiver alguma dúvida ou precisar de ajuda para corrigir as informações, por favor, entre em contato com o nosso suporte.
-    </p>
-    <p>Atenciosamente,<br>Equipe GoGift</p>
 </body>
 </html>
