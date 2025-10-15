@@ -45,7 +45,38 @@
             <app-my-purchases></app-my-purchases>
         </div>
         <div *ngIf="options == 'En'" class="entrepise">
-            <app-gc-guide></app-gc-guide>
+            <div *ngIf="isLoadingEnterprise" class="loading-status">
+                <p>Carregando informações da empresa...</p>
+            </div>
+
+            <div *ngIf="!isLoadingEnterprise">
+                <div *ngIf="enterpriseDetails; else enterpriseForm" class="status-card">
+                    <div class="card-header">
+                        <h2>Status da sua Empresa</h2>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Status:</strong> 
+                            <span [ngClass]="{
+                                'status-pending': enterpriseDetails.status === 'pending',
+                                'status-rejected': enterpriseDetails.status === 'rejected'
+                            }">
+                                {{ enterpriseDetails.status }}
+                            </span>
+                        </p>
+                        <div *ngIf="enterpriseDetails.status === 'rejected'">
+                            <p><strong>Motivo da Rejeição:</strong> {{ enterpriseDetails.rejection_reason }}</p>
+                            <p class="contact-support">Por favor, entre em contato com o suporte para mais informações ou para reenviar seus dados.</p>
+                        </div>
+                         <div *ngIf="enterpriseDetails.status === 'pending'">
+                            <p>Sua solicitação está em análise. Assim que houver uma atualização, você será notificado por e-mail.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-template #enterpriseForm>
+                    <app-gc-guide></app-gc-guide>
+                </ng-template>
+            </div>
         </div>
     </div>
 </div>

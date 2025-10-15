@@ -2,6 +2,10 @@ svg {
     fill: #EFE8E0;
 }
 
+.categorias .cards .gift-card-link {
+    margin: 2vh 2vw; 
+}
+
 .banner {
     margin-top: 12vh;
 }

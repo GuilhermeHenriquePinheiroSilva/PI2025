@@ -2,13 +2,15 @@ import { Component, ExperimentalPendingTasks, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AppComponent } from '../../../app.component';
 import { GiftCard } from '../../../../services/giftcard.service';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-gift-card-template',
   standalone: true,
   imports: [
-    RouterLink
+    RouterLink,
+    CommonModule
   ],
   templateUrl: './gift-card-template.component.html',
   styleUrl: './gift-card-template.component.css'
@@ -20,4 +22,5 @@ export class GiftCardTemplateComponent extends AppComponent{
   @Input() gcImg: string = '';
   @Input() gcImgAlt: string = '';
   @Input() gcDesc: string = '';
+  @Input() bgColor: string = '';
 } 

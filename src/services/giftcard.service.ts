@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Category } from '../app/models/category.model';
+import { OrderItem } from '../app/models/order.model';
 
 export interface GiftCard {
   id: string; 
@@ -38,6 +39,7 @@ export interface SoldGiftCardDetails {
 })
 export class GiftcardService {
   private apiUrl = '/api/giftcards/';
+  private validationApiUrl = '/api/validation';
 
   constructor(private http: HttpClient) { }
   getMyGiftCards(): Observable<GiftCard[]> {
@@ -48,8 +50,23 @@ export class GiftcardService {
     return this.http.post(this.apiUrl, giftCardData);
   }
 
-  searchGiftCards(term: string): Observable<GiftCard[]> {
-    const params = new HttpParams().set('q', term);
+ searchGiftCards(term: string, categoryId?: number, minPrice?: number, maxPrice?: number, sortBy?: string): Observable<GiftCard[]> {
+    let params = new HttpParams();
+    if (term) {
+      params = params.set('q', term);
+    }
+    if (categoryId) {
+      params = params.set('category_id', categoryId.toString());
+    }
+    if (minPrice !== undefined) {
+      params = params.set('min_price', minPrice.toString());
+    }
+    if (maxPrice !== undefined) {
+      params = params.set('max_price', maxPrice.toString());
+    }
+    if (sortBy) {
+      params = params.set('sort_by', sortBy);
+    }
     return this.http.get<GiftCard[]>(`${this.apiUrl}search/`, { params });
   }
 
@@ -87,5 +104,17 @@ export class GiftcardService {
 
   getGiftCardsByCategory(categoryId: number): Observable<GiftCard[]> {
     return this.http.get<GiftCard[]>(`${this.apiUrl}/category/${categoryId}`);
+  }
+
+  validateGiftCardCode(code: string): Observable<OrderItem> {
+    return this.http.get<OrderItem>(`${this.validationApiUrl}/${code}`);
+  }
+
+  markGiftCardCodeAsUsed(code: string): Observable<OrderItem> {
+    return this.http.put<OrderItem>(`${this.validationApiUrl}/${code}/use`, {});
+  }
+
+  getUsedGiftCardsHistory(): Observable<OrderItem[]> {
+    return this.http.get<OrderItem[]>(`${this.validationApiUrl}/history/me`);
   }
 }

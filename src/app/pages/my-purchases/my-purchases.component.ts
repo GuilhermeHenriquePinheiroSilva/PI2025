@@ -1,125 +1,111 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PurchaseService, SoldGiftCard } from '../../../services/purchase.service';
 import { NotificationService } from '../../../services/notification.service';
+import { OrderService } from '../../../services/order.service';
+import { Order, OrderItem } from '../../models/order.model'; // Importe OrderItem também
+import { Router, ActivatedRoute } from '@angular/router';
 import { CartService } from '../../../services/cart.service';
-import { NavBarComponent } from '../shared/nav-bar/nav-bar.component';
-import { FooterComponent } from '../shared/footer/footer.component';
 
 @Component({
   selector: 'app-my-purchases',
   standalone: true,
-  imports: [CommonModule, NavBarComponent, FooterComponent],
+  imports: [CommonModule],
   templateUrl: './my-purchases.component.html',
   styleUrls: ['./my-purchases.component.css']
 })
 export class MyPurchasesComponent implements OnInit {
-  purchasedCards: SoldGiftCard[] = [];
-  pendingCards: SoldGiftCard[] = []; // Nova lista para compras pendentes
+  approvedOrders: Order[] = [];
+  pendingOrders: Order[] = [];
   isLoading = true;
-  revealedCodeId: string | null = null;
-  hoveredRating: number = 0;
+  revealedCodes: { [itemId: string]: string } = {};
+
+  // --- DICIONÁRIO DE TRUÇÔES ADICIONADO ---
+  statusTranslations: { [key: string]: string } = {
+    // Status do Pedido
+    'APPROVED': 'Aprovado',
+    'PENDING': 'Pendente',
+    'REJECTED': 'Rejeitado',
+    'EXPIRED': 'Expirado',
+    'REFUNDED': 'Estornado',
+    // Status do Item/Código
+    'VALID': 'Válido',
+    'USED': 'Utilizado',
+    'PARTIALLY_USED': 'Parcialmente Utilizado'
+  };
 
   constructor(
-    private purchaseService: PurchaseService,
+    private orderService: OrderService,
     private notificationService: NotificationService,
+    private router: Router,
     private route: ActivatedRoute,
-    private cartService: CartService,
-    private router: Router
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
     this.handlePaymentStatus();
-    this.loadPurchases();
+    this.loadOrders();
+  }
+
+  // --- NOVA FUNÇÃO DE TRADUÇÃO ---
+  translateStatus(status: string): string {
+    return this.statusTranslations[status] || status;
   }
 
   private handlePaymentStatus(): void {
     this.route.queryParamMap.subscribe(params => {
-      const status = params.get('status');
-      const collectionStatus = params.get('collection_status');
-
-      if (status === 'success' || status === 'approved' || collectionStatus === 'approved') {
-        if (sessionStorage.getItem('paymentProcessed') !== 'true') {
-          this.notificationService.show('Pagamento aprovado com sucesso!', 'success');
-          this.cartService.clearCart();
-          sessionStorage.setItem('paymentProcessed', 'true');
+        const status = params.get('status');
+        if (status === 'approved' && sessionStorage.getItem('paymentProcessed') !== 'true') {
+            this.notificationService.show('Pagamento aprovado com sucesso!', 'success');
+            this.cartService.clearCart();
+            sessionStorage.setItem('paymentProcessed', 'true');
+            this.router.navigate([], {
+                relativeTo: this.route,
+                queryParams: { status: null },
+                queryParamsHandling: 'merge'
+            });
         }
-
-        this.router.navigate([], {
-          relativeTo: this.route,
-          queryParams: { status: null, collection_status: null, payment_id: null, preference_id: null },
-          queryParamsHandling: 'merge'
-        });
-      } else if (status === 'failure') {
-        if (sessionStorage.getItem('paymentProcessed') !== 'true') {
-          this.notificationService.show('O pagamento falhou. Tente novamente.', 'error');
-          sessionStorage.setItem('paymentProcessed', 'true');
+        if (!status) {
+            sessionStorage.removeItem('paymentProcessed');
         }
-        this.router.navigate([], {
-          relativeTo: this.route,
-          queryParams: { status: null },
-          queryParamsHandling: 'merge'
-        });
-      }
-
-      if (!status) {
-        sessionStorage.removeItem('paymentProcessed');
-      }
     });
   }
 
-  loadPurchases(): void {
+  loadOrders(): void {
     this.isLoading = true;
-    this.purchaseService.getMyPurchases().subscribe({
+    this.orderService.getMyOrders().subscribe({
       next: (data) => {
-        // Filtra e separa as compras por status
-        this.purchasedCards = data.filter(card => card.status !== 'PENDING');
-        this.pendingCards = data.filter(card => card.status === 'PENDING');
+        this.approvedOrders = data.filter(order => order.status === 'APPROVED');
+        this.pendingOrders = data.filter(order => order.status === 'PENDING');
         this.isLoading = false;
       },
-      error: (err) => {
-        this.notificationService.show('Erro ao carregar suas compras.', 'error');
+      error: () => {
+        this.notificationService.show('Erro ao carregar seu histórico de compras.', 'error');
         this.isLoading = false;
       }
     });
   }
 
-  revealAndCopyCode(card: SoldGiftCard): void {
-    navigator.clipboard.writeText(card.code).then(() => {
-      this.revealedCodeId = card.id;
-      this.notificationService.show(`Código "${card.code}" copiado!`, 'success');
-      setTimeout(() => {
-        if (this.revealedCodeId === card.id) {
-          this.revealedCodeId = null;
-        }
-      }, 5000);
-    }).catch(err => {
-      console.error('Erro ao copiar código: ', err);
-      this.notificationService.show('Não foi possível copiar o código.', 'error');
-    });
-  }
-
-   rateProduct(card: SoldGiftCard, rating: number): void {
-    if (card.nota) {
-      this.notificationService.show('Este item já foi avaliado.', 'warning');
-      return;
+  revealAndCopyCodes(item: OrderItem): void {
+    const codes = item.final_giftcard_codes;
+    if (!codes) {
+        this.notificationService.show('Códigos ainda não disponíveis.', 'warning');
+        return;
     }
 
-    this.purchaseService.rateGiftCard(card.id, rating).subscribe({
-      next: (response) => {
-        this.notificationService.show(response.message, 'success');
-        // Atualiza a nota no objeto local para a UI refletir a mudança
-        card.nota = rating;
-      },
-      error: (err) => {
-        const errorMessage = err.error?.detail || 'Não foi possível enviar a avaliação.';
-        this.notificationService.show(errorMessage, 'error');
-      }
+    navigator.clipboard.writeText(codes).then(() => {
+        this.revealedCodes[item.id] = codes;
+        this.notificationService.show(`Códigos copiados!`, 'success');
+        
+        setTimeout(() => {
+            delete this.revealedCodes[item.id];
+        }, 5000);
+
+    }).catch(err => {
+        this.notificationService.show('Não foi possível copiar os códigos.', 'error');
     });
   }
 
-  setHoveredRating(rating: number): void {
-    this.hoveredRating = rating;
+  isRevealed(itemId: string): boolean {
+      return itemId in this.revealedCodes;
   }
 }

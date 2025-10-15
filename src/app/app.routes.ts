@@ -36,6 +36,7 @@ export const routes: Routes = [
     },
     {
         path: 'gc-guide', component: GcGuideComponent,
+        canActivate: [authGuard]
     },
     {
         path: 'search', component: SearchComponent

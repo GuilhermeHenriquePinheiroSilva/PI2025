@@ -7,7 +7,6 @@ import { Enterprise, EnterpriseFormData } from '../app/models/enterprise.model';
   providedIn: 'root'
 })
 export class EnterpriseService {
-  // A URL base da sua API. O proxy.conf.json deve redirecionar as chamadas.
   private apiUrl = '/api/enterprise';
 
   constructor(private http: HttpClient) { }
@@ -16,8 +15,9 @@ export class EnterpriseService {
     return this.http.post<Enterprise>(`${this.apiUrl}/register`, enterpriseData);
   }
 
-  getPendingEnterprises(): Observable<Enterprise[]> {
-    return this.http.get<Enterprise[]>(`${this.apiUrl}/pending`);
+  getEnterprisesByStatus(status: 'PENDING' | 'APPROVED' | 'REJECTED'): Observable<Enterprise[]> {
+    const endpoint = `${this.apiUrl}/${status.toLowerCase()}`;
+    return this.http.get<Enterprise[]>(endpoint);
   }
 
   approveEnterprise(id: number): Observable<Enterprise> {
@@ -25,8 +25,11 @@ export class EnterpriseService {
   }
 
   rejectEnterprise(id: number, reason: string): Observable<Enterprise> {
-    // Agora enviamos o motivo no corpo da requisição
     const body = { rejection_reason: reason };
     return this.http.put<Enterprise>(`${this.apiUrl}/${id}/reject`, body);
+  }
+
+  getMyEnterprise(): Observable<Enterprise> {
+    return this.http.get<Enterprise>(`${this.apiUrl}/me`);
   }
 }

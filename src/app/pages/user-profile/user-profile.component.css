@@ -72,4 +72,81 @@
     display: flex;
     flex-direction: column;
     margin-top: 2vh;
+    /* Adicionado para alinhar o conteúdo */
+    align-items: center;
+    padding-top: 15vh;
+}
+
+/* --- ESTILOS ATUALIZADOS E NOVOS --- */
+
+.entrepise {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.loading-status {
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.status-card {
+    width: 60%; /* Largura similar ao formulário */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    background-color: var(--light-brown);
+    color: var(--white);
+    overflow: hidden;
+}
+
+.status-card .card-header {
+    background-color: var(--orange);
+    padding: 1rem 1.5rem;
+    border-bottom: none;
+    text-align: center;
+}
+
+.status-card .card-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.status-card .card-body {
+    padding: 2rem;
+    text-align: center;
+}
+
+.status-card p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.status-card strong {
+    font-weight: 600;
+}
+
+.status-pending, .status-rejected {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: capitalize;
+}
+
+.status-pending {
+    background-color: #ffc107; /* Amarelo */
+    color: #333;
+}
+
+.status-rejected {
+    background-color: #dc3545; /* Vermelho */
+}
+
+.contact-support {
+    font-size: 0.95rem;
+    font-style: italic;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--brown);
+    padding-top: 1rem;
 }

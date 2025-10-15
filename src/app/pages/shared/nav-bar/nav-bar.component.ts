@@ -191,10 +191,9 @@ onSubmitRegister(): void {
       return;
     }
 
-    // --- INÍCIO DA ATUALIZAÇÃO ---
     this.authService.register(this.userRegister).subscribe({
       next: () => {
-        // 1. Exibe a nova mensagem, instruindo a verificação do e-mail.
+        this.fecharFormulario();
         this.notificationService.show(
           'Cadastro realizado! Verifique seu e-mail para ativar a conta.', 
           'success'

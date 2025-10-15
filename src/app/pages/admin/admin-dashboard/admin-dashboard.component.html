@@ -2,24 +2,34 @@
   <h1>Painel de Controle do Administrador</h1>
   <p class="lead">Bem-vindo, aqui você pode gerenciar o sistema.</p>
 
-  <div class="card text-center">
-    <div class="card-body">
-      <h5 class="card-title">Gerenciar Categorias</h5>
-      <p class="card-text">Adicione, edite ou remova categorias de produtos.</p>
+  <div class="card-container mt-5">
+
+    <div class="admin-card">
+      <div class="card-content">
+        <i class="bi bi-tags-fill card-icon"></i>
+        <h5 class="card-title">Gerenciar Categorias</h5>
+        <p class="card-text">Adicione, edite ou remova as categorias de produtos da plataforma.</p>
+      </div>
       <a routerLink="/admin/categories" class="btn">Ir para Categorias</a>
     </div>
-  </div>
 
-  <!-- <div class="row mt-4">
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <h5 class="card-title">Gerenciar Categorias</h5>
-          <p class="card-text">Adicione, edite ou remova categorias de produtos.</p>
-          <a routerLink="/admin/categories" class="btn btn-primary">Ir para Categorias</a>
-        </div>
+    <div class="admin-card">
+      <div class="card-content">
+        <i class="bi bi-building-check card-icon"></i>
+        <h5 class="card-title">Validar Empresas</h5>
+        <p class="card-text">Aprove ou rejeite os cadastros de novas empresas pendentes.</p>
       </div>
+      <a routerLink="/admin/validate-enterprises" class="btn">Validar Empresas</a>
     </div>
 
-  </div> -->
+    <!-- <div class="admin-card disabled">
+      <div class="card-content">
+        <i class="bi bi-people-fill card-icon"></i>
+        <h5 class="card-title">Gerenciar Usuários</h5>
+        <p class="card-text">Visualize e gerencie os usuários cadastrados no sistema.</p>
+      </div>
+      <a class="btn disabled">Ver Usuários</a>
+    </div> -->
+
+  </div>
 </div>

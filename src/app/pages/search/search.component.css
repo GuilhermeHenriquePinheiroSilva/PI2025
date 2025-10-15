@@ -6,6 +6,8 @@
     height: auto;
     background-color: #5B4B3F;
     border-radius: 30px;
+    display: flex; 
+    gap: 2rem;
 }
 
 .resultado{
@@ -55,6 +57,116 @@
     font-weight: 600;
 }
 
+.filters {
+    flex: 0 0 250px; /* Adicionado */
+    background-color: var(--dark-brown);
+    padding: 1.5rem;
+    border-radius: 15px;
+    align-self: flex-start;
+}
+
+.filters h3 {
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--orange);
+    padding-bottom: 0.5rem;
+}
+
+.filter-group {
+    margin-bottom: 1.5rem;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--smoke-white);
+    color: var(--dark-brown);
+    color: black;
+}
+
+.form-control option {
+    color: black;
+}
+
+.price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.price-inputs span {
+    font-weight: bold;
+}
+
+.filter-actions {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.btn-apply, .btn-clear {
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btn-apply {
+    background-color: var(--orange);
+    color: var(--white);
+}
+
+.btn-apply:hover {
+    background-color: var(--dark-orange);
+}
+
+.btn-clear {
+    background-color: transparent;
+    border: 1px solid var(--white);
+    color: var(--white);
+}
+
+.btn-clear:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.content {
+    flex: 1; 
+}
+
+.load-more-container {
+    width: 100%;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.load-more-btn {
+    background-color: var(--orange);
+    color: var(--white);
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.load-more-btn:hover {
+    transform: scale(1.05);
+    background-color: var(--dark-orange);
+}
+
 @media (max-width: 768px){    
     .container{
         border-radius: 0;
@@ -69,5 +181,10 @@
 
     .gift-card-link{
         margin: 0 4vw;
+    }
+
+    .filters {
+        flex: 0 0 auto;
+        width: 100%;
     }
 }

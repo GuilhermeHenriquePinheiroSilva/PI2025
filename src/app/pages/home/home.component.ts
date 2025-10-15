@@ -5,6 +5,8 @@ import { GiftcardService, GiftCard } from '../../../services/giftcard.service';
 import { GiftCardTemplateComponent } from '../shared/gift-card-template/gift-card-template.component';
 import { NavBarComponent } from '../shared/nav-bar/nav-bar.component';
 import { FooterComponent } from '../shared/footer/footer.component';
+import { Category } from '../../models/category.model';
+import { CategoryService } from '../../../services/category.service';
 
 @Component({
   selector: 'app-home',
@@ -22,15 +24,21 @@ import { FooterComponent } from '../shared/footer/footer.component';
 export class HomeComponent implements OnInit {
   // Lista para a seção "Mais Vendidos"
   maisVendidos: GiftCard[] = [];
-  // Nova lista para a seção "Mais Amados"
-    maisAmados: GiftCard[] = [];
+  // Lista para a seção "Mais Amados"
+  maisAmados: GiftCard[] = [];
+
+  randomCategories: Category[] = [];
 
   isLoading: boolean = true;
 
-  constructor(private giftcardService: GiftcardService) { }
+  private categoryColors: string[] = ['#E68210', '#C9720E', '#5B4B3F', '#705C4E', '#1D1302'];
+
+
+  constructor(private giftcardService: GiftcardService, private categoryService: CategoryService) { }
 
   ngOnInit(): void {
     this.carregarCardsDaHome();
+    this.loadRandomCategories();
   }
 
   carregarCardsDaHome(): void {
@@ -57,5 +65,27 @@ export class HomeComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  loadRandomCategories(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (allCategories) => {
+        for (let i = allCategories.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allCategories[i], allCategories[j]] = [allCategories[j], allCategories[i]];
+        }
+        this.randomCategories = allCategories.slice(0, 5);
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar categorias:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  // Função para obter a cor da categoria de forma cíclica
+  getCategoryColor(index: number): string {
+    return this.categoryColors[index % this.categoryColors.length];
   }
 }

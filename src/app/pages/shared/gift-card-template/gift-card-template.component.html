@@ -1,8 +1,16 @@
 <a class="gift-cards" [routerLink]="['/product-page', gcImg, gcName, gcDesc]">
     <div class="card">
-        <img #tiltElement src={{gcImg}} alt={{gcImgAlt}}>
+        <ng-container *ngIf="gcImg; else colorBlock">
+            <img #tiltElement [src]="gcImg" [alt]="gcImgAlt">
+        </ng-container>
+
+        <ng-template #colorBlock>
+            <div class="category-color-block" [style.background-color]="bgColor">
+                <span class="category-name">{{ gcName }}</span>
+            </div>
+        </ng-template>
     </div>
-    <div>
+     <div *ngIf="!bgColor">
         <p class="title">{{gcName}}</p>
         <p>{{gcText}}</p>
     </div>

@@ -1,30 +1,67 @@
 <div class="container">
     <div class="filters">
-        <!-- Espaço para filtros futuros -->
+        <h3>Filtros</h3>
+
+        <div class="filter-group">
+            <label for="category">Categoria</label>
+            <select id="category" [(ngModel)]="selectedCategoryId" class="form-control">
+                <option [ngValue]="undefined">Todas</option>
+                <option *ngFor="let category of categories" [value]="category.id">
+                    {{ category.name }}
+                </option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>Preço</label>
+            <div class="price-inputs">
+                <input type="number" placeholder="Mín." [(ngModel)]="minPrice" class="form-control">
+                <span>-</span>
+                <input type="number" placeholder="Máx." [(ngModel)]="maxPrice" class="form-control">
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label for="sort">Ordenar por</label>
+            <select id="sort" [(ngModel)]="sortBy" class="form-control">
+                <option [ngValue]="undefined">Relevância</option>
+                <option value="price_asc">Menor Preço</option>
+                <option value="price_desc">Maior Preço</option>
+                <option value="nota_desc">Melhor Avaliado</option>
+            </select>
+        </div>
+
+        <div class="filter-actions">
+            <button class="btn-clear" (click)="clearFilters()">Limpar Filtros</button>
+            <button class="btn-apply" (click)="applyFilters()">Aplicar Filtros</button>
+        </div>
     </div>
     <div class="content">
-        <!-- Título dinâmico: mostra o termo buscado ou uma mensagem padrão -->
         <p class="info-search" *ngIf="searchTerm">Resultados para: "{{ searchTerm }}"</p>
         <p class="info-search" *ngIf="!searchTerm">Todos os Gift Cards</p>
 
-        <div class="info-search" *ngIf="isLoading" class="loading-indicator">Carregando...</div>
+        <div *ngIf="isLoading" class="loading-indicator">Carregando...</div>
 
-        <!-- Mensagem se a busca não retornar resultados -->
-        <div class="info-search" *ngIf="!isLoading && giftCards.length === 0" class="no-results">
+        <div *ngIf="!isLoading && visibleGiftCards.length === 0" class="no-results">
             <p>Nenhum resultado encontrado<span *ngIf="searchTerm"> para "{{ searchTerm }}"</span>.</p>
         </div>
 
-        <!-- Apenas mostra a lista se não estiver carregando e houver resultados -->
-        <div *ngIf="!isLoading && giftCards.length > 0" class="row">
-            <div class="cards">
-                <a *ngFor="let gc of giftCards" [routerLink]="['/product-page', gc.id]" class="gift-card-link">
-                    <app-gift-card-template 
-                        [gcName]="gc.title"
-                        [gcText]="'R$ ' + (gc.valor | number:'1.2-2')" 
-                        [gcImg]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl"
-                        [gcImgAlt]="gc.title">
-                    </app-gift-card-template>
-                </a>
+        <div *ngIf="!isLoading && visibleGiftCards.length > 0">
+            <div class="row">
+                <div class="cards">
+                    <a *ngFor="let gc of visibleGiftCards" [routerLink]="['/product-page', gc.id]" class="gift-card-link">
+                        <app-gift-card-template 
+                            [gcName]="gc.title"
+                            [gcText]="'R$ ' + (gc.valor | number:'1.2-2')" 
+                            [gcImg]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl"
+                            [gcImgAlt]="gc.title">
+                        </app-gift-card-template>
+                    </a>
+                </div>
+            </div>
+
+            <div *ngIf="hasMoreItems" class="load-more-container">
+                <button (click)="loadMore()" class="load-more-btn">Ver Mais</button>
             </div>
         </div>
     </div>

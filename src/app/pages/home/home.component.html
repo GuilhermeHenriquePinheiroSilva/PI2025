@@ -50,27 +50,25 @@
 </section>
 
 <section class="categorias" role="region" aria-labelledby="categoriasTitulo">
-  <p id="categoriasTitulo" class="sr-only">Categorias</p>
+  <p id="categoriasTitulo">Categorias</p>
   <section class="row">
     <section class="cards" role="group" aria-label="Lista de categorias de gift cards">
-      <app-gift-card-template [gcName]="'Games'" [gcImg]="'cards/Card_Games.jfif'"
-        [gcImgAlt]="'Categoria Games'"></app-gift-card-template>
-      <app-gift-card-template [gcName]="'Filmes'" [gcImg]="'cards/Card_Films.jfif'"
-        [gcImgAlt]="'Categoria Filmes'"></app-gift-card-template>
-      <app-gift-card-template [gcName]="'Música'" [gcImg]="'cards/Card_Music.jfif'"
-        [gcImgAlt]="'Categoria Música'"></app-gift-card-template>
-      <app-gift-card-template [gcName]="'Mercado'" [gcImg]="'cards/Card_Market.jfif'"
-        [gcImgAlt]="'Categoria Mercado'"></app-gift-card-template>
-      <app-gift-card-template [gcName]="'GiftCards'" [gcImg]="'cards/GiftCard_Mercado.jfif'"
-        [gcImgAlt]="'Categoria GiftCards'"></app-gift-card-template>
+      <a *ngFor="let category of randomCategories; let i = index" 
+         [routerLink]="['/search']" 
+         [queryParams]="{ category: category.id }" class="gift-card-link">
+        <app-gift-card-template 
+          [gcName]="category.name"
+          [bgColor]="getCategoryColor(i)">
+        </app-gift-card-template>
+      </a>
     </section>
   </section>
 </section>
 
 <section class="empresa" role="contentinfo" aria-label="Criação de gift cards para empresas">
   <div class="texto">
-    <a href="/adicionar-gc">Você tem uma empresa?<br>
-      <span>CRIE AQUI SEU GIFT CARD!</span>
+    <a href="/gc-guide">Você tem uma empresa?<br>
+      <span>CADASTRE SUA EMPRESA AQUI!</span>
     </a>
   </div>
 </section>

@@ -1,72 +1,34 @@
-// src/services/purchase.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CartItem } from './cart.service'; // Importe a interface CartItem
+import { CartItem } from './cart.service';
 
-// --- Interfaces ---
-export interface GiftCardInfo {
-    title: string;
-    valor: number;
-    imageUrl?: string;
-}
-
-export interface SoldGiftCard {
-    id: string;
-    code: string;
-    status: 'VALID' | 'USED' | 'EXPIRED' | 'PENDING';
-    purchase_date: string;
-    register_giftcard_id: string;
-    nota: number | null;
-    owner_id: number;
-    original_giftcard: GiftCardInfo;
-}
-
-export interface MercadoPagoPreference {
-    preference_id: string;
-    init_point: string;
+// Interface para a resposta da criação da preferência
+export interface PreferenceResponse {
+  preference_id: string;
+  init_point: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class PurchaseService {
-  private actionsApiUrl = '/api/actions';
-  private mercadoPagoApiUrl = '/api/mercadopago';
+  // A URL base agora aponta para o endpoint do Mercado Pago no seu backend
+  private apiUrl = '/api/mercadopago';
 
   constructor(private http: HttpClient) { }
 
   /**
-   * Cria uma preferência de pagamento para um ÚNICO item.
+   * Envia os itens do carrinho para o backend para criar uma preferência de pagamento no Mercado Pago.
+   * @param items Os itens do carrinho.
    */
-  createMercadoPagoPreference(giftcardId: string, quantity: number): Observable<MercadoPagoPreference> {
-    const params = new HttpParams().set('quantity', quantity.toString());
-    return this.http.post<MercadoPagoPreference>(`${this.mercadoPagoApiUrl}/create_preference/${giftcardId}`, {}, { params });
-  }
-
-  createCartPreference(cartItems: CartItem[]): Observable<MercadoPagoPreference> {
-    // Transforma os itens do carrinho para o formato que o backend espera
-    const payload = {
-      items: cartItems.map(item => ({
+  createCartPreference(items: CartItem[]): Observable<PreferenceResponse> {
+    const body = {
+      items: items.map(item => ({
         product_id: item.product.id,
         quantity: item.quantity
       }))
     };
-    // Chama o novo endpoint do backend que criamos
-    return this.http.post<MercadoPagoPreference>(`${this.mercadoPagoApiUrl}/create_preference_cart`, payload);
-  }
-
-
-  getMyPurchases(): Observable<SoldGiftCard[]> {
-    return this.http.get<SoldGiftCard[]>(`${this.actionsApiUrl}/my-purchases`);
-  }
-
-  validateCode(code: string): Observable<any> {
-    return this.http.post(`${this.actionsApiUrl}/validate/${code}`, {});
-  }
-
-  rateGiftCard(soldGiftCardId: string, nota: number): Observable<{ message: string }> {
-    const payload = { nota: nota };
-    return this.http.post<{ message: string }>(`${this.actionsApiUrl}/rate/${soldGiftCardId}`, payload);
+    return this.http.post<PreferenceResponse>(`${this.apiUrl}/create_preference_cart`, body);
   }
 }

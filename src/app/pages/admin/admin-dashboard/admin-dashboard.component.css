@@ -1,26 +1,112 @@
-/* Estilos para o painel de administração */
+/* Estilos gerais do painel */
 .admin-dashboard {
-  margin-top: 16vh;
+  margin-top: 12vh;
   padding: 2rem;
-  background-color: transparent;
   min-height: 80vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-dashboard h1, .admin-dashboard .lead {
+  text-align: center;
 }
 
 .admin-dashboard h1 {
   color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.admin-dashboard .lead {
+  color: var(--smoke-white);
+  margin-bottom: 3rem;
+}
+
+/* Container Flexbox para os cards */
+.card-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+/* Estilização específica para os cards do admin */
+.admin-card {
+  background-color: var(--brown);
+  border: 1px solid var(--dark-brown);
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 320px; /* Largura base do card */
+  padding: 2rem;
+  display: flex; /* Essencial para o layout interno */
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  
+  /* Anula os estilos globais problemáticos de styles.css */
+  height: auto; /* Remove a altura fixa */
+  overflow: visible; /* Garante que o conteúdo não seja cortado */
+}
+
+.admin-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card-content {
+  flex-grow: 1; /* Empurra o botão para a parte inferior */
+}
+
+.card-icon {
+  font-size: 3.5rem;
+  color: var(--orange);
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--orange);
-  padding-bottom: 0.5rem;
 }
 
-.card{
-  margin-top: 10vh;
-  width: 100%;
-  height: auto;
+.card-title {
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--white);
+  margin-bottom: 0.75rem;
 }
 
-.btn{
-  margin-top: 2vh;
+.card-text {
+  color: var(--smoke-white);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.btn {
   background-color: var(--orange);
   color: var(--white);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  border: none;
+  width: 100%;
+  margin-top: 1.5rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+  background-color: var(--dark-orange);
+}
+
+/* Estilo para cards/botões desativados */
+.admin-card.disabled {
+  background-color: #4a3e36;
+  pointer-events: none;
+}
+
+.admin-card.disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn.disabled {
+  background-color: var(--light-brown);
+  color: #9e8a7d;
+  cursor: not-allowed;
 }

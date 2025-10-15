@@ -1,171 +1,93 @@
-<!-- <div class="container">
-    <h1>Minhas Compras</h1>
-    <p>Aqui estão todos os códigos de gift cards que você já comprou.</p>
-  
-    <div *ngIf="isLoading" class="loading-indicator">Carregando...</div>
+<div class="container">
+  <h1>Minhas Compras</h1>
+  <p>Aqui está todo o seu histórico de pedidos.</p>
 
-    <div *ngIf="!isLoading && purchasedCards.length > 0" class="table-section">
-      <h2>Compras Confirmadas</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Produto</th>
-            <th>Valor</th>
-            <th>Data da Compra</th>
-            <th class="cod">Código</th>
-            <th>Status</th>
-            <th>Sua Avaliação</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let card of purchasedCards">
-            <td>{{ card.original_giftcard.title }}</td>
-            <td>{{ card.original_giftcard.valor | currency:'BRL' }}</td>
-            <td>{{ card.purchase_date | date:'dd/MM/yyyy' }}</td>
-            
-            <td class="code-cell" (click)="revealAndCopyCode(card)" title="Clique para revelar e copiar">
-              <div *ngIf="revealedCodeId === card.id; else placeholder">
-                <span class="revealed-code">{{ card.code }}</span>
-              </div>
-              <ng-template #placeholder>
-                <span class="placeholder-text">Clique para revelar</span>
-              </ng-template>
-            </td>
-    
-            <td>
-              <span class="status" [ngClass]="card.status.toLowerCase()">
-                {{ card.status }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <div *ngIf="!isLoading && pendingCards.length > 0" class="table-section">
-      <h2>Aguardando Confirmação</h2>
-      <p class="subtitle">Estas compras estão aguardando a confirmação do pagamento. Elas aparecerão na tabela de compras confirmadas assim que forem aprovadas.</p>
-      <table>
-        <thead>
-          <tr class="pending-header">
-            <th>Produto</th>
-            <th>Valor</th>
-            <th>Data da Solicitação</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let card of pendingCards">
-            <td>{{ card.original_giftcard.title }}</td>
-            <td>{{ card.original_giftcard.valor | currency:'BRL' }}</td>
-            <td>{{ card.purchase_date | date:'dd/MM/yyyy' }}</td>
-            <td>
-              <span class="status pending">PENDENTE</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    
-  
-    <div *ngIf="!isLoading && purchasedCards.length === 0 && pendingCards.length === 0" class="empty-message">
-      <p>Você ainda não fez nenhuma compra.</p>
-    </div>
-  </div> -->
+  <div *ngIf="isLoading" class="loading-indicator">Carregando...</div>
 
-  <div class="container">
-    <h1>Minhas Compras</h1>
-    <p>Aqui estão todos os códigos de gift cards que você já comprou.</p>
-  
-    <div *ngIf="isLoading" class="loading-indicator">Carregando...</div>
-
-    <div *ngIf="!isLoading && purchasedCards.length > 0" class="table-section">
-      <h2>Compras Confirmadas</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Produto</th>
-            <th>Valor</th>
-            <th>Data da Compra</th>
-            <th class="cod">Código</th>
-            <th>Status</th>
-            <th>Sua Avaliação</th> </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let card of purchasedCards">
-            <td>{{ card.original_giftcard.title }}</td>
-            <td>{{ card.original_giftcard.valor | currency:'BRL' }}</td>
-            <td>{{ card.purchase_date | date:'dd/MM/yyyy' }}</td>
-            
-            <td class="code-cell" (click)="revealAndCopyCode(card)" title="Clique para revelar e copiar">
-              <div *ngIf="revealedCodeId === card.id; else placeholder">
-                <span class="revealed-code">{{ card.code }}</span>
-              </div>
-              <ng-template #placeholder>
-                <span class="placeholder-text">Clique para revelar</span>
-              </ng-template>
-            </td>
-    
-            <td>
-              <span class="status" [ngClass]="card.status.toLowerCase()">
-                {{ card.status }}
-              </span>
-            </td>
-
-            <td>
-              <div class="rating-container">
-                <div *ngIf="card.nota" class="rated-text">
-                  <span class="star-icon">★</span>
-                  <span>{{ card.nota }} / 5</span>
+  <div *ngIf="!isLoading && approvedOrders.length > 0" class="table-section">
+    <h2>Pedidos Aprovados</h2>
+    <div *ngFor="let order of approvedOrders" class="order-card">
+      <div class="order-header">
+        <div>
+          <strong>Pedido:</strong> #{{ order.id.split('-')[0] }}
+        </div>
+        <div>
+          <strong>Data:</strong> {{ order.created_at | date:'dd/MM/yyyy' }}
+        </div>
+        <div>
+          <strong>Total:</strong> {{ order.total_amount | currency:'BRL' }}
+        </div>
+        <div>
+            <span class="status approved">{{ translateStatus(order.status) }}</span>
+        </div>
+      </div>
+      <div class="order-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Valor Unit.</th>
+              <th class="cod">Códigos</th>
+              <th>Status do Código</th> </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.items">
+              <td>{{ item.original_giftcard.title }}</td>
+              <td>{{ item.unit_price | currency:'BRL' }}</td>
+              <td class="code-cell" (click)="revealAndCopyCodes(item)" title="Clique para revelar e copiar">
+                <div *ngIf="isRevealed(item.id); else placeholder">
+                  <span class="revealed-code">{{ revealedCodes[item.id] }}</span>
                 </div>
-  
-                <div *ngIf="!card.nota" 
-                     class="rating-stars" 
-                     (mouseleave)="setHoveredRating(0)">
-                  <span *ngFor="let i of [5, 4, 3, 2, 1]"
-                        class="star"
-                        (mouseover)="setHoveredRating(i)"
-                        (click)="rateProduct(card, i)"
-                        [style.color]="i <= (hoveredRating || 0) ? 'var(--orange)' : '#ccc'">
-                    ★
-                  </span>
-                </div>
-              </div>
-            </td>
+                <ng-template #placeholder>
+                  <span class="placeholder-text">Clique para revelar</span>
+                </ng-template>
+              </td>
+              <td>
+                <span class="status" [ngClass]="item.status.toLowerCase()">
+                  {{ translateStatus(item.status) }}
+                </span>
+              </td>
             </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <div *ngIf="!isLoading && pendingCards.length > 0" class="table-section">
-      <h2>Aguardando Confirmação</h2>
-      <p class="subtitle">Estas compras estão aguardando a confirmação do pagamento. Elas aparecerão na tabela de compras confirmadas assim que forem aprovadas.</p>
-      <table>
-        <thead>
-          <tr class="pending-header">
-            <th>Produto</th>
-            <th>Valor</th>
-            <th>Data da Solicitação</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let card of pendingCards">
-            <td>{{ card.original_giftcard.title }}</td>
-            <td>{{ card.original_giftcard.valor | currency:'BRL' }}</td>
-            <td>{{ card.purchase_date | date:'dd/MM/yyyy' }}</td>
-            <td>
-              <span class="status pending">PENDENTE</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    
-  
-    <div *ngIf="!isLoading && purchasedCards.length === 0 && pendingCards.length === 0" class="empty-message">
-      <p>Você ainda não fez nenhuma compra.</p>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
+
+  <div *ngIf="!isLoading && pendingOrders.length > 0" class="table-section">
+    <h2>Aguardando Confirmação</h2>
+    <p class="subtitle">Estes pedidos aguardam a confirmação do pagamento.</p>
+     <div *ngFor="let order of pendingOrders" class="order-card pending">
+      <div class="order-header">
+        <div><strong>Pedido:</strong> #{{ order.id.split('-')[0] }}</div>
+        <div><strong>Data:</strong> {{ order.created_at | date:'dd/MM/yyyy' }}</div>
+        <div><strong>Total:</strong> {{ order.total_amount | currency:'BRL' }}</div>
+        <div>
+            <span class="status pending">{{ translateStatus(order.status) }}</span>
+        </div>
+      </div>
+      <div class="order-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Qtd.</th>
+              <th>Valor Unit.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.items">
+              <td>{{ item.original_giftcard.title }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unit_price | currency:'BRL' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && approvedOrders.length === 0 && pendingOrders.length === 0" class="empty-message">
+    <p>Você ainda não fez nenhuma compra.</p>
+  </div>
+</div>
