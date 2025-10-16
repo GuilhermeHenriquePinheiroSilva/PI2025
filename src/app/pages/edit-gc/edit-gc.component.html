@@ -38,7 +38,7 @@
                   <label class="radio-button-container">
                     <input type="radio" name="valorGiftCard" [value]="valorOpt" [(ngModel)]="valorSelecionado"
                       [id]="'valor-' + valorOpt" [attr.aria-label]="'Selecionar valor R$ ' + valorOpt" required>
-                    <span class="checkmark"></span> 
+                    <span class="checkmark"></span>
                   </label>
                 </td>
                 <td>
@@ -142,7 +142,11 @@
         </section>
       </section>
 
-      <button type="submit" aria-label="Cadastrar gift-card">Salvar Alterações</button>
+      <button type="submit" aria-label="Salvar alterações do gift-card" [disabled]="isUploading">
+        <span *ngIf="isUploading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span *ngIf="isUploading"> Salvando...</span>
+        <span *ngIf="!isUploading">Salvar Alterações</span>
+      </button>
     </section>
   </form>
 

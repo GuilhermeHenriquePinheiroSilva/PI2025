@@ -32,6 +32,8 @@ export class AddGcComponent implements OnInit {
   imageSrc: string | null = null;
   selectedFile: File | null = null;
 
+  isUploading: boolean = false;
+
   // --- CAMPOS DE CATEGORIA ---
   categories: Category[] = [];
   categoryId: number | null = null; // Adicione esta linha para guardar o ID da categoria selecionada
@@ -111,32 +113,28 @@ export class AddGcComponent implements OnInit {
       return;
     }
 
-    const formData = new FormData();
+    this.isUploading = true; // <-- ATIVA O CARREGAMENTO AQUI
 
+    const formData = new FormData();
     formData.append('title', this.titulo);
     formData.append('valor', this.valorSelecionado.toString());
     formData.append('description', this.descricao);
     formData.append('quantityavailable', this.quantidade.toString());
     formData.append('generaterandomly', String(this.gerarCodigo));
     formData.append('ativo', String(this.ativo));
-
-    // --- ALTERAÇÃO AQUI: Adicione o ID da categoria ao FormData ---
     if (this.categoryId !== null) {
       formData.append('category_id', this.categoryId.toString());
     }
-
     if (this.validade) {
       formData.append('validade', this.validade);
     }
     if (this.nota !== null) {
       formData.append('nota', this.nota.toString());
     }
-
     if (!this.gerarCodigo) {
       const validCodes = this.codigosManuais.split(';').filter(codigo => codigo.trim() !== '').join(';');
       formData.append('codes', validCodes);
     }
-
     if (this.selectedFile) {
       formData.append('image', this.selectedFile, this.selectedFile.name);
     }
@@ -144,27 +142,14 @@ export class AddGcComponent implements OnInit {
     this.giftcardService.createGiftCard(formData).subscribe({
       next: () => {
         this.notificationService.show('Gift Card cadastrado com sucesso!', 'success');
-        // Limpar o formulário
-        this.titulo = '';
-        this.descricao = '';
-        this.quantidade = 1;
-        this.valorSelecionado = null;
-        this.gerarCodigo = true;
-        this.codigosManuais = '';
-        this.imageSrc = null;
-        this.selectedFile = null;
-        this.ativo = true;
-        this.validade = '';
-        this.nota = null;
-
-        // --- ALTERAÇÃO AQUI: Limpe a categoria selecionada ---
-        this.categoryId = null;
-
         this.router.navigate(['/dashboard-gc']);
+        this.isUploading = false; // <-- DESATIVA O CARREGAMENTO NO SUCESSO
       },
       error: (error) => {
-        this.notificationService.show('Ocorreu um erro ao cadastrar o Gift Card. Verifique se está logado.', 'error');
-        console.error('Erro ao criar Gift Card:', error);
+        // --- LÓGICA DE ERRO ATUALIZADA ---
+        const errorMessage = error.error?.detail || 'Ocorreu um erro ao cadastrar o Gift Card.';
+        this.notificationService.show(errorMessage, 'error');
+        this.isUploading = false; // <-- DESATIVA O CARREGAMENTO NO ERRO
       }
     });
   }

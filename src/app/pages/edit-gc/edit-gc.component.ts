@@ -28,6 +28,7 @@ export class EditGcComponent implements OnInit {
   imageSrc: string | null = null;
   selectedFile: File | null = null;
   isLoading: boolean = true;
+  isUploading: boolean = false;
 
   // --- NOVOS CAMPOS ADICIONADOS ---
   ativo: boolean = true;
@@ -112,14 +113,14 @@ export class EditGcComponent implements OnInit {
       return;
     }
 
+    this.isUploading = true; // <-- ATIVA O CARREGAMENTO AQUI
+
     const formData = new FormData();
     formData.append('title', this.titulo);
     formData.append('valor', this.valorSelecionado.toString());
     formData.append('description', this.descricao);
     formData.append('quantityavailable', this.quantidade.toString());
     formData.append('generaterandomly', String(this.gerarCodigo));
-    
-    // --- ADICIONANDO OS NOVOS CAMPOS AO FORMDATA ---
     formData.append('ativo', String(this.ativo));
     if (this.validade) {
       formData.append('validade', this.validade);
@@ -127,12 +128,10 @@ export class EditGcComponent implements OnInit {
     if (this.nota !== null) {
       formData.append('nota', this.nota.toString());
     }
-
     if (!this.gerarCodigo) {
       const validCodes = this.codigosManuais.split(';').filter(c => c.trim() !== '').join(';');
       formData.append('codes', validCodes);
     }
-    
     if (this.selectedFile) {
       formData.append('image', this.selectedFile, this.selectedFile.name);
     }
@@ -141,10 +140,13 @@ export class EditGcComponent implements OnInit {
       next: () => {
         this.notificationService.show('Gift Card atualizado com sucesso!', "success");
         this.router.navigate(['/dashboard-gc']);
+        this.isUploading = false; // <-- DESATIVA O CARREGAMENTO NO SUCESSO
       },
       error: (err) => {
-        console.error("Erro ao atualizar o Gift Card:", err);
-        this.notificationService.show("Ocorreu um erro ao atualizar o Gift Card.", "error");
+        // --- LÓGICA DE ERRO ATUALIZADA ---
+        const errorMessage = err.error?.detail || "Ocorreu um erro ao atualizar o Gift Card.";
+        this.notificationService.show(errorMessage, "error");
+        this.isUploading = false; // <-- DESATIVA O CARREGAMENTO NO ERRO
       }
     });
   }

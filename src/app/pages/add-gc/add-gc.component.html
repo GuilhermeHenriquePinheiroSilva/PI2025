@@ -143,7 +143,11 @@
       </section>
     </section>
 
-    <button type="submit" aria-label="Cadastrar gift-card">Cadastrar</button>
+    <button type="submit" aria-label="Cadastrar gift-card" [disabled]="isUploading">
+    <span *ngIf="isUploading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    <span *ngIf="isUploading"> Processando...</span>
+    <span *ngIf="!isUploading">Cadastrar</span>
+</button>
   </section>
 </form>
 
