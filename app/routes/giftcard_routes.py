@@ -6,6 +6,9 @@ from sqlalchemy import asc, func, desc
 from typing import List, Optional
 from decimal import Decimal
 from datetime import date
+from PIL import Image, ImageOps
+from nsfw_image_detector import NSFWDetector
+from io import BytesIO
 
 from app.database.db_config import get_db
 from app.enums.sold_status import SoldStatus
@@ -23,6 +26,33 @@ router = APIRouter(
 UPLOAD_DIRECTORY = "uploads"
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
+
+nsfw_detector = NSFWDetector()
+
+def process_and_save_image(image_data: BytesIO, output_path: str):
+    """
+    Redimensiona, corta para 740x740, comprime e salva a imagem.
+    """
+    try:
+        image_data.seek(0)
+        img = Image.open(image_data)
+        
+        if img.mode in ("RGBA", "P"):
+            img = img.convert("RGB")
+            
+        # --- ALTERAÇÃO APLICADA AQUI ---
+        # Usa ImageOps.fit para redimensionar e cortar a imagem para exatamente 740x740
+        # a partir do centro, sem distorcer.
+        img_quadrada = ImageOps.fit(img, (740, 740), Image.Resampling.LANCZOS)
+        # ------------------------------------
+        
+        img_quadrada.save(output_path, "JPEG", optimize=True, quality=85)
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao processar a imagem: {e}"
+        )
 
 @router.post("/", response_model=RegisterGiftCard, status_code=status.HTTP_201_CREATED)
 async def create_giftcard(
@@ -42,11 +72,33 @@ async def create_giftcard(
 ):
     image_url = None
     if image:
-        file_extension = os.path.splitext(image.filename)[1]
-        image_name = f"{uuid.uuid4()}{file_extension}"
+        image_bytes = await image.read()
+        image_stream = BytesIO(image_bytes)
+
+        # --- CORREÇÃO APLICADA AQUI ---
+        # 1. Abre a imagem com Pillow antes de validar
+        try:
+            pil_image = Image.open(image_stream)
+            # O detector espera um objeto de imagem PIL, não bytes
+            is_nsfw = nsfw_detector.is_nsfw(pil_image)
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Arquivo de imagem inválido ou corrompido: {e}"
+            )
+
+        if is_nsfw:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="A imagem contém conteúdo impróprio e não pode ser enviada."
+            )
+        # -------------------------------------------
+
+        image_name = f"{uuid.uuid4()}.jpg"
         file_path = os.path.join(UPLOAD_DIRECTORY, image_name)
-        with open(file_path, "wb") as buffer:
-            buffer.write(await image.read())
+
+        # 2. Processa e salva a imagem (a função já usa BytesIO, então reutilizamos o stream)
+        process_and_save_image(image_stream, file_path)
         image_url = image_name
 
     db_giftcard = RegisterGiftCardORM(
@@ -93,14 +145,34 @@ async def update_giftcard(
 
     image_url = db_giftcard.imageUrl
     if image:
+        image_bytes = await image.read()
+        image_stream = BytesIO(image_bytes)
+
+        # --- CORREÇÃO APLICADA AQUI TAMBÉM ---
+        # 1. Validação de conteúdo sensível para a nova imagem
+        try:
+            pil_image = Image.open(image_stream)
+            is_nsfw = nsfw_detector.is_nsfw(pil_image)
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Arquivo de imagem inválido ou corrompido: {e}"
+            )
+        
+        if is_nsfw:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="A nova imagem contém conteúdo impróprio."
+            )
+
+        # 2. Se a imagem for válida, remove a imagem antiga
         if image_url and os.path.exists(os.path.join(UPLOAD_DIRECTORY, image_url)):
             os.remove(os.path.join(UPLOAD_DIRECTORY, image_url))
         
-        file_extension = os.path.splitext(image.filename)[1]
-        image_name = f"{uuid.uuid4()}{file_extension}"
+        # 3. Processa e salva a nova imagem
+        image_name = f"{uuid.uuid4()}.jpg"
         file_path = os.path.join(UPLOAD_DIRECTORY, image_name)
-        with open(file_path, "wb") as buffer:
-            buffer.write(await image.read())
+        process_and_save_image(image_stream, file_path)
         image_url = image_name
     
     db_giftcard.title = title
@@ -112,8 +184,8 @@ async def update_giftcard(
     db_giftcard.quantityavailable = quantityavailable
     db_giftcard.generaterandomly = generaterandomly
     db_giftcard.codes = codes
-    db_giftcard.imageUrl = image_url,
-    category_id=category_id
+    db_giftcard.imageUrl = image_url
+    db_giftcard.category_id = category_id
 
     db.commit()
     db.refresh(db_giftcard)

@@ -35,7 +35,7 @@ app = FastAPI(
 # Permite a comunicação entre o seu front-end Angular e o back-end
 origins = [
     "http://localhost:4200",
-    "https://21bc0419e35d.ngrok-free.app", # <-- Adicione a URL https do seu ngrok aqui
+    "https://9ca33c3f7d0d.ngrok-free.app", # <-- Adicione a URL https do seu ngrok aqui
 ]
 
 app.add_middleware(

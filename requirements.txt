@@ -73,3 +73,5 @@ zstandard==0.24.0
 langchain-google-genai
 fastapi-mail
 APScheduler==3.10.0
+Pillow
+nsfw-image-detector==0.1.2

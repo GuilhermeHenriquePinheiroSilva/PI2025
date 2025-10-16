@@ -41,7 +41,6 @@ async def process_successful_order(db: Session, order: OrderORM):
     order.status = OrderStatus.APPROVED
     for item in order.items:
         giftcard = item.original_giftcard
-        # ... (lógica de atribuição de códigos)
         if giftcard.generaterandomly:
             item.final_giftcard_codes = str(uuid.uuid4())
         else:
