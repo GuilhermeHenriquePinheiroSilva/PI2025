@@ -28,6 +28,7 @@
 
 .containerMobile .header {
     padding-top: 16vh;
+    position:relative;
 }
 
 .table{
@@ -302,12 +303,16 @@ td img {
 
 @media (max-width: 768px) {
     .containerPc {
-        display: none;
+        display: none !important;
     }
 
     .containerMobile {
         display: block;
         padding: 0;
         width: 100%;
+    }
+
+    svg{
+        margin: 2vh 0;
     }
 }

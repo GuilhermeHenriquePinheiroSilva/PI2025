@@ -7,7 +7,7 @@
     align-items: center;
 }
 
-.container{
+.container {
     margin: 0;
     height: 100%;
     width: 100%;
@@ -20,29 +20,29 @@
     max-width: fit-content;
 }
 
-.contato{
+.contato {
     display: flex;
     flex-direction: column;
     gap: 1vh;
 }
 
-.info{
+.info {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 2vh;
 }
 
-.info a{
+.info a {
     color: var(--orange);
 }
 
-.info a:hover{
+.info a:hover {
     cursor: pointer;
     filter: brightness(0.9);
 }
 
-.info svg{
+.info svg {
     border-radius: 50%;
     width: 6vh;
     height: 6vh;
@@ -50,25 +50,25 @@
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.tInfo{
+.tInfo {
     text-align: left;
     font-size: 0.8rem;
 }
 
-.pInfo{
+.pInfo {
     font-size: 1rem;
     font-weight: bold;
 }
 
-.bi-telephone-fill{
+.bi-telephone-fill {
     padding: 1vh;
 }
 
-.about{ 
-    grid-column: 2 / 3;     
-    grid-row: 1 / 2;        
+.about {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
     justify-self: center;
-    align-self: center;   
+    align-self: center;
     display: grid;
     grid-template-rows: 20% 60% 20%;
     justify-items: start;
@@ -78,52 +78,89 @@
     text-align: left;
 }
 
-.title{
+.title {
     font-size: 1.2rem;
     font-weight: bold;
 }
 
-.desc{
+.desc {
     font-size: 0.8rem;
 }
 
-.links{
+.links {
     display: flex;
     flex-direction: row;
     justify-content: center;
     gap: 1vh;
 }
 
-.links a{
+.links a {
     transition: all 0.2s ease;
 }
 
-.links a:hover{
+.links a:hover {
     transform: scale(1.1);
 }
 
-.links svg{
+.links svg {
     background-color: rgba(0, 0, 0, 0.5);
     padding: 1vh;
     width: 5vh;
     height: 5vh;
 }
 
-.links a, .links svg{
+.links a,
+.links svg {
     color: var(--white);
     fill: var(--white);
 }
 
-.formas-pgmt{
+.formas-pgmt {
     justify-self: end;
     width: fit-content;
-    height: 60%;
+    height: auto;
+    max-height: 80%;
     background-color: rgb(255, 231, 0);
     border-radius: 2vh;
 
 }
 
-.formas-pgmt img{
-    height: 100%;
+.formas-pgmt img {
+    height: fit-content;
+    width: 100%;
     object-fit: cover;
+}
+
+@media (max-width:768px) {
+    .rodape {
+        height: fit-content;
+        padding: 2vh 0;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 2vh;
+        padding: 0;
+    }
+
+    .about {
+        text-align: center;
+        display: flex;
+        gap: 2vh;
+    }
+
+    .formas-pgmt {
+        width: 100%;
+        height: auto;
+        max-height: 20vh;
+    }
+
+    .formas-pgmt img {
+        object-fit: cover;
+        height: auto;
+        max-height: 20vh;
+        width: 100%;
+    }
+
 }
