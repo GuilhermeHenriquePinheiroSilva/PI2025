@@ -12,7 +12,7 @@ from datetime import datetime, timedelta, timezone
 
 from app.database.db_config import get_db
 from app.models.giftcard_orm import RegisterGiftCardORM
-from app.models.user_orm import UserORM
+from app.models.user_orm import UserORM # Importação para o joinedload
 from app.security import get_current_user
 from app.services.email_service import send_email_with_template
 from app.models.order_orm import OrderORM, OrderItemORM, OrderStatus
@@ -39,9 +39,10 @@ class CartCheckout(BaseModel):
 
 
 # --- FUNÇÕES AUXILIARES DE E-MAIL ---
+# (Já atualizadas para usar order.owner.username)
 def send_payment_pending_email(background_tasks: BackgroundTasks, order: OrderORM, items_details: List[dict]):
     email_body = {
-        "username": order.owner_name,
+        "username": order.owner.username, # Busca o nome pelo relacionamento
         "order_id": str(order.id),
         "items": items_details,
         "total_price": float(order.total_amount)
@@ -63,15 +64,15 @@ def send_purchase_confirmation_email(background_tasks: BackgroundTasks, order: O
             "subtotal": float(item.unit_price * item.quantity)
         } for item in order.items
     ]
-    
+
     email_body = {
-        "username": order.owner_name,
+        "username": order.owner.username, # Busca o nome pelo relacionamento
         "order_id": str(order.id),
         "items": items_details,
         "total_price": float(order.total_amount),
         "base_url": base_url
     }
-    
+
     background_tasks.add_task(
         send_email_with_template,
         subject="Sua Compra na GoGift foi Confirmada!",
@@ -82,7 +83,7 @@ def send_purchase_confirmation_email(background_tasks: BackgroundTasks, order: O
 
 def send_payment_rejected_email(background_tasks: BackgroundTasks, order: OrderORM, reason: str):
     email_body = {
-        "username": order.owner_name,
+        "username": order.owner.username, # Busca o nome pelo relacionamento
         "order_id": str(order.id).split('-')[0], # ID do Pedido adicionado
         "transaction_id": order.mercadopago_transaction_id or "N/A",
         "rejection_reason": reason
@@ -101,7 +102,7 @@ def send_payment_rejected_email(background_tasks: BackgroundTasks, order: OrderO
 @router.post("/create_preference_cart", status_code=status.HTTP_201_CREATED)
 async def create_preference_cart(
     cart: CartCheckout,
-    background_tasks: BackgroundTasks, 
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: UserORM = Depends(get_current_user)
 ):
@@ -109,51 +110,97 @@ async def create_preference_cart(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="O carrinho não pode estar vazio.")
 
     total_amount = Decimal("0.0")
-    order_items_to_create = []
+    order_items_to_create = [] # Armazena dados para criar OrderItemORM
     items_for_email = []
-    preference_items = [] # Movido para fora do loop
+    preference_items = []
+    # enterprise_id = None # Removido - não valida mais empresa única
 
     try:
         # 1. Validar estoque, calcular total e preparar dados
         for item in cart.items:
-            db_giftcard = db.query(RegisterGiftCardORM).filter(RegisterGiftCardORM.id == item.product_id).with_for_update().first()
-            if not db_giftcard or not db_giftcard.ativo:
+            # Carrega giftcard, usuário dono e detalhes da empresa
+            db_giftcard = db.query(RegisterGiftCardORM).options(
+                joinedload(RegisterGiftCardORM.user).joinedload(UserORM.enterprise_details)
+            ).filter(RegisterGiftCardORM.id == item.product_id).with_for_update().first()
+
+            if not db_giftcard:
+                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Gift Card com ID {item.product_id} não encontrado.")
+
+            # Valida se o gift card pertence a uma empresa
+            if not db_giftcard.user or not db_giftcard.user.enterprise_details:
+                logging.error(f"Giftcard {db_giftcard.id} não possui uma empresa associada.")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Este item não pode ser vendido.")
+
+            # Validação de empresa única REMOVIDA
+
+            if not db_giftcard.ativo:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Gift Card com ID {item.product_id} não está disponível.")
             if db_giftcard.quantityavailable < item.quantity:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Estoque insuficiente para '{db_giftcard.title}'.")
 
-            item_total = db_giftcard.valor * item.quantity
+            item_selling_price = db_giftcard.valor # Usa o preço de venda já calculado
+            item_total = item_selling_price * item.quantity
             total_amount += item_total
-            
-            # Adiciona o item à lista de preferência do MP
-            preference_items.append({"title": db_giftcard.title, "quantity": item.quantity, "unit_price": float(db_giftcard.valor), "currency_id": "BRL"})
+
+            preference_items.append({"title": db_giftcard.title, "quantity": item.quantity, "unit_price": float(item_selling_price), "currency_id": "BRL"})
             items_for_email.append({"title": db_giftcard.title, "quantity": item.quantity, "subtotal": float(item_total)})
 
-            # --- LÓGICA ALTERADA AQUI ---
-            # Adiciona os itens individualmente para salvar no banco
+            # Guarda os dados necessários para criar os OrderItemORM depois
+            item_enterprise_id = db_giftcard.user.enterprise_details.id # ID da empresa deste item
+            item_desired_amount = db_giftcard.desired_amount # Valor que a empresa quer receber
             for _ in range(item.quantity):
                 order_items_to_create.append({
-                    "giftcard": db_giftcard,
-                    "quantity": 1, # Quantidade é sempre 1 por item
-                    "unit_price": db_giftcard.valor
+                    "giftcard_id": db_giftcard.id,
+                    "enterprise_id": item_enterprise_id, # ID da empresa vendedora do item
+                    "quantity": 1,
+                    "unit_price": item_selling_price, # Preço de venda unitário
+                    "seller_amount": item_desired_amount, # Valor a ser repassado à empresa
+                    "giftcard_instance": db_giftcard # Referência para reserva de estoque
                 })
 
         # 2. Criar o Pedido (Order) com status PENDENTE
-        new_order = OrderORM(owner_id=current_user.id, owner_name=current_user.username, total_amount=total_amount, status=OrderStatus.PENDING)
+        new_order = OrderORM(
+            owner_id=current_user.id,
+            # owner_name=current_user.username, # Removido
+            total_amount=total_amount, # Total baseado nos preços de venda
+            status=OrderStatus.PENDING
+        )
         db.add(new_order)
-        db.flush() 
-        new_order.owner = current_user
+        db.flush()
+        new_order.owner = current_user # Associa para e-mails
 
-        # 3. Criar os Itens do Pedido (OrderItems) individualmente e reservar o estoque
-        total_quantity_reserved = 0
+        # 3. Criar os Itens do Pedido (OrderItems) e reservar estoque
+        giftcards_stock_to_update = {} # {giftcard_id: quantity_to_reduce}
         if order_items_to_create:
-            first_giftcard = order_items_to_create[0]["giftcard"]
             for item_data in order_items_to_create:
-                db.add(OrderItemORM(order_id=new_order.id, register_giftcard_id=item_data["giftcard"].id, quantity=1, unit_price=item_data["unit_price"]))
-                total_quantity_reserved += 1
-            
-            # Reserva o estoque de uma vez
-            first_giftcard.quantityavailable -= total_quantity_reserved
+                db.add(OrderItemORM(
+                    order_id=new_order.id,
+                    register_giftcard_id=item_data["giftcard_id"],
+                    enterprise_id=item_data["enterprise_id"], # Salva o ID da empresa no item
+                    quantity=item_data["quantity"], # Sempre 1 neste loop
+                    unit_price=item_data["unit_price"], # Preço de venda
+                    seller_amount=item_data["seller_amount"] # Valor do vendedor
+                ))
+                # Agrupa a quantidade a ser reduzida por giftcard
+                gc_id = item_data["giftcard_id"]
+                giftcards_stock_to_update[gc_id] = giftcards_stock_to_update.get(gc_id, 0) + 1
+
+            # Reserva o estoque para cada gift card afetado
+            for gc_id, qty_reduce in giftcards_stock_to_update.items():
+                 # Encontra a instância do giftcard (usando a referência salva)
+                 giftcard_instance = next((item["giftcard_instance"] for item in order_items_to_create if item["giftcard_id"] == gc_id), None)
+                 if giftcard_instance:
+                     # Garante que não haja condição de corrida lendo o valor atual antes de subtrair
+                     current_quantity = db.query(RegisterGiftCardORM.quantityavailable).filter(RegisterGiftCardORM.id == gc_id).scalar()
+                     if current_quantity is not None and current_quantity >= qty_reduce:
+                         giftcard_instance.quantityavailable = current_quantity - qty_reduce
+                     else:
+                         # Isso não deveria acontecer devido à validação anterior, mas é uma segurança extra
+                         db.rollback()
+                         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Erro de concorrência no estoque para '{giftcard_instance.title}'. Tente novamente.")
+                 else:
+                     # Fallback improvável: Rebusca e atualiza
+                     db.query(RegisterGiftCardORM).filter(RegisterGiftCardORM.id == gc_id).update({"quantityavailable": RegisterGiftCardORM.quantityavailable - qty_reduce}, synchronize_session=False)
 
 
         send_payment_pending_email(background_tasks, new_order, items_for_email)
@@ -164,7 +211,7 @@ async def create_preference_cart(
         expiration_time_iso = expiration_time.isoformat("T", "milliseconds").replace('+00:00', 'Z')
 
         preference_data = {
-            "items": preference_items,
+            "items": preference_items, # Contém os preços de venda corretos
             "back_urls": {"success": f"{base_url}/minhas-compras", "failure": f"{base_url}/cart", "pending": f"{base_url}/minhas-compras"},
             "auto_return": "approved",
             "external_reference": str(new_order.id),
@@ -182,6 +229,9 @@ async def create_preference_cart(
 
         return {"preference_id": preference_response["response"]["id"], "init_point": preference_response["response"]["init_point"]}
 
+    except HTTPException as http_exc: # Captura HTTPExceptions primeiro para não logar como crítico
+        db.rollback()
+        raise http_exc # Re-levanta a exceção HTTP para o FastAPI tratar
     except Exception as e:
         db.rollback()
         logging.critical(f"Erro ao criar preferência: {e}", exc_info=True)
@@ -208,7 +258,22 @@ async def mercadopago_webhook(request: Request, background_tasks: BackgroundTask
         order_id_str = payment_info.get("external_reference")
         payment_status = payment_info.get("status")
 
-        order = db.query(OrderORM).options(joinedload(OrderORM.items).joinedload(OrderItemORM.original_giftcard), joinedload(OrderORM.owner)).filter(OrderORM.id == order_id_str).first()
+        net_received_amount = None
+        if payment_info.get("transaction_details"):
+            net_raw = payment_info.get("transaction_details", {}).get("net_received_amount")
+            if net_raw is not None:
+                try:
+                    # Converte o valor (que pode ser float ou int) para Decimal
+                    net_received_amount = Decimal(str(net_raw))
+                except Exception:
+                    logging.warning(f"Não foi possível converter net_received_amount '{net_raw}' para Decimal.")
+
+        # Carrega o Pedido, seus Itens, o Gift Card original E o Comprador (owner)
+        order = db.query(OrderORM).options(
+            joinedload(OrderORM.items).joinedload(OrderItemORM.original_giftcard),
+            joinedload(OrderORM.owner) # Essencial para as funções de e-mail
+        ).filter(OrderORM.id == order_id_str).first()
+
         if not order or order.status != OrderStatus.PENDING:
             logging.warning(f"Pedido {order_id_str} não encontrado ou já processado.")
             return Response(status_code=status.HTTP_200_OK)
@@ -217,46 +282,80 @@ async def mercadopago_webhook(request: Request, background_tasks: BackgroundTask
 
         if payment_status == "approved":
             order.status = OrderStatus.APPROVED
-            
-            # --- LÓGICA DE ATRIBUIÇÃO DE CÓDIGOS SIMPLIFICADA ---
+            order.net_amount = net_received_amount # Salva o valor líquido
+
+            # --- LÓGICA DE ATRIBUIÇÃO DE CÓDIGOS ---
             for item in order.items:
                 giftcard = item.original_giftcard
-                
+
                 if giftcard.generaterandomly:
                     while True:
                         new_code = str(uuid.uuid4())
+                        # Verifica se o código já existe em QUALQUER item de pedido
                         exists = db.query(OrderItemORM.id).filter(OrderItemORM.final_giftcard_codes.like(f"%{new_code}%")).first()
                         if not exists:
                             item.final_giftcard_codes = new_code
                             break
                 else:
+                    # Garante que estamos pegando a lista atual de códigos do BD
+                    db.refresh(giftcard)
                     all_codes = {code.strip() for code in (giftcard.codes or "").split(';') if code.strip()}
+
+                    # Busca códigos já vendidos E APROVADOS para ESTE TIPO de gift card
                     sold_codes_query = db.query(OrderItemORM.final_giftcard_codes).join(OrderORM).filter(
                         OrderItemORM.register_giftcard_id == giftcard.id,
-                        OrderORM.status == OrderStatus.APPROVED
+                        OrderORM.status == OrderStatus.APPROVED,
+                        OrderItemORM.final_giftcard_codes.isnot(None) # Ignora itens ainda não processados
                     ).all()
                     sold_codes = {c.strip() for codes, in sold_codes_query if codes for c in codes.split(';')}
-                    
+
                     available_codes = list(all_codes - sold_codes)
                     if not available_codes:
                         logging.error(f"Overbooking no pedido {order.id} para o item {giftcard.id}. ESTORNAR!")
-                        sdk.refund().create(payment_id)
-                        order.status = OrderStatus.REFUNDED
-                        break # Para o loop se um item falhar
-                    
+                        # Tenta estornar o pagamento
+                        try:
+                            sdk.refund().create(payment_id)
+                            order.status = OrderStatus.REFUNDED
+                            # Idealmente, notificar admin e talvez enviar e-mail ao usuário de erro
+                        except Exception as refund_error:
+                            logging.critical(f"FALHA AO ESTORNAR pagamento {payment_id} por overbooking: {refund_error}")
+                            # Marcar o pedido com um status especial ou logar para處理 manual
+                        break # Para o loop de itens se um falhar e for estornado
+
+                    # Atribui o primeiro código disponível
                     item.final_giftcard_codes = available_codes[0]
 
-            if order.status != OrderStatus.REFUNDED:
+            # Envia e-mail de confirmação apenas se o pedido não foi estornado
+            if order.status == OrderStatus.APPROVED:
                 send_purchase_confirmation_email(background_tasks, order)
 
-        elif payment_status in ["rejected", "cancelled", "refunded"]:
-            order.status = OrderStatus.REJECTED
-            for item in order.items:
-                item.original_giftcard.quantityavailable += item.quantity # Devolve 1 por item
-            
+        elif payment_status in ["rejected", "cancelled", "refunded", "charged_back"]: # Adicionado chargeback
+            # Se o pagamento falhou ou foi cancelado/estornado ANTES da nossa lógica,
+            # precisamos devolver o estoque que foi reservado.
+            original_status = order.status # Guarda o status caso precise saber se já foi processado
+            order.status = OrderStatus.REJECTED if payment_status not in ["refunded", "charged_back"] else OrderStatus.REFUNDED
+            order.net_amount = None
+
+            # Devolve o estoque reservado na criação da preferência SOMENTE SE o pedido ainda estava PENDENTE
+            if original_status == OrderStatus.PENDING:
+                giftcards_stock_to_return = {} # {giftcard_id: quantity_to_return}
+                for item in order.items:
+                    gc_id = item.register_giftcard_id
+                    giftcards_stock_to_return[gc_id] = giftcards_stock_to_return.get(gc_id, 0) + item.quantity
+
+                for gc_id, qty_return in giftcards_stock_to_return.items():
+                    # Usar synchronize_session='fetch' para garantir que a leitura ocorra antes da escrita na mesma transação
+                    db.query(RegisterGiftCardORM).filter(RegisterGiftCardORM.id == gc_id).update(
+                        {"quantityavailable": RegisterGiftCardORM.quantityavailable + qty_return},
+                        synchronize_session='fetch'
+                    )
+
             rejection_reason = payment_info.get("status_detail", "Motivo não especificado.")
-            send_payment_rejected_email(background_tasks, order, rejection_reason)
-        
+            # Envia email de rejeição se o status final for REJECTED
+            if order.status == OrderStatus.REJECTED:
+                 send_payment_rejected_email(background_tasks, order, rejection_reason)
+            # Poderia adicionar lógica para enviar e-mail específico de estorno/chargeback se necessário
+
         db.commit()
 
     except Exception as e:

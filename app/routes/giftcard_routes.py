@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status, UploadFile
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import asc, func, desc
 from typing import List, Optional
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 from PIL import Image, ImageOps
 from nsfw_image_detector import NSFWDetector
@@ -28,6 +28,36 @@ if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
 
 nsfw_detector = NSFWDetector()
+
+# --- DEFINIÇÃO DE TAXAS (EXEMPLOS - AJUSTE CONFORME NECESSÁRIO) ---
+# Taxa percentual do Mercado Pago (ex: 5% = 0.05)
+MP_FEE_PERCENTAGE = Decimal("0.05")
+# Taxa fixa do Mercado Pago (ex: R$ 0,60) - Se não houver, deixe como 0
+MP_FEE_FIXED = Decimal("0.60")
+# Comissão percentual da Plataforma GoGift (ex: 10% = 0.10)
+PLATFORM_COMMISSION_PERCENTAGE = Decimal("0.07")
+
+def calculate_selling_price(desired_amount: Decimal) -> Decimal:
+    if desired_amount <= 0:
+        return Decimal("0.00")
+
+    # 1. Adiciona a comissão da plataforma ao valor desejado
+    # amount_before_mp = desired_amount / (1 - PLATFORM_COMMISSION_PERCENTAGE)
+    # Garante que não haja divisão por zero ou valor negativo se a comissão for 100% ou mais
+    if PLATFORM_COMMISSION_PERCENTAGE >= 1:
+         raise ValueError("A comissão da plataforma não pode ser 100% ou mais.")
+    amount_before_mp = desired_amount / (Decimal("1.0") - PLATFORM_COMMISSION_PERCENTAGE)
+
+
+    # 2. Adiciona as taxas do Mercado Pago (fixa e percentual)
+    # selling_price = (amount_before_mp + MP_FEE_FIXED) / (1 - MP_FEE_PERCENTAGE)
+    # Garante que não haja divisão por zero ou valor negativo
+    if MP_FEE_PERCENTAGE >= 1:
+         raise ValueError("A taxa percentual do MP não pode ser 100% ou mais.")
+    selling_price = (amount_before_mp + MP_FEE_FIXED) / (Decimal("1.0") - MP_FEE_PERCENTAGE)
+
+    # Arredonda para 2 casas decimais (padrão monetário)
+    return selling_price.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 def process_and_save_image(image_data: BytesIO, output_path: str):
     """
@@ -57,7 +87,7 @@ def process_and_save_image(image_data: BytesIO, output_path: str):
 @router.post("/", response_model=RegisterGiftCard, status_code=status.HTTP_201_CREATED)
 async def create_giftcard(
     title: str = Form(...),
-    valor: Decimal = Form(...),
+    desired_amount: Decimal = Form(...),
     quantityavailable: int = Form(...),
     category_id: Optional[int] = Form(None),
     validade: Optional[date] = Form(None),
@@ -68,8 +98,15 @@ async def create_giftcard(
     codes: Optional[str] = Form(None),
     image: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db),
-    current_user: UserORM = Depends(get_current_user),
+    current_user: UserORM = Depends(enterprise_required),
 ):
+    try:
+        selling_price = calculate_selling_price(desired_amount)
+        if selling_price <= 0:
+             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="O valor desejado resulta em um preço de venda inválido após taxas.")
+    except ValueError as e:
+         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
     image_url = None
     if image:
         image_bytes = await image.read()
@@ -104,7 +141,8 @@ async def create_giftcard(
     db_giftcard = RegisterGiftCardORM(
         user_id=current_user.id,
         title=title,
-        valor=valor,
+        valor=selling_price, 
+        desired_amount=desired_amount,
         validade=validade,
         ativo=ativo,
         nota=nota,
@@ -123,9 +161,9 @@ async def create_giftcard(
 @router.put("/{giftcard_id}", response_model=RegisterGiftCard)
 async def update_giftcard(
     giftcard_id: uuid.UUID,
-    current_user: UserORM = Depends(get_current_user),
+    current_user: UserORM = Depends(enterprise_required),
     title: str = Form(...),
-    valor: Decimal = Form(...),
+    desired_amount: Decimal = Form(...),
     quantityavailable: int = Form(...),
     category_id: Optional[int] = Form(None),
     validade: Optional[date] = Form(None),
@@ -142,6 +180,13 @@ async def update_giftcard(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gift Card not found")
     if db_giftcard.user_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to perform this action")
+    
+    try:
+        selling_price = calculate_selling_price(desired_amount)
+        if selling_price <= 0:
+             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="O valor desejado resulta em um preço de venda inválido após taxas.")
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
     image_url = db_giftcard.imageUrl
     if image:
@@ -176,7 +221,8 @@ async def update_giftcard(
         image_url = image_name
     
     db_giftcard.title = title
-    db_giftcard.valor = valor
+    db_giftcard.valor = selling_price
+    db_giftcard.desired_amount = desired_amount
     db_giftcard.validade = validade
     db_giftcard.ativo = ativo
     db_giftcard.nota = nota

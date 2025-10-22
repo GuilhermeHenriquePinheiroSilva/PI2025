@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from app.database.db_config import Base
 from app.enums.roles import Role
 from app.enums.tags import Tag
+from app.models.order_orm import OrderORM
 
 class UserORM(Base):
     __tablename__ = "users"
@@ -27,4 +28,4 @@ class UserORM(Base):
     )
 
     enterprise_details = relationship("EmpresaORM", back_populates="user", uselist=False)
-    orders = relationship("OrderORM", back_populates="owner")
+    orders = relationship("OrderORM", back_populates="owner", foreign_keys="[OrderORM.owner_id]")

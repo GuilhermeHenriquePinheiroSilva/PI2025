@@ -17,8 +17,10 @@ class GiftCardInfo(BaseModel):
 class OrderItem(BaseModel):
     id: UUID
     register_giftcard_id: UUID
+    enterprise_id: int
     quantity: int
     unit_price: Decimal
+    seller_amount: Decimal
     final_giftcard_codes: Optional[str] = None
     used_codes: Optional[str] = None
     
@@ -33,7 +35,6 @@ class OrderItem(BaseModel):
 class Order(BaseModel):
     id: UUID
     owner_id: int
-    owner_name: str
     status: OrderStatus
     total_amount: Decimal
     created_at: datetime

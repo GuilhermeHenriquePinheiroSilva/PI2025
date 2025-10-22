@@ -27,9 +27,9 @@ class OrderORM(Base):
 
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    owner_name = Column(String(100), nullable=False)
     status = Column(SqlEnum(OrderStatus), nullable=False, default=OrderStatus.PENDING)
     total_amount = Column(Numeric(10, 2), nullable=False)
+    net_amount = Column(Numeric(10, 2), nullable=True)
     mercadopago_transaction_id = Column(String(255), index=True, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -43,9 +43,11 @@ class OrderItemORM(Base):
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     order_id = Column(GUID(), ForeignKey("orders.id"), nullable=False)
     register_giftcard_id = Column(GUID(), ForeignKey("register_giftcards.id"), nullable=False)
+    enterprise_id = Column(Integer, ForeignKey("enterprise.id"), nullable=False, index=True)
     
     quantity = Column(Integer, nullable=False)
     unit_price = Column(Numeric(10, 2), nullable=False)
+    seller_amount = Column(Numeric(10, 2), nullable=False)
 
     # --- CAMPOS ATUALIZADOS E NOVOS ---
     final_giftcard_codes = Column(String(1000), nullable=True) # Códigos ainda não utilizados
@@ -54,3 +56,4 @@ class OrderItemORM(Base):
     
     order = relationship("OrderORM", back_populates="items")
     original_giftcard = relationship("RegisterGiftCardORM")
+    enterprise = relationship("EmpresaORM")

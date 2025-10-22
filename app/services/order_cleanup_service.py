@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session, joinedload
 import mercadopago
 import os
 import uuid
+from decimal import Decimal # <-- IMPORTAÇÃO ADICIONADA
 
 from app.database.db_config import SessionLocal
 from app.models.order_orm import OrderORM, OrderStatus, OrderItemORM, OrderItemStatus
@@ -35,9 +36,24 @@ async def send_order_expired_email(order: OrderORM):
         template_body=email_body
     )
 
-async def process_successful_order(db: Session, order: OrderORM):
+# <-- ASSINATURA DA FUNÇÃO ATUALIZADA
+async def process_successful_order(db: Session, order: OrderORM, payment_info: dict):
     """Lógica para processar um pedido aprovado (reutilizada do webhook)."""
     logger.info(f"Scheduler: Processando pedido {order.id} como APROVADO.")
+    
+    # --- LÓGICA DE VALOR LÍQUIDO ADICIONADA ---
+    net_received_amount = None
+    if payment_info.get("transaction_details"):
+        net_raw = payment_info.get("transaction_details", {}).get("net_received_amount")
+        if net_raw is not None:
+            try:
+                net_received_amount = Decimal(str(net_raw))
+            except Exception:
+                 logging.warning(f"Scheduler: Não foi possível converter net_received_amount '{net_raw}' para Decimal.")
+    
+    order.net_amount = net_received_amount # <-- SALVANDO O VALOR LÍQUIDO
+    # --- FIM DA LÓGICA ADICIONADA ---
+    
     order.status = OrderStatus.APPROVED
     for item in order.items:
         giftcard = item.original_giftcard
@@ -84,11 +100,12 @@ async def cancel_expired_pending_orders():
         for order in expired_orders:
             payment_id = order.mercadopago_transaction_id
             final_status = None
+            payment_info_response = None # <-- Adicionado para guardar a resposta
 
             # 1. CONSULTAR O MERCADO PAGO PRIMEIRO
-            if payment_id and not payment_id.startswith("pref_"): # Só consulta se tiver um payment_id real
+            if payment_id and not payment_id.startswith("pref_"): 
                 try:
-                    payment_info_response = sdk.payment().get(payment_id)
+                    payment_info_response = sdk.payment().get(payment_id) # <-- Guarda a resposta
                     if payment_info_response and payment_info_response["status"] == 200:
                         final_status = payment_info_response["response"].get("status")
                 except Exception as e:
@@ -97,7 +114,15 @@ async def cancel_expired_pending_orders():
             # 2. DECIDIR A AÇÃO COM BASE NO STATUS
             if final_status == 'approved':
                 # Caso raro: webhook falhou, mas o pagamento foi aprovado. Processamos a compra.
-                await process_successful_order(db, order)
+                
+                # --- ALTERAÇÃO AQUI ---
+                # Passa a resposta completa do pagamento para a função de processamento
+                if payment_info_response and payment_info_response.get("response"):
+                    payment_info = payment_info_response["response"]
+                    await process_successful_order(db, order, payment_info)
+                else:
+                    logger.error(f"Scheduler: Status 'approved' para {order.id} mas payment_info estava indisponível.")
+                # --- FIM DA ALTERAÇÃO ---
             else:
                 # Se o status for 'rejected', 'cancelled' ou se a consulta falhou (None), cancelamos o pedido.
                 logger.warning(f"Scheduler: Pedido {order.id} expirou (Status MP: {final_status}). Cancelando e retornando estoque.")

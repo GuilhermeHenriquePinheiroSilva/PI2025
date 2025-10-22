@@ -18,17 +18,13 @@ async def get_my_orders(
     db: Session = Depends(get_db),
     current_user: UserORM = Depends(get_current_user)
 ):
-    """
-    Retorna o histórico de pedidos do usuário logado.
-    """
     orders = db.query(OrderORM).options(
-        # --- ALTERAÇÃO AQUI ---
-        # Carrega os itens e, DENTRO de cada item, carrega também os dados do gift card original
-        joinedload(OrderORM.items).joinedload(OrderItemORM.original_giftcard)
+        joinedload(OrderORM.items).joinedload(OrderItemORM.original_giftcard),
+        joinedload(OrderORM.items).joinedload(OrderItemORM.enterprise) # <-- Adicionar se precisar dos dados da empresa no item
     ).filter(
         OrderORM.owner_id == current_user.id
     ).order_by(
         OrderORM.created_at.desc()
     ).all()
-    
+
     return orders

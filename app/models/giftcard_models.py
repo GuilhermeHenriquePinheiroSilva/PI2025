@@ -22,6 +22,7 @@ class RegisterGiftCard(BaseModel):
     user_id: int
     title: str
     valor: Decimal
+    desired_amount: Decimal
     ativo: bool = True
     validade: Optional[date] = None
     nota: Optional[Decimal] = Field(default=None, ge=0, le=5)

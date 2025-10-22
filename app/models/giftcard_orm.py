@@ -29,6 +29,7 @@ class RegisterGiftCardORM(Base):
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String(100), nullable=False)
+    desired_amount = Column(Numeric(10, 2), nullable=False)
     valor = Column(Numeric(10, 2), nullable=False)
     ativo = Column(Boolean, default=True, nullable=False)
     validade = Column(Date, nullable=True)
