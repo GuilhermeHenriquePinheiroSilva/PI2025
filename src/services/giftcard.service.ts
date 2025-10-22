@@ -4,11 +4,16 @@ import { Observable } from 'rxjs';
 import { Category } from '../app/models/category.model';
 import { OrderItem } from '../app/models/order.model';
 
+const MP_FEE_PERCENTAGE = 0.05; // 5%
+const MP_FEE_FIXED = 0.60;      // R$ 0,60
+const PLATFORM_COMMISSION_PERCENTAGE = 0.10; // 10%
+
 export interface GiftCard {
   id: string; 
   user_id: number;
   title: string;
-  valor: number;
+  valor: number; 
+  desired_amount: number;
   description: string;
   quantityavailable: number;
   generaterandomly: boolean;
@@ -42,6 +47,30 @@ export class GiftcardService {
   private validationApiUrl = '/api/validation';
 
   constructor(private http: HttpClient) { }
+
+calculateSellingPrice(desiredAmount: number): number {
+    if (desiredAmount <= 0) {
+      return 0;
+    }
+
+    // Garante que a comissão não seja 100% ou mais
+    if (PLATFORM_COMMISSION_PERCENTAGE >= 1) {
+         console.error("A comissão da plataforma não pode ser 100% ou mais.");
+         return 0; // Ou lance um erro
+    }
+    const amountBeforeMp = desiredAmount / (1 - PLATFORM_COMMISSION_PERCENTAGE);
+
+    // Garante que a taxa do MP não seja 100% ou mais
+    if (MP_FEE_PERCENTAGE >= 1) {
+        console.error("A taxa percentual do MP não pode ser 100% ou mais.");
+        return 0; // Ou lance um erro
+    }
+    const sellingPrice = (amountBeforeMp + MP_FEE_FIXED) / (1 - MP_FEE_PERCENTAGE);
+
+    // Arredonda para 2 casas decimais
+    return Math.round(sellingPrice * 100) / 100;
+  }
+
   getMyGiftCards(): Observable<GiftCard[]> {
     return this.http.get<GiftCard[]>(`${this.apiUrl}me`);
   }
@@ -50,7 +79,7 @@ export class GiftcardService {
     return this.http.post(this.apiUrl, giftCardData);
   }
 
- searchGiftCards(term: string, categoryId?: number, minPrice?: number, maxPrice?: number, sortBy?: string): Observable<GiftCard[]> {
+searchGiftCards(term: string, categoryId?: number, minPrice?: number, maxPrice?: number, sortBy?: string): Observable<GiftCard[]> {
     let params = new HttpParams();
     if (term) {
       params = params.set('q', term);
@@ -58,6 +87,7 @@ export class GiftcardService {
     if (categoryId) {
       params = params.set('category_id', categoryId.toString());
     }
+    // Os filtros de preço agora devem se basear no 'valor' (preço de venda)
     if (minPrice !== undefined) {
       params = params.set('min_price', minPrice.toString());
     }

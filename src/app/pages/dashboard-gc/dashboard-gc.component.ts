@@ -1,22 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, CurrencyPipe, DecimalPipe } from '@angular/common'; // Adicione CurrencyPipe, DecimalPipe
 import { RouterLink } from '@angular/router';
 import { GiftcardService, GiftCard } from '../../../services/giftcard.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmationService } from '../../../services/confirmation.service';
 import { FormsModule } from '@angular/forms';
-import { OrderItem } from '../../models/order.model';
+import { OrderItem } from '../../models/order.model'; // Certifique-se que OrderItem é importado
 
 @Component({
   selector: 'app-dashboard-gc',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, DatePipe],
+  imports: [
+      CommonModule,
+      RouterLink,
+      FormsModule,
+      DatePipe,
+      CurrencyPipe, // Adicione CurrencyPipe
+      DecimalPipe // Adicione DecimalPipe (para number:'1.1-1')
+    ],
   templateUrl: './dashboard-gc.component.html',
   styleUrls: ['./dashboard-gc.component.css']
 })
 export class DashboardGcComponent implements OnInit {
   activeComponent = 'componente1';
-  
+
   myGiftCards: GiftCard[] = [];
   isLoading = true;
 
@@ -25,10 +32,25 @@ export class DashboardGcComponent implements OnInit {
   validationResult: OrderItem | null = null;
   isValidating: boolean = false;
   isPopupVisible = false;
-  
+
   // Propriedades para o histórico
   usedItemsHistory: OrderItem[] = [];
   isLoadingHistory: boolean = false;
+
+  // --- DICIONÁRIO DE TRADUÇÕES ADICIONADO ---
+  statusTranslations: { [key: string]: string } = {
+    // Status do Pedido (se precisar no futuro)
+    'APPROVED': 'Aprovado',
+    'PENDING': 'Pendente',
+    'REJECTED': 'Rejeitado',
+    'EXPIRED': 'Expirado',
+    'REFUNDED': 'Estornado',
+    // Status do Item/Código
+    'VALID': 'Válido',
+    'USED': 'Utilizado',
+    'PARTIALLY_USED': 'Parcialmente Utilizado'
+  };
+  // --- FIM DO DICIONÁRIO ---
 
   constructor(
     private giftcardService: GiftcardService,
@@ -41,8 +63,12 @@ export class DashboardGcComponent implements OnInit {
     this.loadUsedItemsHistory();
   }
 
-  // --- FUNÇÃO CORRIGIDA ---
-  // A função agora aceita apenas um argumento, como no HTML.
+  // --- NOVA FUNÇÃO DE TRADUÇÃO ADICIONADA ---
+  translateStatus(status: string): string {
+    return this.statusTranslations[status] || status; // Retorna a tradução ou o status original
+  }
+  // --- FIM DA FUNÇÃO ---
+
   showComponent(name: string) {
     this.activeComponent = name;
   }
@@ -86,7 +112,10 @@ export class DashboardGcComponent implements OnInit {
     this.isLoadingHistory = true;
     this.giftcardService.getUsedGiftCardsHistory().subscribe({
       next: (data) => {
-        this.usedItemsHistory = data;
+        // Ordena por data mais recente (se created_at existir em order)
+        this.usedItemsHistory = data.sort((a, b) =>
+           new Date(b.order?.created_at || 0).getTime() - new Date(a.order?.created_at || 0).getTime()
+        );
         this.isLoadingHistory = false;
       },
       error: () => {
@@ -102,7 +131,7 @@ export class DashboardGcComponent implements OnInit {
       return;
     }
     this.isValidating = true;
-    
+
     this.giftcardService.validateGiftCardCode(this.validationCode).subscribe({
       next: (data) => {
         this.validationResult = data;
@@ -110,23 +139,30 @@ export class DashboardGcComponent implements OnInit {
         this.isValidating = false;
       },
       error: (err) => {
-        this.notificationService.show(err.error.detail || 'Código inválido ou já utilizado.', 'error');
+        this.notificationService.show(err.error.detail || 'Código inválido ou não pertence à sua empresa.', 'error');
         this.isValidating = false;
       }
     });
   }
 
   markAsUsed(): void {
-    if (!this.validationResult) return;
+    if (!this.validationResult || this.validationResult.status !== 'VALID') {
+        this.notificationService.show('Apenas códigos válidos podem ser marcados como usados.', 'warning');
+        return;
+    };
 
-    this.giftcardService.markGiftCardCodeAsUsed(this.validationCode).subscribe({
-      next: () => {
-        this.notificationService.show('Código marcado como utilizado!', 'success');
-        this.closePopup();
-        this.loadUsedItemsHistory();
+    // Usa o código que foi validado com sucesso
+    const codeToMark = this.validationCode;
+
+    this.giftcardService.markGiftCardCodeAsUsed(codeToMark).subscribe({
+      next: (updatedItem) => { // A API retorna o item atualizado
+        this.notificationService.show(`Código ${codeToMark} marcado como utilizado!`, 'success');
+        this.closePopup(); // Fecha o popup
+        this.loadUsedItemsHistory(); // Recarrega o histórico para refletir a mudança
       },
       error: (err) => {
-        this.notificationService.show(err.error.detail, 'error');
+        this.notificationService.show(err.error.detail || 'Erro ao marcar código como usado.', 'error');
+        // Não fecha o popup em caso de erro para o usuário ver os detalhes
       }
     });
   }
@@ -134,6 +170,6 @@ export class DashboardGcComponent implements OnInit {
   closePopup(): void {
     this.isPopupVisible = false;
     this.validationResult = null;
-    this.validationCode = '';
+    this.validationCode = ''; // Limpa o campo do código
   }
 }

@@ -314,6 +314,54 @@ form button:hover {
     width: 25%;
 }
 
+/* ### CÓDIGO PARA ADICIONAR AO FINAL DO SEU CSS ### */
+.imagePreviewer {
+    display: none;
+}
+
+/* Container para o componente de corte */
+.cropper-container {
+    margin: 6vh 0;
+    border: 3px dashed var(--dark-brown);
+    padding: 1rem;
+    height: auto; /* Altura automática para se ajustar ao conteúdo */
+    width: 100%;
+    max-width: 400px; /* Largura máxima para o cropper */
+}
+
+/* O componente de corte em si */
+image-cropper {
+    max-height: 300px; /* Altura máxima para a área de corte */
+}
+
+/* Ajuste no select de categoria para centralizar o texto */
+.form-control {
+    text-align: center;
+    -moz-text-align-last: center; /* Para Firefox */
+    text-align-last: center; /* Para outros navegadores */
+}
+
+/* Garante que a label não fique em cima do select */
+.coluna select.form-control {
+    margin-top: 1.5rem;
+}
+
+.price-preview {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: var(--dark-brown);
+  border-radius: 5px;
+  text-align: center;
+}
+.price-preview p {
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+}
+.price-preview small {
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
 @media (max-width: 768px) {
     .form {
         background-color: var(--brown);

@@ -23,6 +23,7 @@
     "bootstrap-icons": "^1.13.1",
     "inline-svg": "^2.2.3",
     "jwt-decode": "^4.0.0",
+    "ngx-image-cropper": "^9.1.5",
     "rxjs": "~7.8.0",
     "svelte-inline-svg": "^1.2.0",
     "tslib": "^2.3.0",

@@ -239,3 +239,51 @@ button:active{
 .buttons button:hover{
     filter: brightness(1.1);
 }
+
+.valor-info {
+  text-align: center; /* Centraliza os textos de valor */
+  margin-bottom: 1rem; /* Espaçamento abaixo */
+  background-color: var(--light-brown); /* Fundo sutil */
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.valor-credito {
+  font-size: 1.1rem; /* Tamanho um pouco menor */
+  color: var(--smoke-white); /* Cor mais suave */
+  margin-bottom: 0.5rem;
+}
+
+.valor-venda {
+  font-size: 1.8rem; /* Tamanho maior para destaque */
+  font-weight: bold; /* Negrito */
+  margin-bottom: 0.25rem;
+}
+
+.valor-venda .valorRS {
+  color: var(--orange); /* Destaca o valor em laranja */
+}
+.valor-credito .valorRS {
+    font-weight: bold; /* Deixa o valor do crédito em negrito também */
+}
+
+.tax-info {
+  font-size: 0.8rem; /* Tamanho pequeno */
+  color: #ccc; /* Cinza claro */
+  font-style: italic; /* Itálico */
+  display: block; /* Garante que ocupe a linha toda */
+}
+
+.not-found { /* Estilo para mensagem de não encontrado */
+    text-align: center;
+    margin-top: 5rem;
+}
+.not-found p {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+.not-found a {
+    color: var(--orange);
+    text-decoration: none;
+    font-weight: bold;
+}

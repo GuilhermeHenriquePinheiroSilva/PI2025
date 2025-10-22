@@ -314,6 +314,112 @@ form button:hover {
     width: 25%;
 }
 
+price-preview {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: var(--dark-brown);
+  border-radius: 5px;
+  text-align: center;
+}
+.price-preview p { margin-bottom: 5px; font-size: 1.1rem; color: var(--white); }
+.price-preview p strong { color: var(--orange); }
+.price-preview small { font-size: 0.8rem; color: #ccc; }
+
+/* Estilos para o Cropper e Preview */
+.cropper-container {
+    margin: 2vh 0;
+    border: 2px dashed var(--dark-brown);
+    padding: 1rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    background-color: var(--light-brown);
+    border-radius: 8px;
+}
+.cropper-container p { font-weight: bold; margin-bottom: 1rem; color: var(--white); }
+image-cropper {
+    max-height: 300px;
+    display: block;
+    margin-bottom: 1rem;
+    background-color: #fff;
+}
+.cropper-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1rem;
+}
+.cropper-actions button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    margin: 0 !important;
+}
+.btn-secondary { background-color: #6c757d; color: white; border: none; }
+.btn-primary { background-color: var(--orange); color: white; border: none; }
+
+.imagePreviewer {
+    margin: 2vh 0;
+    border: 1px solid var(--dark-brown);
+    min-height: 200px;
+    height: auto;
+    max-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+    background-color: var(--light-brown);
+    border-radius: 8px;
+    padding: 1rem;
+}
+.imagePreviewer p { margin-bottom: 0.5rem; font-weight: bold; color: var(--white); }
+.imagePreviewer img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+.imagePreviewer.placeholder svg {
+    width: 50px;
+    height: 50px;
+    fill: var(--smoke-white);
+    margin-bottom: 0.5rem;
+}
+.imagePreviewer.placeholder p { color: var(--smoke-white); }
+
+.form-control {
+    text-align: center;
+    -moz-text-align-last: center;
+    text-align-last: center;
+}
+
+form button .spinner-border { vertical-align: middle; margin-right: 5px; }
+
+/* Adicione estilos se necessário para os botões dentro de .cropper-actions */
+.cropper-actions .btn { border-radius: 5px; cursor: pointer; }
+
+/* Esconde o input file original */
+.file-upload { display: none; }
+
+/* Estilo para o label que ativa o input file */
+.file-label {
+    display: inline-block;
+    padding: 1vh 2vh;
+    background-color: var(--orange);
+    color: white;
+    font-size: 2vh;
+    border-radius: 1vh;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-bottom: 1rem; /* Espaçamento abaixo */
+}
+.file-label:hover { filter: brightness(1.1); }
+.file-label svg { width: 2.6vh; height: 2.6vh; margin-left: 0.5rem; vertical-align: middle;}
+
+/* Ajuste no spinner do botão */
+form button .spinner-border { vertical-align: middle; margin-right: 5px; }
+
 @media (max-width: 768px) {
     .form {
         background-color: var(--brown);

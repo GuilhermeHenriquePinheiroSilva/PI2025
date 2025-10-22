@@ -62,7 +62,7 @@
            "options": {
             "proxyConfig": "proxy.conf.json",
             "allowedHosts": [
-              "9ca33c3f7d0d.ngrok-free.app"
+              "d4426c7e6009.ngrok-free.app"
             ]
           },
           "configurations": {

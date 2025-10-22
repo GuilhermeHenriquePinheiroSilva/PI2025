@@ -1,72 +1,74 @@
 <div class="dashboard-container">
+    <!-- Botões de Navegação entre Abas -->
     <div class="DBbuttons" #navBar>
         <button #btn1 (click)="showComponent('componente1')" [class.active]="activeComponent === 'componente1'">
             Meus Gift Cards
         </button>
-
         <button #btn2 (click)="showComponent('componente2')" [class.active]="activeComponent === 'componente2'">
             Verificar Compra
         </button>
+        <!-- Adicione mais botões aqui se houver mais abas -->
     </div>
 
+    <!-- Seção: Meus Gift Cards (componente1) -->
     <div *ngIf="activeComponent === 'componente1'" class="DB content dashboard">
         <div class="container">
+            <!-- Cabeçalho da Seção -->
             <header class="header">
-                <p class="title">Estatísticas dos Gift Cards</p>
-                <p>Verifique e Gerencie seus Gift Cards </p>
+                <p class="title">Gerenciamento de Gift Cards</p>
+                <p>Verifique, edite ou crie novos Gift Cards.</p>
             </header>
+
+            <!-- Grid de Estatísticas (Opcional, pode remover se não usar) -->
             <div class="stats-grid">
-                <div class="stat-card primary">
-                    <div class="stat-value">247</div>
-                    <div class="stat-label">Total de Gift Cards</div>
-                </div>
-                <div class="stat-card accent">
-                    <div class="stat-value">R$ 45.680</div>
-                    <div class="stat-label">Valor Total</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">89%</div>
-                    <div class="stat-label">Taxa de Sucesso</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">12</div>
-                    <div class="stat-label">Em Estoque</div>
-                </div>
+                <div class="stat-card primary"><div class="stat-value">...</div><div class="stat-label">Total</div></div>
+                <div class="stat-card accent"><div class="stat-value">...</div><div class="stat-label">Valor Total</div></div>
+                <div class="stat-card"><div class="stat-value">...</div><div class="stat-label">Ativos</div></div>
+                <div class="stat-card"><div class="stat-value">...</div><div class="stat-label">Em Estoque</div></div>
             </div>
+
+            <!-- Seção Principal com Tabela -->
             <div class="main-content">
                 <div class="table-section">
+                    <!-- Cabeçalho da Tabela -->
                     <div class="table-header">
-                        <p class="title">Meus Gift Cards</p>
-                        <a href="/adicionar-gc">Criar GiftCard</a>
+                        <p class="title">Meus Gift Cards Cadastrados</p>
+                        <a routerLink="/adicionar-gc">Criar Novo Gift Card</a>
                     </div>
+                    <!-- Container da Tabela -->
                     <div class="table-container">
+                        <!-- Estado de Carregamento -->
                         <div *ngIf="isLoading" class="loading">
                             <p>Carregando seus Gift Cards...</p>
                         </div>
+                        <!-- Estado Vazio -->
                         <div *ngIf="!isLoading && myGiftCards.length === 0" class="no-data">
                             <p>Você ainda não cadastrou nenhum Gift Card.</p>
                             <a routerLink="/adicionar-gc" class="add-button">Cadastrar meu primeiro Gift Card</a>
                         </div>
-                        <div *ngIf="!isLoading && myGiftCards.length > 0" class="table-container">
+                        <!-- Tabela de Gift Cards -->
+                        <div *ngIf="!isLoading && myGiftCards.length > 0">
                             <table>
                                 <thead>
                                     <th class="img">Imagem</th>
                                     <th>Nome</th>
-                                    <th>Valor</th>
-                                    <th>Qtd.</th>
+                                    <th>Valor Venda</th> <!-- Preço que o cliente paga -->
+                                    <th>Valor Receber</th> <!-- Valor que a empresa recebe -->
+                                    <th>Qtd. Disp.</th>
                                     <th>Status</th>
                                     <th>Validade</th>
-                                    <th>Nota</th>
+                                    <th>Nota Média</th>
                                     <th>Ações</th>
                                 </thead>
                                 <tbody>
                                     <tr class="tr-gcs" *ngFor="let gc of myGiftCards">
                                         <td class="td-image">
                                             <img [src]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl" [alt]="gc.title"
-                                                class="table-img" (error)="$any($event.target).style.display='none'" />
+                                                class="table-img" (error)="$any($event.target).src='placeholder.png'" /> <!-- Placeholder opcional -->
                                         </td>
                                         <td class="gc-title">{{ gc.title }}</td>
-                                        <td>R${{ gc.valor | number:'1.2-2' }}</td>
+                                        <td>{{ gc.valor | currency:'BRL':'symbol':'1.2-2' }}</td> <!-- Preço de venda -->
+                                        <td>{{ gc.desired_amount | currency:'BRL':'symbol':'1.2-2' }}</td> <!-- Valor a receber -->
                                         <td>{{ gc.quantityavailable }}</td>
                                         <td>
                                             <span class="status" [ngClass]="gc.ativo ? 'ativo' : 'inativo'">
@@ -77,37 +79,27 @@
                                             {{ gc.validade ? (gc.validade | date:'dd/MM/yyyy') : 'N/A' }}
                                         </td>
                                         <td>
-                                            <span class="nota" *ngIf="gc.nota">
+                                            <span class="nota" *ngIf="gc.nota != null"> <!-- Verifica se nota não é null -->
                                                 <p>{{ gc.nota | number:'1.1-1' }}</p>
                                                 <div class="svgStar">
-                                                    <svg>
-                                                        <use width="100%" height="100%" fill="var(--orange)"
-                                                            xlink:href="svgs/star-fill.svg">
-                                                        </use>
-                                                    </svg>
+                                                    <svg><use width="100%" height="100%" fill="var(--orange)" xlink:href="assets/svgs/star-fill.svg#star-fill"></use></svg> <!-- Ajuste no xlink:href se necessário -->
                                                 </div>
                                             </span>
-                                            <span class="nota" *ngIf="!gc.nota">
+                                            <span class="nota" *ngIf="gc.nota == null"> <!-- Verifica se nota é null -->
                                                 <p>N/A</p>
                                             </span>
                                         </td>
                                         <td>
                                             <div class="actions">
-                                                <a [routerLink]="['/editar-gc', gc.id]" class="edit-btn">
+                                                <a [routerLink]="['/editar-gc', gc.id]" class="edit-btn" title="Editar">
                                                     <div class="button">
-                                                        <svg class="svgBug">
-                                                            <use width="100%" height="100%" fill="var(--dark-brown)"
-                                                                xlink:href="svgs/pencil-fill.svg"></use>
-                                                        </svg>
+                                                        <svg class="svgBug"><use width="100%" height="100%" fill="var(--dark-brown)" xlink:href="assets/svgs/pencil-fill.svg#pencil-fill"></use></svg>
                                                         <p>Editar</p>
                                                     </div>
                                                 </a>
-                                                <button class="delete-btn" (click)="deleteGiftCard(gc.id, gc.title)">
+                                                <button class="delete-btn" (click)="deleteGiftCard(gc.id, gc.title)" title="Excluir">
                                                     <div class="button">
-                                                        <svg>
-                                                            <use width="100%" height="100%" fill="var(--dark-brown)"
-                                                                xlink:href="svgs/trash.svg"></use>
-                                                        </svg>
+                                                        <svg><use width="100%" height="100%" fill="var(--dark-brown)" xlink:href="assets/svgs/trash.svg#trash"></use></svg>
                                                         <p>Excluir</p>
                                                     </div>
                                                 </button>
@@ -122,47 +114,65 @@
             </div>
         </div>
     </div>
+
+    <!-- Seção: Verificar Compra (componente2) -->
     <div *ngIf="activeComponent === 'componente2'" class="DB content dashboard component2">
         <div class="container">
+            <!-- Cabeçalho -->
             <header class="header">
                 <p class="title">Verificar Compra</p>
-                <p>Valide o código de um produto comprado.</p>
+                <p>Valide o código de um produto comprado por um cliente.</p>
             </header>
+            <!-- Formulário de Validação -->
             <div class="form">
                 <div class="cod">
-                    <p>Código do Gift Card:</p>
-                    <input type="text" placeholder="Insira o código aqui..." name="validationCode"
+                    <label for="validationCodeInput">Código do Gift Card:</label> <!-- Label adicionada por acessibilidade -->
+                    <input type="text" id="validationCodeInput" placeholder="Insira o código aqui..." name="validationCode"
                            [(ngModel)]="validationCode" (keyup.enter)="validateCode()">
                 </div>
                 <button class="validate" (click)="validateCode()" [disabled]="isValidating">
-                    {{ isValidating ? 'Validando...' : 'Validar Código' }}
+                    <span *ngIf="isValidating" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    {{ isValidating ? ' Validando...' : 'Validar Código' }}
                 </button>
             </div>
 
+            <!-- Tabela de Histórico -->
             <div class="table-section">
                 <div class="table-header">
                     <p class="title">Histórico de Validações</p>
+                    <button class="btn btn-sm refresh-history" (click)="loadUsedItemsHistory()" [disabled]="isLoadingHistory" title="Atualizar Histórico">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                           <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+                           <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
+                        </svg>
+                         <span class="visually-hidden">Atualizar Histórico</span> <!-- Acessibilidade -->
+                    </button>
                 </div>
                 <div class="table-container">
-                    <div *ngIf="isLoadingHistory" class="loading">
-                        <p>Carregando histórico...</p>
-                    </div>
-                    <div *ngIf="!isLoadingHistory && usedItemsHistory.length === 0" class="no-data">
-                        <p>Nenhum Gift Card foi validado ainda.</p>
-                    </div>
+                    <div *ngIf="isLoadingHistory" class="loading"><p>Carregando histórico...</p></div>
+                    <div *ngIf="!isLoadingHistory && usedItemsHistory.length === 0" class="no-data"><p>Nenhum Gift Card foi validado ainda.</p></div>
                     <table *ngIf="!isLoadingHistory && usedItemsHistory.length > 0">
                         <thead>
                             <th>Produto</th>
-                            <th>Comprador</th>
+                            <th>Comprador ID</th> <!-- Mudado de nome para ID -->
+                            <th>Valor Recebido</th> <!-- Coluna atualizada -->
                             <th>Códigos Usados</th>
                             <th>Data do Pedido</th>
+                            <th>Status Item</th> <!-- Nova coluna -->
                         </thead>
                         <tbody>
+                            <!-- Loop sobre os itens do histórico -->
                             <tr *ngFor="let item of usedItemsHistory">
-                                <td class="gc-title">{{ item.original_giftcard.title }}</td>
-                                <td>{{ item.order.owner_name }}</td>
-                                <td class="used-codes">{{ item.used_codes }}</td>
-                                <td class="validade">{{ item.order.created_at | date:'dd/MM/yyyy' }}</td>
+                                <td class="gc-title">{{ item.original_giftcard.title || 'Produto não encontrado' }}</td> <!-- Removido ?. -->
+                                <td>{{ item.order.owner_id || 'N/A' }}</td> <!-- Removido ?. -->
+                                <td>{{ item.seller_amount | currency:'BRL':'symbol':'1.2-2' }}</td> <!-- Exibe valor a receber -->
+                                <td class="used-codes">{{ item.used_codes || 'N/A' }}</td>
+                                <td class="validade">{{ item.order.created_at | date:'dd/MM/yyyy HH:mm' }}</td> <!-- Removido ?. -->
+                                <td>
+                                     <span class="status" [ngClass]="item.status.toLowerCase()">
+                                         {{ translateStatus(item.status) }} <!-- Chamando método do TS -->
+                                     </span>
+                                 </td>
                             </tr>
                         </tbody>
                     </table>
@@ -170,37 +180,50 @@
             </div>
         </div>
     </div>
-    </div>
+</div>
 
+<!-- Popup de Validação (Modal) -->
 <div class="popup-overlay" *ngIf="isPopupVisible" (click)="closePopup()">
     <div class="popup-content" *ngIf="validationResult" (click)="$event.stopPropagation()">
-        <button class="close-btn" (click)="closePopup()">X</button>
+        <button class="close-btn" (click)="closePopup()" aria-label="Fechar popup">X</button>
         <h4>Detalhes do Código</h4>
         <div class="result-grid">
             <div class="result-item">
                 <span class="label">Produto:</span>
-                <span class="value">{{ validationResult.original_giftcard.title }}</span>
+                <span class="value">{{ validationResult.original_giftcard.title || 'N/A' }}</span> <!-- Removido ?. -->
             </div>
             <div class="result-item">
-                <span class="label">Comprador:</span>
-                <span class="value">{{ validationResult.order.owner_name }}</span>
+                <span class="label">Comprador ID:</span>
+                <span class="value">{{ validationResult.order.owner_id || 'N/A' }}</span> <!-- Removido ?. -->
+            </div>
+            <!-- Valor a Receber -->
+            <div class="result-item">
+                <span class="label">Valor a Receber:</span>
+                <span class="value">{{ validationResult.seller_amount | currency:'BRL':'symbol':'1.2-2' }}</span> <!-- Exibe valor a receber -->
             </div>
             <div class="result-item">
-                <span class="label">Código a Validar:</span>
+                <span class="label">Código Validado:</span>
                 <span class="value code-to-validate">{{ validationCode }}</span>
             </div>
             <div class="result-item">
                 <span class="label">Data do Pedido:</span>
-                <span class="value">{{ validationResult.order.created_at | date:'dd/MM/yyyy' }}</span>
+                <span class="value">{{ validationResult.order.created_at | date:'dd/MM/yyyy HH:mm' }}</span> <!-- Removido ?. -->
             </div>
             <div class="result-item">
-                <span class="label">Status do Código:</span>
-                <span class="value status ativo">VÁLIDO</span>
+                <span class="label">Status Atual do Item:</span>
+                <span class="value status" [ngClass]="validationResult.status.toLowerCase()">
+                   {{ translateStatus(validationResult.status) }} <!-- Chamando método do TS -->
+                </span>
             </div>
         </div>
 
-        <button class="mark-used-btn" (click)="markAsUsed()">
+        <!-- Botão para Marcar como Usado (condicional) -->
+        <button *ngIf="validationResult.status === 'VALID'" class="mark-used-btn" (click)="markAsUsed()">
             Marcar Código como Usado
         </button>
+         <p *ngIf="validationResult.status !== 'VALID'" class="already-used-message">
+             Este código já foi utilizado ou está em um estado diferente de 'Válido'.
+         </p>
     </div>
 </div>
+

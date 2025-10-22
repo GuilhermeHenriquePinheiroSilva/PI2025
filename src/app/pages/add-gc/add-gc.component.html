@@ -15,7 +15,9 @@
       </section>
 
       <section class="coluna">
-        <select id="category" class="form-control" [(ngModel)]="categoryId" name="categoryId">
+        <label for="category">Categoria:</label>
+        <select id="category" class="form-control" [(ngModel)]="categoryId" name="categoryId"
+          style="text-align: center;">
           <option [ngValue]="null" disabled>Selecione uma categoria</option>
           <option *ngFor="let category of categories" [value]="category.id">
             {{ category.name }}
@@ -32,27 +34,18 @@
       </section>
 
       <section class="coluna">
-        <span id="valoresLabel">Selecione o Valor do Gift Card:</span>
-        <table role="table" aria-labelledby="valoresLabel">
-          <tbody>
-            <tr *ngFor="let valorOpt of valoresDisponiveis">
-              <td>
-                <label class="radio-button-container">
-                  <input type="radio" name="valorGiftCard" [value]="valorOpt" [(ngModel)]="valorSelecionado"
-                    [id]="'valor-' + valorOpt" [attr.aria-label]="'Selecionar valor R$ ' + valorOpt" required>
-                  <span class="checkmark"></span>
-                </label>
-              </td>
-              <td>
-                <label [attr.for]="'valor-' + valorOpt">R$ {{ valorOpt }}</label>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <label for="desiredAmount">Valor que você quer receber (R$):</label>
+        <input type="number" id="desiredAmount" name="desiredAmount" [ngModel]="desiredAmount()"
+          (ngModelChange)="onDesiredAmountChange($event)" min="0.01" step="0.01" placeholder="Ex: 10.00" required
+          class="form-control" style="width: 60%; margin-top: 10px;">
+
+        <div *ngIf="calculatedSellingPrice() > 0" class="price-preview">
+          <p>Preço de Venda será: <strong>R$ {{ calculatedSellingPrice() | number:'1.2-2' }}</strong></p>
+          <small>(Inclui taxas e comissão da plataforma)</small>
+        </div>
       </section>
     </section>
 
-    <!-- === NOVA SEÇÃO ADICIONADA PARA OS NOVOS CAMPOS === -->
     <section class="linha">
       <section class="coluna validade">
         <label for="validade">Data de Validade (Opcional):</label>
@@ -85,8 +78,6 @@
         </div>
       </section>
     </section>
-    <!-- === FIM DA NOVA SEÇÃO === -->
-
 
     <section class="linha">
       <section class="coluna">
@@ -111,16 +102,16 @@
         </div>
 
         <section class="gerarCodigo" [ngStyle]="{
-            'visibility': gerarCodigo ? 'hidden' : 'visible',
-            'opacity': gerarCodigo ? '0' : '1'
-          }">
+                  'visibility': gerarCodigo ? 'hidden' : 'visible',
+                  'opacity': gerarCodigo ? '0' : '1'
+                }">
           <label for="codigosManuais">Informe os códigos manualmente (separados por ";"):</label>
           <textarea id="codigosManuais" name="codigosManuais" [(ngModel)]="codigosManuais"
             (input)="atualizarQuantidadePelosCodigos()" aria-describedby="gerarTexto"></textarea>
         </section>
       </section>
 
-      <section class="coluna">
+      <section class="coluna" style="width: 100%; align-items: center; margin-top: 5vh;">
         <label class="file-label" for="fileInput">
           Imagem do Gift-Card
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -132,22 +123,20 @@
 
         <input type="file" id="fileInput" class="file-upload" (change)="onFileSelected($event)" accept="image/*">
 
-        <div class="imagePreviewer" role="region" aria-label="Pré-visualização da imagem">
-          <svg *ngIf="!imageSrc" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-            class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16" aria-hidden="true">
-            <path
-              d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0z" />
-          </svg>
-          <img *ngIf="imageSrc" [src]="imageSrc" alt="Pré-visualização da imagem selecionada">
+        <div class="cropper-container" *ngIf="imageChangedEvent">
+          <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
+            [resizeToWidth]="740" format="jpeg" (imageCropped)="imageCropped($event)"
+            (loadImageFailed)="loadImageFailed()">
+          </image-cropper>
         </div>
       </section>
     </section>
 
     <button type="submit" aria-label="Cadastrar gift-card" [disabled]="isUploading">
-    <span *ngIf="isUploading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-    <span *ngIf="isUploading"> Processando...</span>
-    <span *ngIf="!isUploading">Cadastrar</span>
-</button>
+      <span *ngIf="isUploading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <span *ngIf="isUploading"> Processando...</span>
+      <span *ngIf="!isUploading">Cadastrar</span>
+    </button>
   </section>
 </form>
 

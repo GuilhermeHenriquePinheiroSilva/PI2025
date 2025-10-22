@@ -1,14 +1,14 @@
 <app-nav-bar></app-nav-bar>
 
 <div class="body">
-    <!-- Adicionado um estado de carregamento para melhor experiência do usuário -->
+    <!-- Estado de carregamento -->
     <div *ngIf="isLoading" class="loading-indicator">
         <p>Carregando...</p>
     </div>
 
     <div *ngIf="!isLoading && giftCard" class="container">
         <header>
-            <!-- O header pode ser removido se não for usado -->
+            <!-- Header pode ser removido se não for usado -->
         </header>
         <div class="content">
             <div class="leftColumn">
@@ -17,23 +17,28 @@
             <div class="rightColumn">
                 <h2>{{ giftCard.title }}</h2>
 
-
-                <div class="valor-principal">
-                    <p>Valor: <span class="valorRS"> R${{ giftCard.valor | number:'1.2-2' }}</span></p>
+                <!-- === SEÇÃO DE VALORES ATUALIZADA === -->
+                <div class="valor-info">
+                    <p class="valor-credito">
+                        Valor do Crédito: <span class="valorRS"> {{ giftCard.desired_amount | currency:'BRL':'symbol':'1.2-2' }}</span>
+                    </p>
+                    <p class="valor-venda">
+                        Preço de Venda: <span class="valorRS">{{ giftCard.valor | currency:'BRL':'symbol':'1.2-2' }}</span>
+                    </p>
+                    <small class="tax-info">(Preço inclui taxas da plataforma e processamento)</small>
                 </div>
+                 <!-- === FIM DA SEÇÃO DE VALORES === -->
+
 
                 <p class="category" *ngIf="giftCard.category">
                     Categoria:
                     <a [routerLink]="['/category', giftCard.category.id]">{{ giftCard.category.name }}</a>
                 </p>
 
-
-
                 <p class="descTitle">Descrição</p>
                 <p class="descContent">{{ giftCard.description }}</p>
 
                 <div *ngIf="giftCard.nota" class="rating-section">
-                    <!-- O pipe 'number' formata a nota para ter uma casa decimal, ex: 4.5 -->
                     <div class="svgStar">
                         <svg>
                             <use width="100%" height="100%" xlink:href="svgs/star-fill.svg">
@@ -41,7 +46,6 @@
                         </svg>
                     </div>
                     <span class="nota-valor">{{ giftCard.nota | number:'1.1-1' }}</span>
-                    <!-- Você pode adicionar mais lógica aqui, como o número de avaliações, se tiver -->
                 </div>
 
                 <div class="options">
@@ -59,7 +63,9 @@
             </div>
         </div>
     </div>
+     <!-- Mensagem caso o gift card não seja encontrado -->
+     <div *ngIf="!isLoading && !giftCard" class="not-found">
+        <p>Oops! Produto não encontrado.</p>
+        <a routerLink="/">Voltar para a Home</a>
+     </div>
 </div>
-
-<!-- O footer foi movido para o app.component.html para ser global -->
-<!-- <app-footer></app-footer> -->

@@ -1,4 +1,6 @@
-<div *ngIf="isLoading" class="text-center py-5">
+<app-nav-bar></app-nav-bar> <!-- Incluído NavBar -->
+
+<div *ngIf="isLoading" class="loading-indicator text-center py-5">
   <div class="spinner-border text-primary" role="status">
     <span class="visually-hidden">Carregando dados...</span>
   </div>
@@ -7,7 +9,7 @@
 <div *ngIf="!isLoading">
   <form class="form" (ngSubmit)="onSubmit()" aria-labelledby="formTitle" role="form">
     <section class="container">
-      <p id="formTitle" class="sr-only">Editar Gift Card</p>
+      <p id="formTitle">Editar Gift Card</p> <!-- Título visível -->
       <p>Altere as informações do seu Gift Card aqui</p>
       <section class="linha">
         <section class="coluna">
@@ -17,8 +19,19 @@
 
         <section class="coluna">
           <label for="quantidade">Quantidade Disponível:</label>
-          <input type="number" min="1" id="quantidade" name="quantidade" [(ngModel)]="quantidade"
+          <input type="number" min="0" id="quantidade" name="quantidade" [(ngModel)]="quantidade"
             [readonly]="!gerarCodigo" required>
+        </section>
+
+         <!-- Adicionado Select de Categoria na Edição -->
+         <section class="coluna">
+            <label for="category">Categoria:</label>
+            <select id="category" class="form-control" [(ngModel)]="categoryId" name="categoryId" style="text-align: center;">
+                <option [ngValue]="null">Sem categoria</option> <!-- Opção para remover/não ter categoria -->
+                <option *ngFor="let category of categories" [value]="category.id">
+                    {{ category.name }}
+                </option>
+            </select>
         </section>
       </section>
 
@@ -29,28 +42,33 @@
             aria-required="true"></textarea>
         </section>
 
+        <!-- === CAMPO DE VALOR ALTERADO === -->
         <section class="coluna">
-          <span id="valoresLabel">Selecione o Valor do Gift Card:</span>
-          <table role="table" aria-labelledby="valoresLabel">
-            <tbody>
-              <tr *ngFor="let valorOpt of valoresDisponiveis">
-                <td>
-                  <label class="radio-button-container">
-                    <input type="radio" name="valorGiftCard" [value]="valorOpt" [(ngModel)]="valorSelecionado"
-                      [id]="'valor-' + valorOpt" [attr.aria-label]="'Selecionar valor R$ ' + valorOpt" required>
-                    <span class="checkmark"></span>
-                  </label>
-                </td>
-                <td>
-                  <label [attr.for]="'valor-' + valorOpt">R$ {{ valorOpt }}</label>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <label for="desiredAmount">Valor que você quer receber (R$):</label>
+          <input
+              type="number"
+              id="desiredAmount"
+              name="desiredAmount"
+              [ngModel]="desiredAmount()"
+              (ngModelChange)="onDesiredAmountChange($event)"
+              min="0.01" step="0.01"
+              placeholder="Ex: 10.00"
+              required
+              class="form-control"
+              style="width: 60%; margin-top: 10px;"
+          >
+
+          <!-- Mostra o preço de venda calculado -->
+          <div *ngIf="calculatedSellingPrice() > 0" class="price-preview">
+              <p>Preço de Venda será: <strong>{{ calculatedSellingPrice() | currency:'BRL':'symbol':'1.2-2' }}</strong></p>
+              <small>(Inclui taxas e comissão da plataforma)</small>
+          </div>
         </section>
+        <!-- === FIM DA ALTERAÇÃO DO CAMPO DE VALOR === -->
+
       </section>
 
-      <!-- === NOVA SEÇÃO ADICIONADA PARA OS NOVOS CAMPOS === -->
+      <!-- === Seção de validade, nota, ativo (mantida) === -->
       <section class="linha">
         <section class="coluna validade">
           <label for="validade">Data de Validade (Opcional):</label>
@@ -69,86 +87,105 @@
             <label class="switch">
               <input type="checkbox" id="ativo" name="ativo" [(ngModel)]="ativo">
               <span class="slider round">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check"
-                  viewBox="0 0 16 16" aria-hidden="true">
-                  <path
-                    d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x"
-                  viewBox="0 0 16 16" aria-hidden="true">
-                  <path
-                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                </svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                 </svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" aria-hidden="true">
+                   <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                 </svg>
               </span>
             </label>
           </div>
         </section>
       </section>
-      <!-- === FIM DA NOVA SEÇÃO === -->
+      <!-- === FIM DA SEÇÃO === -->
 
 
       <section class="linha">
         <section class="coluna">
-          <p id="gerarTexto">Gerar códigos aleatoriamente?</p>
-          <div class="inputCheck" role="switch" [attr.aria-checked]="gerarCodigo" aria-labelledby="gerarTexto">
-            <label class="switch">
-              <input type="checkbox" [checked]="gerarCodigo" (change)="toggleGerarCodigo()"
-                aria-label="Alternar geração automática dos códigos">
-              <span class="slider round">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check"
-                  viewBox="0 0 16 16" aria-hidden="true">
-                  <path
-                    d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x"
-                  viewBox="0 0 16 16" aria-hidden="true">
-                  <path
-                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                </svg>
-              </span>
-            </label>
-          </div>
-
-          <section class="gerarCodigo" [ngStyle]="{
+           <p id="gerarTexto">Gerar códigos aleatoriamente?</p>
+            <div class="inputCheck" role="switch" [attr.aria-checked]="gerarCodigo" aria-labelledby="gerarTexto">
+                <label class="switch">
+                <input type="checkbox" [checked]="gerarCodigo" (change)="toggleGerarCodigo()"
+                    aria-label="Alternar geração automática dos códigos">
+                <span class="slider round">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16" aria-hidden="true">
+                       <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                     </svg>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" aria-hidden="true">
+                       <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                     </svg>
+                </span>
+                </label>
+            </div>
+            <!-- === CORREÇÃO AQUI: Removidos comentários /* ... */ === -->
+             <section class="gerarCodigo" [ngStyle]="{
                   'visibility': gerarCodigo ? 'hidden' : 'visible',
-                  'opacity': gerarCodigo ? '0' : '1'
+                  'opacity': gerarCodigo ? '0' : '1',
+                  'height': gerarCodigo ? '0' : '50vh',
+                  'margin-top': gerarCodigo ? '0' : '5vh'
                 }">
-            <label for="codigosManuais">Informe os códigos manualmente (separados por ";"):</label>
-            <textarea id="codigosManuais" name="codigosManuais" [(ngModel)]="codigosManuais"
-              (input)="atualizarQuantidadePelosCodigos()" aria-describedby="gerarTexto"></textarea>
-          </section>
+                <label for="codigosManuais">Informe os códigos manualmente (separados por ";"):</label>
+                <textarea id="codigosManuais" name="codigosManuais" [(ngModel)]="codigosManuais"
+                (input)="atualizarQuantidadePelosCodigos()" aria-describedby="gerarTexto"></textarea>
+            </section>
+            <!-- === FIM DA CORREÇÃO === -->
         </section>
 
+        <!-- === LÓGICA DE UPLOAD/CROP DE IMAGEM === -->
         <section class="coluna">
-          <label class="file-label" for="fileInput">
-            Imagem do Gift-Card
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-              class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16" aria-hidden="true">
-              <path
-                d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0z" />
-            </svg>
-          </label>
+            <label class="file-label" for="fileInput">
+                Alterar Imagem (Opcional)
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0z" />
+                </svg>
+            </label>
+            <input type="file" id="fileInput" class="file-upload" (change)="onFileSelected($event)" accept="image/*">
 
-          <input type="file" id="fileInput" class="file-upload" (change)="onFileSelected($event)" accept="image/*">
+             <!-- Preview da Imagem Atual ou Cortada -->
+            <div class="imagePreviewer" *ngIf="imageSrc && !showCropper" role="region" aria-label="Pré-visualização da imagem">
+                <p>Imagem Atual:</p>
+                <img [src]="imageSrc" alt="Pré-visualização da imagem atual">
+            </div>
+             <!-- Ícone de placeholder se não houver imagem E não estiver cortando -->
+             <div class="imagePreviewer placeholder" *ngIf="!imageSrc && !showCropper">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                     <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                     <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
+                 </svg>
+                 <p>Nenhuma imagem</p>
+            </div>
 
-          <div class="imagePreviewer" role="region" aria-label="Pré-visualização da imagem">
-            <svg *ngIf="!imageSrc" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-              class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16" aria-hidden="true">
-              <path
-                d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0z" />
-            </svg>
-            <img *ngIf="imageSrc" [src]="imageSrc" alt="Pré-visualização da imagem selecionada">
-          </div>
+            <!-- Componente Cropper (mostrado apenas se showCropper for true) -->
+            <div class="cropper-container" *ngIf="showCropper">
+                 <p>Recorte a nova imagem (740x740):</p>
+                <image-cropper
+                    [imageChangedEvent]="imageChangedEvent"
+                    [maintainAspectRatio]="true"
+                    [aspectRatio]="1 / 1"
+                    [resizeToWidth]="740"
+                    format="jpeg"
+                    (imageCropped)="imageCropped($event)"
+                    (loadImageFailed)="loadImageFailed()">
+                </image-cropper>
+                 <!-- Botões de Confirmar e Cancelar Corte -->
+                 <div class="cropper-actions">
+                     <button type="button" (click)="cancelCrop()" class="btn btn-secondary">Cancelar</button>
+                     <button type="button" (click)="confirmCrop()" class="btn btn-primary">Confirmar Corte</button>
+                 </div>
+            </div>
         </section>
+        <!-- === FIM DA LÓGICA DE IMAGEM === -->
+
       </section>
 
       <button type="submit" aria-label="Salvar alterações do gift-card" [disabled]="isUploading">
-        <span *ngIf="isUploading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span *ngIf="isUploading"> Salvando...</span>
-        <span *ngIf="!isUploading">Salvar Alterações</span>
+         <span *ngIf="isUploading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+         <span *ngIf="isUploading"> Salvando...</span>
+         <span *ngIf="!isUploading">Salvar Alterações</span>
       </button>
     </section>
   </form>
 
-  <app-footer></app-footer>
+  <app-footer></app-footer> <!-- Incluído Footer -->
 </div>
