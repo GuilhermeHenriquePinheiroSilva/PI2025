@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Enterprise, EnterpriseFormData } from '../app/models/enterprise.model';
+import { OrderItem } from '../app/models/order.model';
+
+export interface DashboardStats {
+  total_sales_count: number;
+  total_sales_value: number; // Backend envia como Decimal, mas TypeScript pode tratar como number
+  total_products_count: number;
+  total_stock_count: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +39,24 @@ export class EnterpriseService {
 
   getMyEnterprise(): Observable<Enterprise> {
     return this.http.get<Enterprise>(`${this.apiUrl}/me`);
+  }
+
+  getEnterpriseSalesHistory(productId?: string, month?: number, year?: number): Observable<OrderItem[]> {
+    let params = new HttpParams();
+    if (productId) {
+      params = params.set('product_id', productId);
+    }
+    if (month) {
+      params = params.set('month', month.toString());
+    }
+    if (year) {
+      params = params.set('year', year.toString());
+    }
+    // CORREÇÃO DA URL AQUI:
+    return this.http.get<OrderItem[]>(`${this.apiUrl}/enterprise/sales`, { params }); // Usa this.apiUrl que é /api/enterprise
+  }
+
+  getDashboardStats(): Observable<DashboardStats> {
+    return this.http.get<DashboardStats>(`${this.apiUrl}/dashboard-stats`);
   }
 }
