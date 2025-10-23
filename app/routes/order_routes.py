@@ -6,7 +6,7 @@ from app.database.db_config import get_db
 from app.security import get_current_user
 from app.models.user_orm import UserORM
 from app.models.order_orm import OrderORM, OrderItemORM # Importe OrderItemORM
-from app.models.order_models import Order as OrderSchema
+from app.models.order_models import OrderSchema
 
 router = APIRouter(
     prefix="/orders",
