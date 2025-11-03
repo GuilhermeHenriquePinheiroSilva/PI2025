@@ -951,11 +951,15 @@ app-forgot-password{
     bottom: 0;
     z-index: 3;
     margin-top: 2vh;
-    display: none;
+    height: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+    overflow: hidden;
 }
 
 .password-register:has(input:focus) ~ .password-rules{
-    display: block;
+    height: 18vh;
+    visibility: visible;
 }
 
 @keyframes bounce {

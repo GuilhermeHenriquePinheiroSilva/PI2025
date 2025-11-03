@@ -225,7 +225,7 @@
                   <input type="password" name="passwordRegister" placeholder="Digite sua senha"
                     [(ngModel)]="userRegister.password" #passwordInput="ngModel" required>
                 </div>
-                <div *ngIf="passwordInput.dirty" class="password-rules">
+                <div class="password-rules">
                   <ul>
                     <li
                       [ngClass]="{'valid': userRegister.password.length >= 8, 'invalid': userRegister.password.length < 8}">
