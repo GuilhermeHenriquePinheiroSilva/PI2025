@@ -866,6 +866,11 @@ input:-webkit-autofill {
     border-radius: 5vh;
 }
 
+.forgot-password-link::after{
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 app-forgot-password{
     height: 100%;
     width: 100%;
