@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule 
   ],
   templateUrl: './forgot-password.component.html',
+  styleUrl: './forgot-password.component.css'
   // Adicione seus imports de standalone aqui
 })
 export class ForgotPasswordComponent {

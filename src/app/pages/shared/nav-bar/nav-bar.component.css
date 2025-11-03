@@ -376,12 +376,14 @@ span a {
 }
 
 .title {
+    font-weight: 600;
+    margin-bottom: 2vh;
+}
+
+.title-middle{
     position: relative;
     left: 50%;
     transform: translateX(-50%);
-    /* Centraliza horizontalmente */
-    font-weight: 600;
-    margin-bottom: 2vh;
 }
 
 .formBotões {
@@ -444,6 +446,10 @@ form {
     color: #5B4B3F;
     padding-left: 10px;
     transition: 0.5s ease;
+}
+
+.form-group{
+    background: red;
 }
 
 input:-webkit-autofill {
@@ -858,6 +864,11 @@ input:-webkit-autofill {
     background-color: var(--orange);
     border: none;
     border-radius: 5vh;
+}
+
+app-forgot-password{
+    height: 100%;
+    width: 100%;
 }
 
 @keyframes jump {

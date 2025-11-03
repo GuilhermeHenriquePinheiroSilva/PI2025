@@ -95,7 +95,7 @@
       <ng-container *ngSwitchCase="'login'">
         <div class="containerNavBar">
           <header class="header">
-            <h2 class="title">Entrar</h2>
+            <h2 class="title title-middle">Entrar</h2>
             <h2 class="home"><a (click)="fecharFormulario()"><svg xmlns="http://www.w3.org/2000/svg" width="3.5vh"
                   height="3.5vh" fill="var(--white)" class="bi bi-x" viewBox="0 0 16 16">
                   <path
@@ -140,7 +140,7 @@
         <div class="containerNavBar">
           <header class="header">
             <h2 class="log"><a (click)="mudarFormulario('login')">←</a></h2>
-            <h2 class="title">Registrar</h2>
+            <h2 class="title title-middle">Registrar</h2>
             <h2 class="home"><a (click)="fecharFormulario()"><svg xmlns="http://www.w3.org/2000/svg" width="3.5vh"
                   height="3.5vh" fill="var(--white)" class="bi bi-x" viewBox="0 0 16 16">
                   <path
@@ -194,7 +194,7 @@
                   <path
                     d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z" />
                 </svg>
-                <input type="text" name="username" placeholder="Digite seu cpf" required>
+                <input type="text" name="username" placeholder="Digite seu cpf" required mask="000.000.000-00">
               </div>
               <div class="inputs-container" *ngIf="personType === 'enterprise'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B4B3F"
@@ -204,7 +204,7 @@
                   <path
                     d="M9 13a1 1 0 0 1 1-1v-1a2 2 0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1" />
                 </svg>
-                <input type="text" name="username" placeholder="Digite seu cnpj" required>
+                <input type="text" name="username" placeholder="Digite seu cnpj" required mask="00.000.000/0000-00">
               </div>
               <div class="inputs-container">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B4B3F"
@@ -271,7 +271,7 @@
         <div class="containerNavBar">
           <header class="header">
             <h2 class="log"><a (click)="mudarFormulario('login')">←</a></h2>
-            <h2 class="title">Recuperar Senha</h2>
+            <h2 class="title title-middle">Recuperar Senha</h2>
             <h2 class="home"><a (click)="fecharFormulario()"><svg xmlns="http://www.w3.org/2000/svg" width="3.5vh"
                   height="3.5vh" fill="var(--white)" class="bi bi-x" viewBox="0 0 16 16">
                   <path

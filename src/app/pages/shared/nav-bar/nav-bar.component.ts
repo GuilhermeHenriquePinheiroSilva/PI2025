@@ -10,6 +10,7 @@ import { ChatbotService } from '../../../../services/chatbot.service';
 import { Enterprise, EnterpriseFormData } from '../../../models/enterprise.model';
 import { EnterpriseService } from '../../../../services/enterprise.service';
 import { ForgotPasswordComponent } from '../../forgot-password/forgot-password.component';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-nav-bar',
@@ -18,7 +19,8 @@ import { ForgotPasswordComponent } from '../../forgot-password/forgot-password.c
     CommonModule,
     RouterLink,
     FormsModule,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    NgxMaskDirective
   ],
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css']
