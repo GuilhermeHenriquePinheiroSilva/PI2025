@@ -215,38 +215,40 @@
                 <input type="email" name="emailRegister" placeholder="Digite seu e-mail"
                   [(ngModel)]="userRegister.email" required>
               </div>
-              <div class="inputs-container password-register">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B4B3F" class="bi bi-lock-fill"
-                  viewBox="0 0 16 16">
-                  <path
-                    d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
-                </svg>
-                <input type="password" name="passwordRegister" placeholder="Digite sua senha"
-                  [(ngModel)]="userRegister.password" #passwordInput="ngModel" required>
-              </div>
-              <div *ngIf="passwordInput.dirty" class="password-rules">
-                <ul>
-                  <li
-                    [ngClass]="{'valid': userRegister.password.length >= 8, 'invalid': userRegister.password.length < 8}">
-                    Pelo menos 8 caracteres
-                  </li>
-                  <li
-                    [ngClass]="{'valid': hasUpperCase(userRegister.password), 'invalid': !hasUpperCase(userRegister.password)}">
-                    Uma letra maiúscula
-                  </li>
-                  <li
-                    [ngClass]="{'valid': hasLowerCase(userRegister.password), 'invalid': !hasLowerCase(userRegister.password)}">
-                    Uma letra minúscula
-                  </li>
-                  <li
-                    [ngClass]="{'valid': hasNumber(userRegister.password), 'invalid': !hasNumber(userRegister.password)}">
-                    Pelo menos um número
-                  </li>
-                  <li
-                    [ngClass]="{'valid': hasSpecialChar(userRegister.password), 'invalid': !hasSpecialChar(userRegister.password)}">
-                    Um caractere especial (ex: !#$)
-                  </li>
-                </ul>
+              <div class="password-check">
+                <div class="inputs-container password-register">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B4B3F" class="bi bi-lock-fill"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
+                  </svg>
+                  <input type="password" name="passwordRegister" placeholder="Digite sua senha"
+                    [(ngModel)]="userRegister.password" #passwordInput="ngModel" required>
+                </div>
+                <div *ngIf="passwordInput.dirty" class="password-rules">
+                  <ul>
+                    <li
+                      [ngClass]="{'valid': userRegister.password.length >= 8, 'invalid': userRegister.password.length < 8}">
+                      Pelo menos 8 caracteres
+                    </li>
+                    <li
+                      [ngClass]="{'valid': hasUpperCase(userRegister.password), 'invalid': !hasUpperCase(userRegister.password)}">
+                      Uma letra maiúscula
+                    </li>
+                    <li
+                      [ngClass]="{'valid': hasLowerCase(userRegister.password), 'invalid': !hasLowerCase(userRegister.password)}">
+                      Uma letra minúscula
+                    </li>
+                    <li
+                      [ngClass]="{'valid': hasNumber(userRegister.password), 'invalid': !hasNumber(userRegister.password)}">
+                      Pelo menos um número
+                    </li>
+                    <li
+                      [ngClass]="{'valid': hasSpecialChar(userRegister.password), 'invalid': !hasSpecialChar(userRegister.password)}">
+                      Um caractere especial (ex: !#$)
+                    </li>
+                  </ul>
+                </div>
               </div>
               <div class="inputs-container">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B4B3F" class="bi bi-lock-fill"
