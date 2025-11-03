@@ -9,6 +9,7 @@ import { CartService } from '../../../../services/cart.service';
 import { ChatbotService } from '../../../../services/chatbot.service';
 import { Enterprise, EnterpriseFormData } from '../../../models/enterprise.model';
 import { EnterpriseService } from '../../../../services/enterprise.service';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-nav-bar',
@@ -16,7 +17,8 @@ import { EnterpriseService } from '../../../../services/enterprise.service';
   imports: [
     CommonModule,
     RouterLink,
-    FormsModule
+    FormsModule,
+    NgxMaskDirective
   ],
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css']
@@ -39,7 +41,7 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
   // Dados dos formulários
   email: string = '';
   password: string = '';
-  userRegister: User = { username: '', email: '', password: '', role: 'CUSTOMER' };
+  userRegister: any = { username: '', email: '', password: '', role: 'CUSTOMER', cpf: '', cnpj: '' };
   enterpriseRegister: EnterpriseFormData  = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: ''};
   confirmPassword: string = '';
 
@@ -123,7 +125,7 @@ export class NavBarComponent implements OnInit, AfterViewChecked {
       this.formAtual = destino;
       this.email = '';
       this.password = '';
-      this.userRegister = { username: '', email: '', password: '', role: 'CUSTOMER' };
+      this.userRegister = { username: '', email: '', password: '', role: 'CUSTOMER', cpf: '', cnpj: '' };
       this.enterpriseRegister = { nome_fantasia: '', cnpj: '', nome_admin_empresa: '', cpf_adm: '', telefone: '' };
       this.confirmPassword = '';
       this.formTransicao = destino === 'login' ? 'entrando-esquerda' : 'entrando-direita';
@@ -182,32 +184,63 @@ goToForgotPassword(): void {
 }
 
 onSubmitRegister(): void {
-  if (this.userType === 'user') {
-    if (!this.userRegister.username || !this.userRegister.email || !this.userRegister.password) {
-      this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
-      return;
-    }
-    if (this.userRegister.password !== this.confirmPassword) {
-      this.notificationService.show('As senhas não coincidem.', 'error');
-      return;
-    }
-
-    this.authService.register(this.userRegister).subscribe({
-      next: () => {
-        this.fecharFormulario();
-        this.notificationService.show(
-          'Cadastro realizado! Verifique seu e-mail para ativar a conta.', 
-          'success'
-        );
-      },
-      error: (err) => {
-        const errorMessage = err.error?.detail || 'Erro ao cadastrar. Tente novamente.';
-        this.notificationService.show(errorMessage, 'error');
+  
+    // O 'if' verifica a variável 'userType', que está fixa como "user".
+    // Isso garante que estamos usando a lógica correta (authService.register)
+    // e não a lógica 'else' (enterpriseService.registerEnterprise).
+    if (this.userType === 'user') {
+      
+      // Validações básicas
+      if (!this.userRegister.username || !this.userRegister.email || !this.userRegister.password) {
+        this.notificationService.show('Por favor, preencha nome, e-mail e senha.', 'warning');
+        return;
       }
-    });
+      if (this.userRegister.password !== this.confirmPassword) {
+        this.notificationService.show('As senhas não coincidem.', 'error');
+        return;
+      }
 
-  } else { // Lógica para empresa (mantida como está)
-    // Lógica para empresa
+      // 1. Monta o payload base que será enviado ao backend
+      const userPayload: any = {
+        username: this.userRegister.username,
+        email: this.userRegister.email,
+        password: this.userRegister.password,
+        account_type: this.personType, // Envia 'person' (PF) ou 'enterprise' (PJ)
+        role: 'CUSTOMER' // Conforme sua regra, todos são CUSTOMER
+      };
+
+      // 2. Adiciona o documento (CPF ou CNPJ) com base no 'personType'
+      if (this.personType === 'person') {
+        if (!this.userRegister.cpf) {
+          this.notificationService.show('Por favor, preencha o CPF.', 'warning');
+          return;
+        }
+        userPayload.cpf = this.userRegister.cpf;
+      } else { // personType === 'enterprise'
+        if (!this.userRegister.cnpj) {
+          this.notificationService.show('Por favor, preencha o CNPJ.', 'warning');
+          return;
+        }
+        userPayload.cnpj = this.userRegister.cnpj;
+      }
+
+      // 3. Envia o payload final para o authService.register
+      this.authService.register(userPayload).subscribe({
+        next: () => {
+          this.fecharFormulario();
+          this.notificationService.show(
+            'Cadastro realizado! Verifique seu e-mail para ativar a conta.', 
+            'success'
+          );
+        },
+        error: (err) => {
+          // Captura erros do backend (ex: "CPF já registrado")
+          const errorMessage = err.error?.detail || 'Erro ao cadastrar. Tente novamente.';
+          this.notificationService.show(errorMessage, 'error');
+        }
+      });
+
+    } else { 
       const { nome_fantasia, cnpj, nome_admin_empresa, cpf_adm, telefone} = this.enterpriseRegister;
       if (!nome_fantasia || !cnpj || !telefone || !nome_admin_empresa || !cpf_adm) {
         this.notificationService.show('Por favor, preencha todos os campos.', 'warning');
@@ -216,14 +249,14 @@ onSubmitRegister(): void {
       this.enterpriseService.registerEnterprise(this.enterpriseRegister).subscribe({
         next: () => {
           this.notificationService.show('Cadastro da empresa enviado para análise!', 'success');
-          this.fecharFormulario(); // Fecha o formulário após o envio
+          this.fecharFormulario();
         },
         error: (err) => {
           this.notificationService.show(err.error.detail || 'Erro ao cadastrar. Tente novamente.', 'error');
         }
       });
     }
-}
+  }
 
   onSubmitForgot(): void {
     if (!this.email) {

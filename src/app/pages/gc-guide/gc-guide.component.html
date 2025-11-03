@@ -19,7 +19,7 @@
                 <div class="mb-3">
                     <label for="cnpj" class="form-label">CNPJ</label>
                     <input type="text" id="cnpj" class="form-control" name="cnpj" [(ngModel)]="enterprise.cnpj"
-                        required>
+                        required mask="00.000.000/0000-00">
                 </div>
                 <div class="mb-3">
                     <label for="nome_admin_empresa" class="form-label">Nome do Administrador</label>
@@ -29,12 +29,12 @@
                 <div class="mb-3">
                     <label for="cpf_adm" class="form-label">CPF do Administrador</label>
                     <input type="text" id="cpf_adm" class="form-control" name="cpf_adm" [(ngModel)]="enterprise.cpf_adm"
-                        required>
+                        required mask="000.000.000-00">
                 </div>
                 <div class="mb-3">
                     <label for="telefone" class="form-label">Telefone</label>
                     <input type="text" id="telefone" class="form-control" name="telefone"
-                        [(ngModel)]="enterprise.telefone" required>
+                        [(ngModel)]="enterprise.telefone" required mask="(00) 00000-0000">
                 </div>
                 <button type="submit" class="btn btn-primary" [disabled]="!enterpriseForm.form.valid || isSubmitting">
                     {{ isSubmitting ? 'A Enviar...' : 'Solicitar Cadastro' }}
