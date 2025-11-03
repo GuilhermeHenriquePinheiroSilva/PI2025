@@ -9,6 +9,7 @@ import { CartService } from '../../../../services/cart.service';
 import { ChatbotService } from '../../../../services/chatbot.service';
 import { Enterprise, EnterpriseFormData } from '../../../models/enterprise.model';
 import { EnterpriseService } from '../../../../services/enterprise.service';
+import { ForgotPasswordComponent } from '../../forgot-password/forgot-password.component';
 
 @Component({
   selector: 'app-nav-bar',
@@ -16,7 +17,8 @@ import { EnterpriseService } from '../../../../services/enterprise.service';
   imports: [
     CommonModule,
     RouterLink,
-    FormsModule
+    FormsModule,
+    ForgotPasswordComponent
   ],
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css']
