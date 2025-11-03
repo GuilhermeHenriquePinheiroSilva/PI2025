@@ -13,7 +13,9 @@
         <input type="number" min="1" id="quantidade" name="quantidade" [(ngModel)]="quantidade"
           [readonly]="!gerarCodigo" required>
       </section>
+    </section>
 
+    <section class="linha categ">
       <section class="coluna">
         <label for="category">Categoria:</label>
         <select id="category" class="form-control" [(ngModel)]="categoryId" name="categoryId"

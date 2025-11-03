@@ -23,6 +23,7 @@ import { EnterpriseService } from '../../../../services/enterprise.service';
 })
 export class NavBarComponent implements OnInit, AfterViewChecked {
   userType: String = "user";
+  personType: String = "person";
 
   user: User | null = null;
   searchTerm: string = '';

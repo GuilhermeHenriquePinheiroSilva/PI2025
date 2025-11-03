@@ -147,6 +147,33 @@
                     d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
                 </svg></a></h2>
           </header>
+          <div>
+            <p class="title">Está tentando cadastrar uma pessoa:</p>
+          </div>
+          <div class="userType">
+            <div class="types">
+              <label class="user" for="user">
+                <input type="radio" name="user" [(ngModel)]="personType" checked value="person" id="user">
+                <div class="svg">
+                  <svg class="">
+                    <use width="100%" height="100%" xlink:href="svgs/person-fill.svg"></use>
+                  </svg>
+                </div>
+              </label>
+              <p>Física</p>
+            </div>
+            <div class="types">
+              <label class="user" for="enterprise">
+                <input type="radio" name="user" [(ngModel)]="personType" value="enterprise" id="enterprise">
+                <div class="svg">
+                  <svg class="">
+                    <use width="100%" height="100%" xlink:href="svgs/building-fill.svg"></use>
+                  </svg>
+                </div>
+              </label>
+              <p>Jurídica</p>
+            </div>
+          </div>
           <form (ngSubmit)="onSubmitRegister()">
             <div class="inputs">
               <div class="inputs-container">
@@ -158,6 +185,26 @@
                 </svg>
                 <input type="text" name="username" placeholder="Digite seu nome" [(ngModel)]="userRegister.username"
                   required>
+              </div>
+              <div class="inputs-container" *ngIf="personType === 'person'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B4B3F" class="bi bi-person-vcard"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5" />
+                  <path
+                    d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z" />
+                </svg>
+                <input type="text" name="username" placeholder="Digite seu cpf" required>
+              </div>
+              <div class="inputs-container" *ngIf="personType === 'enterprise'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B4B3F"
+                  class="bi bi-building-fill-lock" viewBox="0 0 16 16">
+                  <path
+                    d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7.764a3 3 0 0 0-4.989 2.497 2 2 0 0 0-.743.739H6.5a.5.5 0 0 0-.5.5V16H3a1 1 0 0 1-1-1zm2 1.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m3 0v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5" />
+                  <path
+                    d="M9 13a1 1 0 0 1 1-1v-1a2 2 0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1" />
+                </svg>
+                <input type="text" name="username" placeholder="Digite seu cnpj" required>
               </div>
               <div class="inputs-container">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B4B3F"
@@ -174,7 +221,8 @@
                   <path
                     d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
                 </svg>
-                <input type="password" name="passwordRegister" placeholder="Digite sua senha" [(ngModel)]="userRegister.password" #passwordInput="ngModel" required>
+                <input type="password" name="passwordRegister" placeholder="Digite sua senha"
+                  [(ngModel)]="userRegister.password" #passwordInput="ngModel" required>
               </div>
               <div *ngIf="passwordInput.dirty" class="password-rules">
                 <ul>

@@ -380,6 +380,7 @@ span a {
     transform: translateX(-50%);
     /* Centraliza horizontalmente */
     font-weight: 600;
+    margin-bottom: 2vh;
 }
 
 .formBotões {
@@ -581,6 +582,7 @@ input:-webkit-autofill {
     display: flex;
     justify-content: space-between;
     width: 12vw;
+    margin-bottom: 2vh;
 }
 
 .types {
@@ -911,6 +913,11 @@ input:-webkit-autofill {
 
 .typing-indicator span:nth-child(2) {
     animation-delay: -0.16s;
+}
+
+.svgButtons {
+    background: none;
+    border: none;
 }
 
 @keyframes bounce {
