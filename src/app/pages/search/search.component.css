@@ -52,8 +52,16 @@
   width: calc(20% - 16px);
 }
 
+.infos-search{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .info-search {
-    font-size: 16pt;
+    width: fit-content;
+    font-size: 18pt;
     font-weight: 600;
 }
 

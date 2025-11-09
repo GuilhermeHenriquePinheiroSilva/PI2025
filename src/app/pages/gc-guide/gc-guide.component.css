@@ -58,8 +58,7 @@
 }
 
 .form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    border-color: var(--orange);
     outline: none;
 }
 
@@ -69,18 +68,16 @@
     font-size: 1.1rem;
     font-weight: 600;
     border-radius: 5px;
-    background-color: #007bff;
-    border-color: #007bff;
-    transition: background-color 0.3s, transform 0.2s;
+    background-color: var(--orange);
+    transition: background-color 0.3s, transform 0.2s, filter 0.2s;
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
+    filter: brightness(1.1);
     transform: translateY(-2px);
 }
 
 .btn-primary:disabled {
-    background-color: #6c757d;
-    border-color: #6c757d;
+    border: none;
     cursor: not-allowed;
 }

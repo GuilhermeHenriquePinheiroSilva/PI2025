@@ -37,8 +37,10 @@
         </div>
     </div>
     <div class="content">
-        <p class="info-search" *ngIf="searchTerm">Resultados para: "{{ searchTerm }}"</p>
-        <p class="info-search" *ngIf="!searchTerm">Todos os Gift Cards</p>
+        <div class="infos-search">
+            <p class="info-search" *ngIf="searchTerm">Resultados para: "{{ searchTerm }}"</p>
+            <p class="info-search" *ngIf="!searchTerm">Todos os Gift Cards</p>
+        </div>
 
         <div *ngIf="isLoading" class="loading-indicator">Carregando...</div>
 
@@ -49,12 +51,10 @@
         <div *ngIf="!isLoading && visibleGiftCards.length > 0">
             <div class="row">
                 <div class="cards">
-                    <a *ngFor="let gc of visibleGiftCards" [routerLink]="['/product-page', gc.id]" class="gift-card-link">
-                        <app-gift-card-template 
-                            [gcName]="gc.title"
-                            [gcText]="'R$ ' + (gc.valor | number:'1.2-2')" 
-                            [gcImg]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl"
-                            [gcImgAlt]="gc.title">
+                    <a *ngFor="let gc of visibleGiftCards" [routerLink]="['/product-page', gc.id]"
+                        class="gift-card-link">
+                        <app-gift-card-template [gcName]="gc.title" [gcText]="'R$ ' + (gc.valor | number:'1.2-2')"
+                            [gcImg]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl" [gcImgAlt]="gc.title">
                         </app-gift-card-template>
                     </a>
                 </div>

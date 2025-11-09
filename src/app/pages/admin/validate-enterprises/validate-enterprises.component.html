@@ -1,115 +1,135 @@
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center container-head">
-        <p class="h1">Validar Empresas</p>
-        <button class="btn btn-sm refresh" (click)="loadAllEnterprises()" [disabled]="isLoading">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9" />
-                <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z" />
-            </svg>
-        </button>
-    </div>
+    <div id="validarEmpresas">
+        <div class="d-flex justify-content-between align-items-center container-head">
+            <div class="d-flex flex-column align-items-start">
+                <p class="h1">Validar Empresas</p>
+                <p class="lead">Aprove ou rejeite os novos cadastros.</p>
+            </div>
+            <button class="btn btn-sm refresh" (click)="loadAllEnterprises()" [disabled]="isLoading">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                    <path
+                        d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9" />
+                    <path fill-rule="evenodd"
+                        d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z" />
+                </svg>
+            </button>
+        </div>
 
-    <div *ngIf="isLoading" class="text-center mt-4">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Carregando...</span>
+        <div *ngIf="isLoading" class="text-center mt-4">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+        </div>
+
+        <div class="table-section" *ngIf="!isLoading">
+            <div *ngIf="pendingEnterprises.length > 0; else noPending" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Nome Fantasia</th>
+                            <th>CNPJ</th>
+                            <th>Administrador</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let enterprise of pendingEnterprises">
+                            <td>{{ enterprise.nome_fantasia }}</td>
+                            <td>{{ enterprise.cnpj }}</td>
+                            <td>{{ enterprise.nome_admin_empresa }}</td>
+                            <td class="text-center tableButtons">
+                                <button class="btn btn-sm approve me-2"
+                                    (click)="approve(enterprise.id!)">Aprovar</button>
+                                <button (click)="openRejectionModal(enterprise.id!)"
+                                    class="btn btn-danger">Rejeitar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ng-template #noPending>
+                <div class="alert alert-info text-center">Nenhuma empresa pendente.</div>
+            </ng-template>
         </div>
     </div>
 
-    <div class="table-section" *ngIf="!isLoading">
-        <h2>Empresas Pendentes</h2>
-        <p class="lead">Aprove ou rejeite os novos cadastros.</p>
-        <div *ngIf="pendingEnterprises.length > 0; else noPending" class="table-responsive">
-            <table class="table table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Nome Fantasia</th>
-                        <th>CNPJ</th>
-                        <th>Administrador</th>
-                        <th class="text-center">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let enterprise of pendingEnterprises">
-                        <td>{{ enterprise.nome_fantasia }}</td>
-                        <td>{{ enterprise.cnpj }}</td>
-                        <td>{{ enterprise.nome_admin_empresa }}</td>
-                        <td class="text-center tableButtons">
-                            <button class="btn btn-sm approve me-2" (click)="approve(enterprise.id!)">Aprovar</button>
-                            <button (click)="openRejectionModal(enterprise.id!)" class="btn btn-danger">Rejeitar</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div id="empresasRejeitadas">
+        <div class="d-flex flex-column justify-content-between align-items-start container-head">
+            <p class="h1">Empresas Rejeitadas</p>
+            <p class="lead">Revise e aprove, se necessário.</p>
         </div>
-        <ng-template #noPending>
-            <div class="alert alert-info text-center">Nenhuma empresa pendente.</div>
-        </ng-template>
+
+        <div class="table-section" *ngIf="!isLoading">
+            <div *ngIf="rejectedEnterprises.length > 0; else noRejected" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Nome Fantasia</th>
+                            <th>CNPJ</th>
+                            <th>Motivo da Rejeição</th>
+                            <th class="text-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let enterprise of rejectedEnterprises">
+                            <td>{{ enterprise.nome_fantasia }}</td>
+                            <td>{{ enterprise.cnpj }}</td>
+                            <td>{{ enterprise.rejection_reason }}</td>
+                            <td class="text-center tableButtons">
+                                <button class="btn btn-sm approve" (click)="approve(enterprise.id!)">Aprovar Mesmo
+                                    Assim</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ng-template #noRejected class="table-rejected">
+                <div class="alert alert-secondary text-center">Nenhuma empresa foi rejeitada.</div>
+            </ng-template>
+        </div>
     </div>
 
-    <div class="table-section" *ngIf="!isLoading">
-        <h2>Empresas Rejeitadas</h2>
-        <p class="lead">Revise e aprove, se necessário.</p>
-        <div *ngIf="rejectedEnterprises.length > 0; else noRejected" class="table-responsive">
-            <table class="table table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Nome Fantasia</th>
-                        <th>CNPJ</th>
-                        <th>Motivo da Rejeição</th>
-                        <th class="text-center">Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let enterprise of rejectedEnterprises">
-                        <td>{{ enterprise.nome_fantasia }}</td>
-                        <td>{{ enterprise.cnpj }}</td>
-                        <td>{{ enterprise.rejection_reason }}</td>
-                        <td class="text-center tableButtons">
-                            <button class="btn btn-sm approve" (click)="approve(enterprise.id!)">Aprovar Mesmo Assim</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <ng-template #noRejected>
-            <div class="alert alert-secondary text-center">Nenhuma empresa foi rejeitada.</div>
-        </ng-template>
-    </div>
 
-    <div class="table-section" *ngIf="!isLoading">
-        <h2>Empresas Aprovadas</h2>
-        <p class="lead">Histórico de empresas ativas na plataforma.</p>
-        <div *ngIf="approvedEnterprises.length > 0; else noApproved" class="table-responsive">
-            <table class="table table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Nome Fantasia</th>
-                        <th>CNPJ</th>
-                        <th>Administrador</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let enterprise of approvedEnterprises">
-                        <td>{{ enterprise.nome_fantasia }}</td>
-                        <td>{{ enterprise.cnpj }}</td>
-                        <td>{{ enterprise.nome_admin_empresa }}</td>
-                    </tr>
-                </tbody>
-            </table>
+    <div id="empresasAprovadas">
+        <div class="d-flex flex-column justify-content-between align-items-start container-head">
+            <p class="h1">Empresas Aprovadas</p>
+            <p class="lead">Histórico de empresas ativas na plataforma.</p>
         </div>
-        <ng-template #noApproved>
-            <div class="alert alert-secondary text-center">Nenhuma empresa foi aprovada ainda.</div>
-        </ng-template>
-    </div>
+        <div class="table-section" *ngIf="!isLoading">
+            <div *ngIf="approvedEnterprises.length > 0; else noApproved" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Nome Fantasia</th>
+                            <th>CNPJ</th>
+                            <th>Administrador</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let enterprise of approvedEnterprises">
+                            <td>{{ enterprise.nome_fantasia }}</td>
+                            <td>{{ enterprise.cnpj }}</td>
+                            <td>{{ enterprise.nome_admin_empresa }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ng-template #noApproved>
+                <div class="alert alert-secondary text-center">Nenhuma empresa foi aprovada ainda.</div>
+            </ng-template>
+        </div>
 
-    <div class="modal-overlay" *ngIf="isRejectionModalVisible">
-        <div class="modal-content">
-            <h4>Motivo da Rejeição</h4>
-            <p>Por favor, descreva o motivo pelo qual o cadastro desta empresa está a ser rejeitado.</p>
-            <textarea [(ngModel)]="rejectionReason" rows="4" placeholder="Ex: Documento CNPJ ilegível..."></textarea>
-            <div class="modal-actions">
-                <button (click)="cancelRejection()" class="btn btn-danger">Cancelar</button>
-                <button (click)="confirmRejection()" class="btn confirm">Confirmar Rejeição</button>
+        <div class="modal-overlay" *ngIf="isRejectionModalVisible">
+            <div class="modal-content">
+                <h4>Motivo da Rejeição</h4>
+                <p>Por favor, descreva o motivo pelo qual o cadastro desta empresa está a ser rejeitado.</p>
+                <textarea [(ngModel)]="rejectionReason" rows="4"
+                    placeholder="Ex: Documento CNPJ ilegível..."></textarea>
+                <div class="modal-actions">
+                    <button (click)="cancelRejection()" class="btn btn-danger">Cancelar</button>
+                    <button (click)="confirmRejection()" class="btn confirm">Confirmar Rejeição</button>
+                </div>
             </div>
         </div>
     </div>

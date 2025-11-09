@@ -145,6 +145,14 @@
     justify-content: space-around;
 }
 
+.category{
+    margin-bottom: 2vh;
+}
+
+.category a{
+    color: var(--orange);
+}
+
 .opcao {
     transition: 0.1s ease;
     background: #5B4B3F;
@@ -246,6 +254,10 @@ button:active{
   background-color: var(--light-brown); /* Fundo sutil */
   padding: 1rem;
   border-radius: 8px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .valor-credito {

@@ -218,6 +218,18 @@ input:checked+.slider .bi-check {
     opacity: 100%;
 }
 
+select{
+    border-radius: 0;
+}
+
+select option{
+    color: var(--dark-brown);
+}
+
+selection option:hover{
+    background-color: var(--orange);
+}
+
 /* Rounded sliders */
 .slider.round {
     border-radius: 34px;

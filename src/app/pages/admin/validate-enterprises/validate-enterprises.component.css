@@ -5,6 +5,9 @@
   height: auto;
   margin-bottom: 0;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6vh;
 }
 
 .container-head {
@@ -32,9 +35,7 @@
 }
 
 .lead {
-  background-color: var(--brown);
-  height: 100%;
-  padding: 2vh 0;
+  height: 80%;
 }
 
 .modal-overlay {
@@ -74,6 +75,10 @@
   color: black;
 }
 
+.h2{
+  margin: 2vh 0 0;
+}
+
 th {
   background-color: var(--orange);
   color: var(--white);
@@ -90,12 +95,27 @@ table:nth-child(odd) td {
   background-color: var(--light-brown);
 }
 
+.table-section{
+  margin: 0;
+  gap: 0;
+}
+
+.table-header{
+  background-color: var(--brown);
+  padding-top: 2vh;
+}
+
 .table-responsive {
   background-color: var(--brown);
   border-bottom-left-radius: 1vh;
   border-bottom-right-radius: 1vh;
   height: 60vh;
   overflow-y: auto;
+}
+
+.table-rejected{
+  padding: 0;
+  margin: 0;
 }
 
 .modal-actions {
@@ -124,13 +144,15 @@ table:nth-child(odd) td {
 }
 
 .alert{
-  margin-top: 10vh;
   height: 30vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: var(--brown);
-  border-color: var(--dark-brown);
+  border: none;
+  border-radius: 0;
+  border-bottom-left-radius: 2vh;
+  border-bottom-right-radius: 2vh;
   position: relative;
 }
 
