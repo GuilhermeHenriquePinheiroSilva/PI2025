@@ -1,8 +1,13 @@
+:root{
+    max-height: 100vh;
+    overflow-y: hidden;
+}
+
 .body {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
+    height: fit-content;
     background-color: var(--brown);
-    position: relative;
     display: grid;
     grid-template-columns: 20% 80%;
 }
@@ -71,18 +76,28 @@
 .content {
     display: flex;
     flex-direction: column;
-    margin-top: 2vh;
-    /* Adicionado para alinhar o conteúdo */
     align-items: center;
-    padding-top: 15vh;
+    margin-top: 2vh;
+    padding-bottom: 4vh;
 }
-
-/* --- ESTILOS ATUALIZADOS E NOVOS --- */
-
-.entrepise {
+  
+.enterprise {
+    padding: 0 6vw;
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+.enterprise div{
+    width: 100%;
+}
+
+app-gc-guide section{
+    width: 60vw;
+}
+
+.guideContainer{
+    width: 100%;
 }
 
 .loading-status {

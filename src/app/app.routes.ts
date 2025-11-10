@@ -35,8 +35,7 @@ export const routes: Routes = [
         canActivate: [enterpriseGuard]
     },
     {
-        path: 'gc-guide', component: GcGuideComponent,
-        canActivate: [authGuard]
+        path: 'gc-guide', component: GcGuideComponent
     },
     {
         path: 'search', component: SearchComponent

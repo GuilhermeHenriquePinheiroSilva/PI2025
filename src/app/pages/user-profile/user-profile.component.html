@@ -18,7 +18,7 @@
             <input type="radio" [value]="'Mp'" [(ngModel)]="options" name="profileOptions">
         </label>
 
-        <div *ngIf="user">
+        <div *ngIf="user" class="guideContainer">
             <a *ngIf="user.role === 'ENTERPRISE'; else becomeEnterprise" class="userInfo" routerLink="/dashboard-gc">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-clipboard-data" viewBox="0 0 16 16">
@@ -64,7 +64,7 @@
         <div class="purchases" *ngIf="options == 'Mp'">
             <app-my-purchases></app-my-purchases>
         </div>
-        <div *ngIf="options == 'En'" class="entrepise">
+        <div *ngIf="options == 'En'" class="enterprise">
             <div *ngIf="isLoadingEnterprise" class="loading-status">
                 <p>Carregando informações da empresa...</p>
             </div>
