@@ -30,6 +30,7 @@ header {
 .categ{
     justify-content: center;
     align-items: center;
+    margin-bottom: 6vh;
 }
 
 .linha {
