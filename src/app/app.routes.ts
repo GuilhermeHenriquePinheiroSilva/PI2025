@@ -23,8 +23,7 @@ import { ValidateEnterprisesComponent } from './pages/admin/validate-enterprises
 
 export const routes: Routes = [
     {
-        path: 'adicionar-gc', component: AddGcComponent,
-        canActivate: [enterpriseGuard],
+        path: 'adicionar-gc', component: AddGcComponent
     },
     {
         path: 'editar-gc/:id', component: EditGcComponent,

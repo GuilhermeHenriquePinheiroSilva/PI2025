@@ -6,16 +6,11 @@
     height: auto;
 }
 
-#formTitle {
-    font-size: 3.6vh;
+.formheader p {
     font-weight: bold;
-    margin: 3vh 0;
 }
 
-header {
-    margin-top: 6vh;
-}
-
+/* Container Principal - ESTRUTURA EXPANDIDA */
 .container {
     margin-top: 15vh;
     border-radius: 5vh;
@@ -25,12 +20,16 @@ header {
     align-items: center;
     background-color: var(--brown);
     margin-bottom: 10vh;
+    padding: 8vh 7vw;
+    max-width: 1200px;
+    width: 95%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.categ{
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 6vh;
+.form-description {
+    font-size: 2.8vh;
+    color: var(--smoke-white);
+    text-align: center;
 }
 
 .linha {
@@ -40,84 +39,116 @@ header {
     flex-direction: row;
     justify-content: space-around;
     align-items: flex-start;
-    margin-top: 10vh;
+    margin-top: 5vh;
+    padding-bottom: 5vh;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
 }
 
-.desc {
-    align-items: normal;
+.categ,
+.last-row {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
+/* Estilo para as Colunas (CAIXAS COM NOVAS CORES DE TRANSPARÊNCIA/SOMBRA) */
 .coluna {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 40%;
+    width: 48%;
     font-size: 2.5vh;
+    padding: 4vh 3vh;
+    border-radius: 15px;
+
+    /* SUAS CORES APLICADAS: Fundo Branco Transparente e Sombra Preta Forte */
+    border: 1px solid var(--light-orange);
+    background-color: rgb(255 255 255 / 9%);
+    /* Fundo branco 9% opaco */
+    box-shadow: 0 0 12px rgb(0 0 0 / 70%);
+    /* Sombra preta 70% opaca */
 }
 
-.coluna label{
+/* Colunas de layout sem borda */
+.switch-container,
+.price-col,
+.categoria-col,
+.code-management-col,
+.upload-col {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.categoria-col {
+    width: 80%;
+}
+
+
+.coluna label {
     font-size: 2.8vh;
+    color: var(--smoke-white);
+    margin-bottom: 1.5vh;
+    text-align: center;
 }
 
-.coluna p{
+.coluna p {
     font-size: 3vh;
+    color: var(--smoke-white);
 }
 
-.gerarCodigo {
-    width: 100%;
-    height: 50vh;
-    margin-top: 5vh;   
-    visibility: hidden;
-    transition: all 0.4s ease-in-out;
-}
-
-.gerarCodigo textarea{
-    height: 80%;
-}
-
-p {
-    font-size: 2vh;
-}
-
+/* Estilo dos Inputs, Textareas e Select */
 input[type="text"],
 textarea,
-input[type="number"] {
+input[type="number"],
+input[type="date"],
+.select-field {
     text-align: center;
-    border: none;
-    background-color: white;
-    color: #1D1302;
+    border: 2px solid transparent;
+    background-color: var(--smoke-white);
+    color: var(--dark-brown);
     width: 100%;
-    padding: 1vh;
+    padding: 1.8vh;
+    border-radius: 10px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 textarea {
-    height: 100%;
+    min-height: 20vh;
+    resize: vertical;
+    text-align: left;
+    padding-top: 2vh;
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    opacity: 1;
-}
-
-input[type="number"] {
-    width: 20%;
-}
-
-input[type="text"],
-input[type="number"] {
-    border-radius: 20px;
-}
-
-input:focus {
+input:focus,
+textarea:focus,
+.select-field:focus {
     outline: none;
-    box-shadow: 0px 0px 0px 2px #EFE8E0;
+    border-color: var(--orange);
+    box-shadow: 0px 0px 8px var(--light-orange);
 }
 
-label {
-    vertical-align: middle;
-    font-size: 2.5vh;
+.sr-only {
+    margin: 0 0 7vh 0;
 }
 
+input[readonly] {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.amount-input {
+    width: 60%;
+}
+
+.validade input.date-field {
+    width: 70%;
+    margin-top: 10px;
+}
+
+/* CORREÇÃO DO SWITCH (ATIVO/INATIVO E GERAR CÓDIGO) */
 .inputCheck {
     width: 7vh;
     height: 4vh;
@@ -150,8 +181,15 @@ label {
     transition: .4s;
 }
 
+.bi-cloud-arrow-up-fill{
+    width: 5vh;
+    height: 5vh;
+    fill: var(--white);
+    color: var(--white);
+}
+
 .bi-x {
-    fill: var(--dark-brown);    
+    fill: var(--dark-brown);
 }
 
 .bi-check,
@@ -219,15 +257,15 @@ input:checked+.slider .bi-check {
     opacity: 100%;
 }
 
-select{
+select {
     border-radius: 0;
 }
 
-select option{
+select option {
     color: var(--dark-brown);
 }
 
-selection option:hover{
+selection option:hover {
     background-color: var(--orange);
 }
 
@@ -240,156 +278,142 @@ selection option:hover{
     border-radius: 50%;
 }
 
+
+/* Preview de Preço */
+.price-preview {
+    margin-top: 15px;
+    background-color: var(--light-brown);
+    border-radius: 10px;
+    padding: 1.5vh;
+    text-align: center;
+    width: 80%;
+}
+
+.price-preview p {
+    color: var(--smoke-white);
+    font-size: 2.2vh;
+    margin-bottom: 5px;
+}
+
+.price-preview strong {
+    color: var(--light-orange);
+}
+
+.price-preview small {
+    color: #eee;
+}
+
+/* Área de Códigos Manuais */
+.code-management-col {
+    align-items: center;
+}
+
+.gerarCodigo {
+    width: 80%;
+    height: auto;
+    margin-top: 3vh;
+    transition: all 0.4s ease-in-out;
+}
+
+.gerarCodigo textarea {
+    min-height: 20vh;
+    margin-top: 1vh;
+}
+
+/* Upload de Imagem */
+.file-label {
+    padding: 1.5vh 3vh;
+    background-color: var(--dark-brown);
+    color: var(--smoke-white);
+    font-size: 2.5vh;
+    font-weight: bold;
+    border-radius: 15px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    min-width: 250px;
+    justify-content: center;
+}
+
+.file-label svg {
+    fill: var(--light-orange);
+}
+
 .file-upload {
     display: none;
 }
 
-.file-label {
-    display: inline-block;
-    padding: 1vh 2vh;
-    background-color: var(--orange);
-    color: white;
-    font-size: 2vh;
-    border-radius: 1vh;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+.cropper-container {
+    margin: 3vh 0;
+    border: 3px dashed var(--light-orange);
+    width: 100%;
+    max-width: 350px;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.file-label svg {
-    width: 2.6vh;
-    height: 2.6vh;
-}
-
-.file-label:hover {
-    filter: brightness(1.1);
-}
-
+/* Botão de Envio */
 form button {
     background-color: var(--orange);
     color: var(--white);
-    font: 2.2vh;
-    padding: 1.5vh 4vh;
+    font-size: 3.2vh;
+    padding: 2vh 7vh;
     border: none;
     border-radius: 5vh;
-    margin: 4vh 0;
-    transition: all 0.2s ease-in-out;
+    margin: 8vh 0 0 0;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+    white-space: nowrap;
+    transition: transform 0.2s ease-in-out;
 }
 
 form button:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
+    box-shadow: 0 7px 20px rgba(255, 140, 0, 0.6);
 }
 
-.nota input{
-    width: 20%;
-}
-
-.imagePreviewer {
-    margin: 6vh 0;
-    border: 1vh dashed var(--dark-brown);
-    height: 50vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    width: 100%;
-}
-
-.imagePreviewer img {
-    border-radius: 1vh;
-    object-fit: cover;
-    width: auto;
-    height: 100%;
-}
-
-.imagePreviewer svg {
-    width: 10vh;
-    height: 10vh;
-    fill: var(--dark-brown);
-}
-
-.radio-button-container{
-    accent-color: var(--orange);
-    width: 100%;
-    height: 100%;
-}
-
-.radio-button-container input{
-    background-color: var(--smoke-white) !important;
-    border: var(--dark-brown) !important;
-    width: 100%;
-    height: 100%;
-}
-
-.validade input{
-    padding: 1vh;
-}
-
-.validade input, .nota input::placeholder{
-    color: var(--brown);
-}
-
-.nota input{
-    width: 25%;
-}
-
-/* ### CÓDIGO PARA ADICIONAR AO FINAL DO SEU CSS ### */
-.imagePreviewer {
-    display: none;
-}
-
-/* Container para o componente de corte */
-.cropper-container {
-    margin: 6vh 0;
-    border: 3px dashed var(--dark-brown);
-    height: auto; /* Altura automática para se ajustar ao conteúdo */
-    width: 100%;
-    max-width: 400px; /* Largura máxima para o cropper */
-}
-
-/* O componente de corte em si */
-image-cropper {
-    max-height: 300px; /* Altura máxima para a área de corte */
-    padding: 0;
-}
-
-/* Ajuste no select de categoria para centralizar o texto */
-.form-control {
-    text-align: center;
-    -moz-text-align-last: center; /* Para Firefox */
-    text-align-last: center; /* Para outros navegadores */
-}
-
-/* Garante que a label não fique em cima do select */
-.coluna select.form-control {
-    margin-top: 1.5rem;
-}
-
-.price-preview {
-  margin-top: 15px;
-  background-color: var(--dark-brown);
-  border-radius: 5px;
-  text-align: center;
-}
-.price-preview p {
-  margin-bottom: 5px;
-  font-size: 1.1rem;
-}
-.price-preview small {
-  font-size: 0.8rem;
-  color: #ccc;
-}
-
-@media (max-width: 768px) {
-    .form {
-        background-color: var(--brown);
-    }
-
+/* Responsividade */
+@media (max-width: 900px) {
     .container {
-        border-radius: 0;
-        background: none;
+        padding: 5vh 5vw;
+        width: 100%;
     }
 
-    .imagePreviewer{
-        width: 45vw;
+    .linha {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 4vh;
+        padding-bottom: 4vh;
+    }
+
+    .coluna {
+        width: 95%;
+        margin-bottom: 3vh;
+        align-items: center;
+        padding: 3vh;
+
+        /* Aplica as novas cores de transparência no mobile */
+        border: 1px solid var(--light-orange);
+        background-color: rgb(255 255 255 / 9%);
+        box-shadow: 0 0 12px rgb(0 0 0 / 70%);
+    }
+
+    .coluna.switch-container,
+    .coluna.price-col,
+    .coluna.categoria-col,
+    .coluna.code-management-col,
+    .coluna.upload-col {
+        border: none;
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .file-label {
+        white-space: normal;
+        min-width: unset;
+        text-align: center;
     }
 }
