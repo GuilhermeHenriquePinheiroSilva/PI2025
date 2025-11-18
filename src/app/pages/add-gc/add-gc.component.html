@@ -33,7 +33,7 @@
           class="form-control amount-input" style="width: 60%; margin-top: 10px;">
 
         <div *ngIf="calculatedSellingPrice() > 0" class="price-preview">
-          <p>Preço de Venda será: <strong>R$ {{ calculatedSellingPrice() | number:'1.2-2' }}</strong></p>
+          <p>Preço para o cliente será: <strong>R$ {{ calculatedSellingPrice() | number:'1.2-2' }}</strong></p>
           <small>(Inclui taxas e comissão da plataforma)</small>
         </div>
       </section>

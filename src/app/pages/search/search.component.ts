@@ -74,8 +74,8 @@ export class SearchComponent implements OnInit {
       })
     ).subscribe({
       next: (data) => {
-        this.allGiftCards = data; // Armazena todos os resultados
-        this.visibleGiftCards = this.allGiftCards.slice(0, this.initialItems); // Exibe o conjunto inicial
+        this.allGiftCards = data;
+        this.visibleGiftCards = this.allGiftCards.slice(0, this.initialItems);
         this.isLoading = false;
       },
       error: (err) => {
@@ -112,14 +112,14 @@ export class SearchComponent implements OnInit {
     this.applyFilters();
   }
 
-  // Função para o botão "Ver Mais"
+  
   loadMore(): void {
     const currentCount = this.visibleGiftCards.length;
     const newCards = this.allGiftCards.slice(currentCount, currentCount + this.itemsPerLoad);
     this.visibleGiftCards.push(...newCards);
   }
 
-  // Getter para verificar se o botão deve ser exibido
+  
   get hasMoreItems(): boolean {
     return this.visibleGiftCards.length < this.allGiftCards.length;
   }

@@ -123,23 +123,79 @@ export class DashboardGcComponent implements OnInit {
   }
 
   deleteGiftCard(id: string, title: string): void {
+    // Primeira tentativa: Confirmação padrão de exclusão
     this.confirmationService.confirm({
       title: 'Confirmação de Exclusão',
       message: `Tem certeza que deseja excluir o gift card "${title}"?`,
-      confirmText: 'Excluir', cancelText: 'Manter'
+      confirmText: 'Excluir', 
+      cancelText: 'Cancelar'
     }).subscribe(confirmed => {
       if (confirmed) {
-        this.giftcardService.deleteGiftCard(id).subscribe({
-          next: () => {
-            this.notificationService.show('Gift card excluído!', 'success');
-            this.myGiftCards = this.myGiftCards.filter(gc => gc.id !== id);
-            if (this.activeComponent === 'componente3') {
-              this.loadSalesData();
-            }
-          },
-          error: () => this.notificationService.show('Falha ao excluir o gift card.', 'error')
-        });
+        this.performDelete(id);
       }
+    });
+  }
+
+  private performDelete(id: string): void {
+    this.giftcardService.deleteGiftCard(id).subscribe({
+      next: () => {
+        this.notificationService.show('Gift card excluído!', 'success');
+        this.myGiftCards = this.myGiftCards.filter(gc => gc.id !== id);
+        if (this.activeComponent === 'componente3') {
+          this.loadSalesData();
+        }
+      },
+      error: (err) => {
+        // Se o erro for 409 (Conflict), significa que tem vendas
+        if (err.status === 409) {
+           this.offerDeactivation(id);
+        } else {
+           this.notificationService.show('Falha ao excluir o gift card.', 'error');
+        }
+      }
+    });
+  }
+
+  private offerDeactivation(id: string): void {
+    // Abre o popup sugerindo a inativação
+    this.confirmationService.confirm({
+      title: 'Não é possível excluir',
+      message: 'Este produto já possui vendas registradas e não pode ser removido do sistema. Deseja apenas marcá-lo como inativo? Ele deixará de aparecer na loja.',
+      confirmText: 'Inativar Produto',
+      cancelText: 'Manter como está'
+    }).subscribe(shouldDeactivate => {
+      if (shouldDeactivate) {
+        this.deactivateGiftCard(id);
+      }
+    });
+  }
+
+  private deactivateGiftCard(id: string): void {
+    const gc = this.myGiftCards.find(g => g.id === id);
+    if (!gc) return;
+
+    const formData = new FormData();
+    formData.append('title', gc.title);
+    formData.append('desired_amount', gc.desired_amount.toString());
+    formData.append('quantityavailable', gc.quantityavailable.toString());
+    formData.append('ativo', 'false');
+    
+    if(gc.description) formData.append('description', gc.description);
+    formData.append('generaterandomly', String(gc.generaterandomly));
+    if (gc.codes) formData.append('codes', gc.codes);
+    if (gc.category_id) formData.append('category_id', gc.category_id.toString());
+
+
+    this.giftcardService.updateGiftCard(id, formData).subscribe({
+        next: (updatedGc) => {
+            this.notificationService.show('Produto inativado com sucesso.', 'success');
+            // Atualiza a lista local
+            const index = this.myGiftCards.findIndex(g => g.id === id);
+            if (index !== -1) {
+                this.myGiftCards[index] = updatedGc;
+            }
+        },
+        error: () => this.notificationService.show('Erro ao inativar o produto.', 'error')
     });
   }
 

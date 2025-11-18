@@ -4,10 +4,9 @@
 
 <div class="containerPc">
     <div class="header">
-        <p *ngIf="cartItems.length > 0">Total do pedido: <br> <span>R$ {{ totalPedido | number:'1.2-2' }}</span></p>
         <p class="title">Carrinho de Compras</p>
-        <button *ngIf="cartItems.length > 0" class="finalizar" (click)="finalizarCompra()">Finalizar Compra</button>
     </div>
+
     <div class="body">
         <div class="table" *ngIf="cartItems.length > 0; else emptyCart">
             <table>
@@ -59,15 +58,32 @@
             <app-empty-cart></app-empty-cart>
         </ng-template>
     </div>
+
+    <div class="cart-footer" *ngIf="cartItems.length > 0" style="display: flex; flex-direction: column; align-items: flex-end; padding: 0 3vw 4vh 0;">
+        <div class="resumo-financeiro" style="text-align: right; margin-bottom: 20px; background-color: rgba(0,0,0,0.2); padding: 20px; border-radius: 15px;">
+            <p style="margin: 5px 0; color: #ddd;">Valor dos Produtos: <span>R$ {{ totalProdutosBase | number:'1.2-2' }}</span></p>
+            <p style="margin: 5px 0; color: #ddd; font-size: 0.9em;">+ Taxa da Plataforma (3%): <span>R$ {{ taxaPlataforma | number:'1.2-2' }}</span></p>
+            <hr style="border-color: #705c4e; margin: 10px 0 10px auto; width: 100%;">
+            <p style="margin: 5px 0; font-weight: 600;">Subtotal Itens: <span>R$ {{ subtotalComPlataforma | number:'1.2-2' }}</span></p>
+            <p class="taxa" style="margin: 5px 0; font-size: 0.9em; color: #ccc;">+ Taxa de Serviço (5%): <span>R$ {{ taxaServico | number:'1.2-2' }}</span></p>
+            
+            <p class="total-final" style="margin: 15px 0 0 0; font-size: 1.8em; font-weight: bold; color: var(--orange);">
+                Total: <span>R$ {{ totalPedido | number:'1.2-2' }}</span>
+            </p>
+        </div>
+        
+        <button class="finalizar" (click)="finalizarCompra()" style="padding: 1.5vh 4vw; font-size: 1.2rem;">
+            Finalizar Compra
+        </button>
+    </div>
 </div>
 
 <div class="containerMobile">
     <header class="header">
-        <!-- <p>Total do pedido: <br> R$ {{ totalPedido | number:'1.2-2' }}</p> -->
         <p>Carrinho de Compras</p>
     </header>
     <div class="body">
-        <div class="table" *ngIf="cartItems.length > 0; else emptyCart">
+        <div class="table" *ngIf="cartItems.length > 0; else emptyCartMobile">
             <table>
                 <thead>
                     <tr>
@@ -112,9 +128,21 @@
                     </tr>
                 </tbody>
             </table>
+
+            <div class="resumo-financeiro-mobile" style="background: #5b4b3f; padding: 15px; border-radius: 10px; margin: 20px 0; color: #efe8e0;">
+                <p style="display: flex; justify-content: space-between; margin: 5px 0; color: #ddd;">Valor Produtos: <span>R$ {{ totalProdutosBase | number:'1.2-2' }}</span></p>
+                <p style="display: flex; justify-content: space-between; margin: 5px 0; font-size: 0.9em; color: #ccc;">+ Taxa Plataforma (3%): <span>R$ {{ taxaPlataforma | number:'1.2-2' }}</span></p>
+                <hr style="border-color: #705c4e; margin: 10px 0;">
+                <p style="display: flex; justify-content: space-between; margin: 5px 0; font-weight: 600;">Subtotal: <span>R$ {{ subtotalComPlataforma | number:'1.2-2' }}</span></p>
+                <p style="display: flex; justify-content: space-between; margin: 5px 0; font-size: 0.9em; color: #ccc;">+ Taxa Serviço (5%): <span>R$ {{ taxaServico | number:'1.2-2' }}</span></p>
+                <hr style="border-color: #705c4e; margin: 10px 0;">
+                <p style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2em; color: #e68210;">Total: <span>R$ {{ totalPedido | number:'1.2-2' }}</span></p>
+            </div>
+
+            <button class="finalizar" (click)="finalizarCompra()">Finalizar Compra</button>
         </div>
-        <button class="finalizar" (click)="finalizarCompra()">Finalizar Compra</button>
-        <ng-template #emptyCart>
+        
+        <ng-template #emptyCartMobile>
             <app-empty-cart></app-empty-cart>
         </ng-template>
     </div>

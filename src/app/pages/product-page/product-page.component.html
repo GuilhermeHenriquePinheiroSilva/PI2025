@@ -1,14 +1,13 @@
 <app-nav-bar></app-nav-bar>
 
 <div class="body">
-    <!-- Estado de carregamento -->
+
     <div *ngIf="isLoading" class="loading-indicator">
         <p>Carregando...</p>
     </div>
 
     <div *ngIf="!isLoading && giftCard" class="container">
         <header>
-            <!-- Header pode ser removido se não for usado -->
         </header>
         <div class="content">
             <div class="leftColumn">
@@ -17,17 +16,13 @@
             <div class="rightColumn">
                 <h2>{{ giftCard.title }}</h2>
 
-                <!-- === SEÇÃO DE VALORES ATUALIZADA === -->
+                <!-- === SEÇÃO DE VALORES === -->
                 <div class="valor-info">
-                    <p class="valor-credito">
-                        Valor do Crédito: <span class="valorRS"> {{ giftCard.desired_amount | currency:'BRL':'symbol':'1.2-2' }}</span>
-                    </p>
                     <p class="valor-venda">
-                        Preço de Venda: <span class="valorRS">{{ giftCard.valor | currency:'BRL':'symbol':'1.2-2' }}</span>
+                        Valor: <span class="valorRS">{{ giftCard.desired_amount | currency:'BRL':'symbol':'1.2-2' }}</span>
                     </p>
                     <small class="tax-info">(Preço inclui taxas da plataforma e processamento)</small>
                 </div>
-                 <!-- === FIM DA SEÇÃO DE VALORES === -->
 
 
                 <p class="category" *ngIf="giftCard.category">
@@ -63,7 +58,6 @@
             </div>
         </div>
     </div>
-     <!-- Mensagem caso o gift card não seja encontrado -->
      <div *ngIf="!isLoading && !giftCard" class="not-found">
         <p>Oops! Produto não encontrado.</p>
         <a routerLink="/">Voltar para a Home</a>

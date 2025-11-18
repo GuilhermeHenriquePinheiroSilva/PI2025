@@ -1,18 +1,14 @@
-import { Component, OnInit, signal, computed, effect } from '@angular/core'; // Import signal, computed, effect
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Adicione RouterLink se for usar no template
-import { CommonModule, DatePipe } from '@angular/common'; // Importe DatePipe
+import { Component, OnInit, signal, computed, effect } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { GiftcardService, GiftCard } from '../../../services/giftcard.service'; // Import service
-import { NavBarComponent } from '../shared/nav-bar/nav-bar.component'; // Import NavBar
-import { FooterComponent } from '../shared/footer/footer.component'; // Import Footer
+import { GiftcardService } from '../../../services/giftcard.service';
+import { NavBarComponent } from '../shared/nav-bar/nav-bar.component';
+import { FooterComponent } from '../shared/footer/footer.component';
 import { NotificationService } from '../../../services/notification.service';
-// Imports para Categoria e Cropper
 import { Category } from '../../models/category.model';
 import { CategoryService } from '../../../services/category.service';
-import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper'; // Import Cropper
-// Remova BytesIO se não for usado diretamente, o Blob é suficiente
-// import { BytesIO } from 'buffer';
-
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-edit-gc',
@@ -20,11 +16,11 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper'; //
   imports: [
     CommonModule,
     FormsModule,
-    NavBarComponent, // Adicione NavBarComponent aqui
-    FooterComponent, // Adicione FooterComponent aqui
-    ImageCropperComponent, // Adicione ImageCropperComponent aqui
-    DatePipe, // Adicione DatePipe aqui
-    RouterLink // Adicione RouterLink se usado no template
+    NavBarComponent,
+    FooterComponent,
+    ImageCropperComponent,
+    DatePipe,
+    RouterLink
   ],
   templateUrl: './edit-gc.component.html',
   styleUrls: ['./edit-gc.component.css']
@@ -37,7 +33,7 @@ export class EditGcComponent implements OnInit {
   gerarCodigo: boolean = true;
   codigosManuais: string = '';
   imageSrc: string | null = null; // Para preview da imagem existente ou cortada
-  // selectedFile: File | null = null; // Não é mais necessário diretamente se usar o cropper
+  
   isLoading: boolean = true;
   isUploading: boolean = false;
 
@@ -48,6 +44,9 @@ export class EditGcComponent implements OnInit {
   categories: Category[] = [];
   categoryId: number | null = null;
 
+  // Propriedade para controlar se o produto tem vendas (bloqueia edição)
+  hasSales: boolean = false;
+
   // --- VARIÁVEIS PARA O EDITOR DE IMAGEM ---
   imageChangedEvent: any = '';
   croppedImage: Blob | null = null; // Armazenará o Blob da imagem cortada
@@ -55,28 +54,28 @@ export class EditGcComponent implements OnInit {
 
   // --- PROPRIEDADES PARA CÁLCULO DE PREÇO ---
   desiredAmount = signal<number | null>(null);
+  
   calculatedSellingPrice = computed<number>(() => {
     const desired = this.desiredAmount();
-    // Certifique-se que giftcardService está injetado antes de usar
+    // Calcula o preço de venda com a taxa da plataforma (3%)
     return desired && this.giftcardService ? this.giftcardService.calculateSellingPrice(desired) : 0;
   });
-  // ------------------------------------------
 
   constructor(
-    private giftcardService: GiftcardService, // Injetado
+    private giftcardService: GiftcardService,
     private route: ActivatedRoute,
     private router: Router,
     private notificationService: NotificationService,
     private categoryService: CategoryService
   ) {
       effect(() => {
-        // Log ou outra reação à mudança do preço calculado
-        console.log("Preço de venda calculado (edição):", this.calculatedSellingPrice());
+        // Log para depuração do cálculo de preço
+        // console.log("Preço de venda calculado (edição):", this.calculatedSellingPrice());
       });
   }
 
   ngOnInit(): void {
-    this.loadCategories(); // Carrega categorias
+    this.loadCategories();
     this.giftCardId = this.route.snapshot.paramMap.get('id');
     if (this.giftCardId) {
       this.loadGiftCardData(this.giftCardId);
@@ -105,13 +104,20 @@ export class EditGcComponent implements OnInit {
           this.gerarCodigo = data.generaterandomly;
           this.codigosManuais = data.codes || '';
           this.ativo = data.ativo;
+          
           // Formata a data corretamente para o input type="date"
           this.validade = data.validade ? new Date(data.validade).toISOString().split('T')[0] : '';
           this.nota = data.nota;
           this.categoryId = data.category_id ?? null;
 
+          // Verifica se o produto já possui vendas
+          this.hasSales = !!data.has_sales;
+
+          if (this.hasSales) {
+             this.notificationService.show("Este produto possui vendas. Título e Valor não podem ser alterados.", "info");
+          }
+
           if (data.imageUrl) {
-            // Assume URL base do backend para imagens
             this.imageSrc = `http://127.0.0.1:8000/uploads/${data.imageUrl}`;
           }
 
@@ -147,12 +153,10 @@ export class EditGcComponent implements OnInit {
         };
         reader.readAsDataURL(event.blob);
       }
-      // Não esconde o cropper aqui, deixa o usuário confirmar ou cancelar
   }
 
   confirmCrop() {
      this.showCropper = false; // Esconde o cropper após confirmar o corte
-     // A imagem cortada já está em this.croppedImage e o preview em this.imageSrc
   }
 
 
@@ -160,19 +164,20 @@ export class EditGcComponent implements OnInit {
       this.imageChangedEvent = ''; // Limpa o evento
       this.croppedImage = null; // Limpa a imagem cortada
       this.showCropper = false; // Esconde o cropper
+      
       // Recarrega a imagem original no preview
       if(this.giftCardId) {
-          // Rebusca os dados para garantir a imagem original correta
           this.giftcardService.getGiftCardById(this.giftCardId).subscribe(data => {
                if (data.imageUrl) {
                    this.imageSrc = `http://127.0.0.1:8000/uploads/${data.imageUrl}`;
                } else {
-                   this.imageSrc = null; // Caso não houvesse imagem antes
+                   this.imageSrc = null; 
                }
           });
       } else {
           this.imageSrc = null;
       }
+      
       // Limpa a seleção do input file para permitir selecionar o mesmo arquivo novamente
       const fileInput = document.getElementById('fileInput') as HTMLInputElement;
       if(fileInput) fileInput.value = '';
@@ -211,7 +216,7 @@ export class EditGcComponent implements OnInit {
         this.atualizarQuantidadePelosCodigos();
     }
 
-    const currentDesiredAmount = this.desiredAmount(); // Pega o valor do signal
+    const currentDesiredAmount = this.desiredAmount();
 
     // Validação
     if (!this.titulo || this.quantidade < 1 || currentDesiredAmount === null || currentDesiredAmount <= 0) {
@@ -221,12 +226,14 @@ export class EditGcComponent implements OnInit {
 
     this.isUploading = true;
     const formData = new FormData();
+    
     formData.append('title', this.titulo);
     formData.append('desired_amount', currentDesiredAmount.toString()); // Envia o valor desejado
     formData.append('description', this.descricao);
     formData.append('quantityavailable', this.quantidade.toString());
     formData.append('generaterandomly', String(this.gerarCodigo));
     formData.append('ativo', String(this.ativo));
+    
     if (this.categoryId !== null && this.categoryId !== undefined) {
       formData.append('category_id', this.categoryId.toString());
     }
@@ -243,12 +250,9 @@ export class EditGcComponent implements OnInit {
 
     // Envia a NOVA imagem CORTADA (Blob) apenas se ela existir
     if (this.croppedImage instanceof Blob) {
-      // Cria um nome de arquivo para o Blob
       const filename = `${this.titulo.replace(/[^a-zA-Z0-9]/g, '-') || 'edited-image'}.jpg`;
       formData.append('image', this.croppedImage, filename);
     }
-    // Se this.croppedImage for null, nenhuma imagem nova é enviada,
-    // e o backend manterá a imagem existente.
 
     this.giftcardService.updateGiftCard(this.giftCardId, formData).subscribe({
       next: () => {
@@ -256,6 +260,7 @@ export class EditGcComponent implements OnInit {
         this.router.navigate(['/dashboard-gc']);
       },
       error: (err) => {
+        // Captura o erro específico (ex: tentando alterar valor de produto com vendas)
         const errorMessage = err.error?.detail || "Ocorreu um erro ao atualizar.";
         this.notificationService.show(errorMessage, "error");
         this.isUploading = false;

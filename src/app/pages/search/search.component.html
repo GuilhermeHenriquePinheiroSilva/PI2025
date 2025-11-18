@@ -53,7 +53,7 @@
                 <div class="cards">
                     <a *ngFor="let gc of visibleGiftCards" [routerLink]="['/product-page', gc.id]"
                         class="gift-card-link">
-                        <app-gift-card-template [gcName]="gc.title" [gcText]="'R$ ' + (gc.valor | number:'1.2-2')"
+                        <app-gift-card-template [gcName]="gc.title" [gcText]="'R$ ' + (gc.desired_amount | number:'1.2-2')"
                             [gcImg]="'http://127.0.0.1:8000/uploads/' + gc.imageUrl" [gcImgAlt]="gc.title">
                         </app-gift-card-template>
                     </a>
