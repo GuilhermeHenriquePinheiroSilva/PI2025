@@ -14,6 +14,9 @@ class UserORM(Base):
     password = Column(String(255), nullable=False)
     role = Column(SqlEnum(Role), nullable=False)
     is_active = Column(Boolean, default=False, nullable=False)
+    account_type = Column(String(10), nullable=False) 
+    cpf = Column(String(14), unique=True, nullable=True, index=True)
+    cnpj = Column(String(18), unique=True, nullable=True, index=True)
     
     giftcards = relationship(
         "RegisterGiftCardORM",

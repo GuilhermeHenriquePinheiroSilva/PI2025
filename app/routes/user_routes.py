@@ -11,6 +11,7 @@ from app.models.user_models import User as UserSchema, UserLogin
 from app.models.user_orm import UserORM
 
 from app.security import create_access_token, get_current_user
+
 from app.database.db_config import get_db
 from app.services.email_service import send_email_with_template
 from werkzeug.security import generate_password_hash
@@ -19,6 +20,17 @@ router = APIRouter(
     prefix="/auth", 
     tags=["Authentication"]
 )
+
+class UserDetailsResponse(BaseModel):
+    username: str
+    email: str
+    account_type: str
+    cpf: str | None = None
+    cnpj: str | None = None
+    role: str # Enviamos a role como string
+
+    class Config:
+        from_attributes = True
 
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
@@ -96,12 +108,13 @@ async def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_d
     
     return {"message": "Senha redefinida com sucesso"}
 
-@router.get("/me")
+@router.get("/me", response_model=UserDetailsResponse) # 1. Adicionamos o response_model
 async def read_users_me(current_user: UserORM = Depends(get_current_user)):
-    # Rota protegida que retorna os dados do usuário logado
-    return {
-        "id": current_user.id,
-        "username": current_user.username,
-        "email": current_user.email,
-        "role": current_user.role.name
-    }
+    # 2. Usamos o Pydantic model 'UserDetailsResponse' para validar
+    #    e formatar a saída.
+    response_data = UserDetailsResponse.model_validate(current_user)
+    
+    # 3. Convertemos o Enum da Role para String (ex: Role.CUSTOMER -> "CUSTOMER")
+    response_data.role = current_user.role.name 
+
+    return response_data

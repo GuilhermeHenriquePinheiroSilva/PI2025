@@ -29,34 +29,15 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 
 nsfw_detector = NSFWDetector()
 
-# --- DEFINIÇÃO DE TAXAS (EXEMPLOS - AJUSTE CONFORME NECESSÁRIO) ---
-# Taxa percentual do Mercado Pago (ex: 5% = 0.05)
-MP_FEE_PERCENTAGE = Decimal("0.05")
-# Taxa fixa do Mercado Pago (ex: R$ 0,60) - Se não houver, deixe como 0
-MP_FEE_FIXED = Decimal("0.60")
-# Comissão percentual da Plataforma GoGift (ex: 10% = 0.10)
-PLATFORM_COMMISSION_PERCENTAGE = Decimal("0.07")
+# --- DEFINIÇÃO DE TAXAS ---
+PLATFORM_COMMISSION_PERCENTAGE = Decimal("0.03")
 
 def calculate_selling_price(desired_amount: Decimal) -> Decimal:
     if desired_amount <= 0:
         return Decimal("0.00")
 
-    # 1. Adiciona a comissão da plataforma ao valor desejado
-    # amount_before_mp = desired_amount / (1 - PLATFORM_COMMISSION_PERCENTAGE)
-    # Garante que não haja divisão por zero ou valor negativo se a comissão for 100% ou mais
-    if PLATFORM_COMMISSION_PERCENTAGE >= 1:
-         raise ValueError("A comissão da plataforma não pode ser 100% ou mais.")
-    amount_before_mp = desired_amount / (Decimal("1.0") - PLATFORM_COMMISSION_PERCENTAGE)
+    selling_price = desired_amount * (Decimal("1.0") + PLATFORM_COMMISSION_PERCENTAGE)
 
-
-    # 2. Adiciona as taxas do Mercado Pago (fixa e percentual)
-    # selling_price = (amount_before_mp + MP_FEE_FIXED) / (1 - MP_FEE_PERCENTAGE)
-    # Garante que não haja divisão por zero ou valor negativo
-    if MP_FEE_PERCENTAGE >= 1:
-         raise ValueError("A taxa percentual do MP não pode ser 100% ou mais.")
-    selling_price = (amount_before_mp + MP_FEE_FIXED) / (Decimal("1.0") - MP_FEE_PERCENTAGE)
-
-    # Arredonda para 2 casas decimais (padrão monetário)
     return selling_price.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 def process_and_save_image(image_data: BytesIO, output_path: str):
@@ -70,11 +51,9 @@ def process_and_save_image(image_data: BytesIO, output_path: str):
         if img.mode in ("RGBA", "P"):
             img = img.convert("RGB")
             
-        # --- ALTERAÇÃO APLICADA AQUI ---
         # Usa ImageOps.fit para redimensionar e cortar a imagem para exatamente 740x740
         # a partir do centro, sem distorcer.
         img_quadrada = ImageOps.fit(img, (740, 740), Image.Resampling.LANCZOS)
-        # ------------------------------------
         
         img_quadrada.save(output_path, "JPEG", optimize=True, quality=85)
         
@@ -112,11 +91,8 @@ async def create_giftcard(
         image_bytes = await image.read()
         image_stream = BytesIO(image_bytes)
 
-        # --- CORREÇÃO APLICADA AQUI ---
-        # 1. Abre a imagem com Pillow antes de validar
         try:
             pil_image = Image.open(image_stream)
-            # O detector espera um objeto de imagem PIL, não bytes
             is_nsfw = nsfw_detector.is_nsfw(pil_image)
         except Exception as e:
             raise HTTPException(
@@ -129,12 +105,10 @@ async def create_giftcard(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="A imagem contém conteúdo impróprio e não pode ser enviada."
             )
-        # -------------------------------------------
 
         image_name = f"{uuid.uuid4()}.jpg"
         file_path = os.path.join(UPLOAD_DIRECTORY, image_name)
 
-        # 2. Processa e salva a imagem (a função já usa BytesIO, então reutilizamos o stream)
         process_and_save_image(image_stream, file_path)
         image_url = image_name
 
@@ -175,12 +149,29 @@ async def update_giftcard(
     image: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
-    db_giftcard = db.query(RegisterGiftCardORM).filter(RegisterGiftCardORM.id == giftcard_id).first()
+    # Carrega o gift card E suas vendas para verificação
+    db_giftcard = db.query(RegisterGiftCardORM).options(
+        joinedload(RegisterGiftCardORM.sold_cards)
+    ).filter(RegisterGiftCardORM.id == giftcard_id).first()
+    
     if db_giftcard is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gift Card not found")
     if db_giftcard.user_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to perform this action")
     
+    # --- NOVA VERIFICAÇÃO: Bloqueia edição de Título e Valor se houver vendas ---
+    has_sales = len(db_giftcard.sold_cards) > 0
+    
+    if has_sales:
+        # Verifica se tentou mudar o título
+        if db_giftcard.title != title:
+             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Não é possível alterar o Título de um produto que já possui vendas.")
+        
+        # Verifica se tentou mudar o valor (desired_amount)
+        # Convertemos para Decimal para garantir a comparação correta
+        if db_giftcard.desired_amount != desired_amount:
+             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Não é possível alterar o Valor de um produto que já possui vendas.")
+
     try:
         selling_price = calculate_selling_price(desired_amount)
         if selling_price <= 0:
@@ -193,8 +184,6 @@ async def update_giftcard(
         image_bytes = await image.read()
         image_stream = BytesIO(image_bytes)
 
-        # --- CORREÇÃO APLICADA AQUI TAMBÉM ---
-        # 1. Validação de conteúdo sensível para a nova imagem
         try:
             pil_image = Image.open(image_stream)
             is_nsfw = nsfw_detector.is_nsfw(pil_image)
@@ -210,11 +199,12 @@ async def update_giftcard(
                 detail="A nova imagem contém conteúdo impróprio."
             )
 
-        # 2. Se a imagem for válida, remove a imagem antiga
         if image_url and os.path.exists(os.path.join(UPLOAD_DIRECTORY, image_url)):
-            os.remove(os.path.join(UPLOAD_DIRECTORY, image_url))
-        
-        # 3. Processa e salva a nova imagem
+            try:
+                os.remove(os.path.join(UPLOAD_DIRECTORY, image_url))
+            except Exception:
+                pass 
+    
         image_name = f"{uuid.uuid4()}.jpg"
         file_path = os.path.join(UPLOAD_DIRECTORY, image_name)
         process_and_save_image(image_stream, file_path)
@@ -239,7 +229,11 @@ async def update_giftcard(
 
 @router.get("/me", response_model=List[RegisterGiftCard])
 def read_my_giftcards(current_user: UserORM = Depends(get_current_user), db: Session = Depends(get_db)):
-     return db.query(RegisterGiftCardORM).options(joinedload(RegisterGiftCardORM.category)).filter(RegisterGiftCardORM.user_id == current_user.id).all()
+     # Inclui sold_cards para que 'has_sales' funcione no response_model
+     return db.query(RegisterGiftCardORM).options(
+         joinedload(RegisterGiftCardORM.category),
+         joinedload(RegisterGiftCardORM.sold_cards)
+     ).filter(RegisterGiftCardORM.user_id == current_user.id).all()
 
 @router.get("/search/", response_model=List[RegisterGiftCard])
 def search_giftcards(
@@ -250,25 +244,20 @@ def search_giftcards(
     sort_by: Optional[str] = Query(None), 
     db: Session = Depends(get_db)
 ):
-    # Inicia a query filtrando apenas os cards ativos
     query = db.query(RegisterGiftCardORM).options(joinedload(RegisterGiftCardORM.category)).filter(RegisterGiftCardORM.ativo == True)
   
-    # Filtro por termo de busca no título
     if q:
         search_term = f"%{q}%"
         query = query.filter(RegisterGiftCardORM.title.ilike(search_term))
     
-    # Filtro por categoria
     if category_id:
         query = query.filter(RegisterGiftCardORM.category_id == category_id)
 
-    # Filtro por faixa de preço
     if min_price is not None:
         query = query.filter(RegisterGiftCardORM.valor >= min_price)
     if max_price is not None:
         query = query.filter(RegisterGiftCardORM.valor <= max_price)
 
-    # Ordenação
     if sort_by == "price_asc":
         query = query.order_by(asc(RegisterGiftCardORM.valor))
     elif sort_by == "price_desc":
@@ -302,7 +291,11 @@ def read_all_giftcards(skip: int = 0, limit: int = 100, db: Session = Depends(ge
 
 @router.get("/{giftcard_id}", response_model=RegisterGiftCard)
 def read_giftcard_by_id(giftcard_id: uuid.UUID, db: Session = Depends(get_db)):
-    db_giftcard = db.query(RegisterGiftCardORM).options(joinedload(RegisterGiftCardORM.category)).filter(RegisterGiftCardORM.id == giftcard_id).first()
+    db_giftcard = db.query(RegisterGiftCardORM).options(
+        joinedload(RegisterGiftCardORM.category),
+        joinedload(RegisterGiftCardORM.sold_cards)
+    ).filter(RegisterGiftCardORM.id == giftcard_id).first()
+    
     if db_giftcard is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gift Card not found")
     return db_giftcard
@@ -313,15 +306,25 @@ def delete_giftcard(
     current_user: dict = Depends(enterprise_required),
     db: Session = Depends(get_db)
 ):
-    db_giftcard = db.query(RegisterGiftCardORM).filter(RegisterGiftCardORM.id == giftcard_id).first()
+    # Carrega com sold_cards para verificar histórico de vendas
+    db_giftcard = db.query(RegisterGiftCardORM).options(joinedload(RegisterGiftCardORM.sold_cards)).filter(RegisterGiftCardORM.id == giftcard_id).first()
+    
     if db_giftcard is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gift Card not found")
         
     if db_giftcard.user_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to perform this action")
 
+    # --- NOVA VERIFICAÇÃO: Bloqueia exclusão se houver vendas ---
+    if len(db_giftcard.sold_cards) > 0:
+        # Retornamos 409 Conflict para que o Frontend identifique esse caso e sugira inativação
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Este Gift Card possui vendas registradas e não pode ser excluído.")
+
     if db_giftcard.imageUrl and os.path.exists(os.path.join(UPLOAD_DIRECTORY, db_giftcard.imageUrl)):
-        os.remove(os.path.join(UPLOAD_DIRECTORY, db_giftcard.imageUrl))
+        try:
+            os.remove(os.path.join(UPLOAD_DIRECTORY, db_giftcard.imageUrl))
+        except Exception:
+            pass
 
     db.delete(db_giftcard)
     db.commit()
@@ -403,7 +406,6 @@ def get_my_used_giftcards(db: Session = Depends(get_db), current_user: UserORM =
         .order_by(desc(SoldGiftCardORM.purchase_date))\
         .all()
 
-    # Mapeia para o DTO, garantindo que owner_name seja incluído
     return [
         SoldGiftCardDetails(
             id=gc.id,

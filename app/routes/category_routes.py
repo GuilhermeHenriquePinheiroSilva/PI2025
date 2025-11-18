@@ -48,7 +48,6 @@ async def update_category(
     db.refresh(db_category)
     return db_category
 
-# --- Rota de Admin para Deletar Categoria ---
 @router.delete("/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_category(
     category_id: int, 

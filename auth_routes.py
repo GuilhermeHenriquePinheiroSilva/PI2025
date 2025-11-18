@@ -10,15 +10,12 @@ from app.models.user_orm import UserORM
 from app.auth.jwt_handler import create_access_token, decode_access_token
 from app.database.db_config import get_db
 from app.services.email_service import send_email_with_template
-from validate_docbr import CPF, CNPJ
+
 
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"]
 )
-
-cpf_validator = CPF()
-cnpj_validator = CNPJ()
 
 @router.post("/register")
 async def register_user(user: UserSchema, background_tasks: BackgroundTasks, request: Request, db: Session = Depends(get_db)):
@@ -29,30 +26,22 @@ async def register_user(user: UserSchema, background_tasks: BackgroundTasks, req
     if user.account_type == 'person':
         if not user.cpf:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CPF é obrigatório para pessoa física")
-        
-        if not cpf_validator.validate(user.cpf):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CPF inválido")
-
         db_cpf = db.query(UserORM).filter(UserORM.cpf == user.cpf).first()
         if db_cpf:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CPF já registrado")
-        user.cnpj = None 
+        user.cnpj = None # Garante que CNPJ é nulo
     
     elif user.account_type == 'enterprise':
         if not user.cnpj:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CNPJ é obrigatório para pessoa jurídica")
-        
-        if not cnpj_validator.validate(user.cnpj):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CNPJ inválido")
-            
         db_cnpj = db.query(UserORM).filter(UserORM.cnpj == user.cnpj).first()
         if db_cnpj:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CNPJ já registrado")
-        user.cpf = None
+        user.cpf = None # Garante que CPF é nulo
     
     else:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Tipo de conta inválido ('person' ou 'enterprise' esperado)")
-
+    # --- FIM DA LÓGICA ---
 
     hashed_password = generate_password_hash(user.password)
 
@@ -60,12 +49,14 @@ async def register_user(user: UserSchema, background_tasks: BackgroundTasks, req
         username=user.username,
         email=user.email,
         password=hashed_password,
-        role=Role.CUSTOMER, 
+        role=Role.CUSTOMER, # <--- MUDANÇA CRUCIAL: Todos se registram como CUSTOMER
         is_active=False,
+        
+        # --- CAMPOS ADICIONADOS ---
         account_type=user.account_type,
         cpf=user.cpf,
         cnpj=user.cnpj
-
+        # --- FIM DOS CAMPOS ---
     )
     db.add(new_user)
     db.commit()
@@ -126,6 +117,7 @@ async def login_user(user_login: UserLogin, db: Session = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
         
+    # VERIFICA SE A CONTA ESTÁ ATIVA
     if not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -141,6 +133,7 @@ async def login_user(user_login: UserLogin, db: Session = Depends(get_db)):
         "token_type": "bearer",
         "user": {
             "username": user.username,
+            # "email": user.email,
             "role": user.role.name 
         }
     }

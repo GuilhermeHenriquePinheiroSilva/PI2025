@@ -33,6 +33,7 @@ class RegisterGiftCard(BaseModel):
     imageUrl: Optional[str] = None
     category_id: Optional[int] = None
     category: Optional[Category] = None
+    has_sales: bool = False
 
     class Config:
         from_attributes = True

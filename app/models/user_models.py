@@ -11,6 +11,9 @@ class User(BaseModel):
     password: str
     role: Optional[Role] = Role.CUSTOMER
     tags: Optional[Tag] = None 
+    account_type: str # 'person' ou 'enterprise'
+    cpf: Optional[str] = None
+    cnpj: Optional[str] = None
 
     @field_validator("password")
     @classmethod

@@ -75,3 +75,4 @@ fastapi-mail==1.5.7
 APScheduler==3.10.0
 Pillow
 nsfw-image-detector==0.1.2
+validate-docbr

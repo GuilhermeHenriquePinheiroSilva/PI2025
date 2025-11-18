@@ -48,6 +48,10 @@ class RegisterGiftCardORM(Base):
     # Relacionamento para ver todos os cartões vendidos deste tipo
     sold_cards = relationship("SoldGiftCardORM", back_populates="original_giftcard", cascade="all, delete-orphan")
 
+    @property
+    def has_sales(self):
+        return len(self.sold_cards) > 0
+
 
 class SoldGiftCardORM(Base):
     __tablename__ = "sold_giftcards"

@@ -109,16 +109,14 @@ async def create_preference_cart(
     if not cart.items:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="O carrinho não pode estar vazio.")
 
-    total_amount = Decimal("0.0")
-    order_items_to_create = [] # Armazena dados para criar OrderItemORM
+    items_subtotal = Decimal("0.0") # Soma apenas dos produtos
+    order_items_to_create = [] 
     items_for_email = []
     preference_items = []
-    # enterprise_id = None # Removido - não valida mais empresa única
 
     try:
-        # 1. Validar estoque, calcular total e preparar dados
+        # 1. Validar estoque, calcular subtotal dos produtos e preparar dados
         for item in cart.items:
-            # Carrega giftcard, usuário dono e detalhes da empresa
             db_giftcard = db.query(RegisterGiftCardORM).options(
                 joinedload(RegisterGiftCardORM.user).joinedload(UserORM.enterprise_details)
             ).filter(RegisterGiftCardORM.id == item.product_id).with_for_update().first()
@@ -126,83 +124,97 @@ async def create_preference_cart(
             if not db_giftcard:
                  raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Gift Card com ID {item.product_id} não encontrado.")
 
-            # Valida se o gift card pertence a uma empresa
             if not db_giftcard.user or not db_giftcard.user.enterprise_details:
                 logging.error(f"Giftcard {db_giftcard.id} não possui uma empresa associada.")
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Este item não pode ser vendido.")
-
-            # Validação de empresa única REMOVIDA
 
             if not db_giftcard.ativo:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Gift Card com ID {item.product_id} não está disponível.")
             if db_giftcard.quantityavailable < item.quantity:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Estoque insuficiente para '{db_giftcard.title}'.")
 
-            item_selling_price = db_giftcard.valor # Usa o preço de venda já calculado
+            # O 'valor' aqui já inclui a taxa de 3% (configurada no cadastro)
+            item_selling_price = db_giftcard.valor 
             item_total = item_selling_price * item.quantity
-            total_amount += item_total
+            items_subtotal += item_total
 
-            preference_items.append({"title": db_giftcard.title, "quantity": item.quantity, "unit_price": float(item_selling_price), "currency_id": "BRL"})
-            items_for_email.append({"title": db_giftcard.title, "quantity": item.quantity, "subtotal": float(item_total)})
+            preference_items.append({
+                "title": db_giftcard.title,
+                "quantity": item.quantity,
+                "unit_price": float(item_selling_price),
+                "currency_id": "BRL"
+            })
+            
+            items_for_email.append({
+                "title": db_giftcard.title,
+                "quantity": item.quantity,
+                "subtotal": float(item_total)
+            })
 
-            # Guarda os dados necessários para criar os OrderItemORM depois
-            item_enterprise_id = db_giftcard.user.enterprise_details.id # ID da empresa deste item
-            item_desired_amount = db_giftcard.desired_amount # Valor que a empresa quer receber
+            item_enterprise_id = db_giftcard.user.enterprise_details.id
+            item_desired_amount = db_giftcard.desired_amount
+            
             for _ in range(item.quantity):
                 order_items_to_create.append({
                     "giftcard_id": db_giftcard.id,
-                    "enterprise_id": item_enterprise_id, # ID da empresa vendedora do item
+                    "enterprise_id": item_enterprise_id,
                     "quantity": 1,
-                    "unit_price": item_selling_price, # Preço de venda unitário
-                    "seller_amount": item_desired_amount, # Valor a ser repassado à empresa
-                    "giftcard_instance": db_giftcard # Referência para reserva de estoque
+                    "unit_price": item_selling_price,
+                    "seller_amount": item_desired_amount,
+                    "giftcard_instance": db_giftcard
                 })
+
+        # --- CÁLCULO DA TAXA DE SERVIÇO (5%) ---
+        service_fee = items_subtotal * Decimal("0.05")
+        
+        preference_items.append({
+            "title": "Taxa de Processamento (5%)",
+            "quantity": 1,
+            "unit_price": float(service_fee),
+            "currency_id": "BRL"
+        })
+        
+        # Total final que será salvo no pedido
+        final_total_amount = items_subtotal + service_fee
 
         # 2. Criar o Pedido (Order) com status PENDENTE
         new_order = OrderORM(
             owner_id=current_user.id,
-            # owner_name=current_user.username, # Removido
-            total_amount=total_amount, # Total baseado nos preços de venda
+            total_amount=final_total_amount, # Salva o total com taxas
             status=OrderStatus.PENDING
         )
         db.add(new_order)
         db.flush()
-        new_order.owner = current_user # Associa para e-mails
+        new_order.owner = current_user
 
-        # 3. Criar os Itens do Pedido (OrderItems) e reservar estoque
-        giftcards_stock_to_update = {} # {giftcard_id: quantity_to_reduce}
+        # 3. Criar os Itens do Pedido e reservar estoque
+        giftcards_stock_to_update = {} 
         if order_items_to_create:
             for item_data in order_items_to_create:
                 db.add(OrderItemORM(
                     order_id=new_order.id,
                     register_giftcard_id=item_data["giftcard_id"],
-                    enterprise_id=item_data["enterprise_id"], # Salva o ID da empresa no item
-                    quantity=item_data["quantity"], # Sempre 1 neste loop
-                    unit_price=item_data["unit_price"], # Preço de venda
-                    seller_amount=item_data["seller_amount"] # Valor do vendedor
+                    enterprise_id=item_data["enterprise_id"],
+                    quantity=item_data["quantity"],
+                    unit_price=item_data["unit_price"],
+                    seller_amount=item_data["seller_amount"]
                 ))
-                # Agrupa a quantidade a ser reduzida por giftcard
                 gc_id = item_data["giftcard_id"]
                 giftcards_stock_to_update[gc_id] = giftcards_stock_to_update.get(gc_id, 0) + 1
 
-            # Reserva o estoque para cada gift card afetado
             for gc_id, qty_reduce in giftcards_stock_to_update.items():
-                 # Encontra a instância do giftcard (usando a referência salva)
                  giftcard_instance = next((item["giftcard_instance"] for item in order_items_to_create if item["giftcard_id"] == gc_id), None)
                  if giftcard_instance:
-                     # Garante que não haja condição de corrida lendo o valor atual antes de subtrair
                      current_quantity = db.query(RegisterGiftCardORM.quantityavailable).filter(RegisterGiftCardORM.id == gc_id).scalar()
                      if current_quantity is not None and current_quantity >= qty_reduce:
                          giftcard_instance.quantityavailable = current_quantity - qty_reduce
                      else:
-                         # Isso não deveria acontecer devido à validação anterior, mas é uma segurança extra
                          db.rollback()
                          raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Erro de concorrência no estoque para '{giftcard_instance.title}'. Tente novamente.")
                  else:
-                     # Fallback improvável: Rebusca e atualiza
                      db.query(RegisterGiftCardORM).filter(RegisterGiftCardORM.id == gc_id).update({"quantityavailable": RegisterGiftCardORM.quantityavailable - qty_reduce}, synchronize_session=False)
 
-
+        # Adiciona a taxa nos detalhes do email se desejar, ou deixa apenas o total bater
         send_payment_pending_email(background_tasks, new_order, items_for_email)
 
         # 4. Preparar e criar a preferência do Mercado Pago
@@ -211,13 +223,18 @@ async def create_preference_cart(
         expiration_time_iso = expiration_time.isoformat("T", "milliseconds").replace('+00:00', 'Z')
 
         preference_data = {
-            "items": preference_items, # Contém os preços de venda corretos
-            "back_urls": {"success": f"{base_url}/minhas-compras", "failure": f"{base_url}/cart", "pending": f"{base_url}/minhas-compras"},
+            "items": preference_items, # Inclui produtos e a taxa de serviço
+            "back_urls": {"success": f"{base_url}/minhas-compras?status=approved", "failure": f"{base_url}/cart", "pending": f"{base_url}/minhas-compras"},
             "auto_return": "approved",
             "external_reference": str(new_order.id),
             "notification_url": f"{os.getenv('BACKEND_PUBLIC_URL')}/api/mercadopago/webhook",
             "expires": True,
             "date_of_expiration": expiration_time_iso,
+            "payment_methods": {
+                "excluded_payment_types": [
+                    { "id": "ticket" } 
+                ]
+            }
         }
 
         preference_response = sdk.preference().create(preference_data)
@@ -229,9 +246,9 @@ async def create_preference_cart(
 
         return {"preference_id": preference_response["response"]["id"], "init_point": preference_response["response"]["init_point"]}
 
-    except HTTPException as http_exc: # Captura HTTPExceptions primeiro para não logar como crítico
+    except HTTPException as http_exc:
         db.rollback()
-        raise http_exc # Re-levanta a exceção HTTP para o FastAPI tratar
+        raise http_exc
     except Exception as e:
         db.rollback()
         logging.critical(f"Erro ao criar preferência: {e}", exc_info=True)
